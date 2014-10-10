@@ -1,4 +1,13 @@
 import visvis.vvio.stl
-r = visvis.vvio.stl.StlReader('./head.stl')
-m = r.read('./head.stl')
-m._vertices
+
+
+class STLReader:
+    def read(self, f):
+        r = visvis.vvio.stl.StlReader(None)
+        m = r.read(f)
+        m._vertices
+
+
+class STLWriter:
+    def write(self, m, f):
+        pass
