@@ -1,3 +1,4 @@
+lxml
 visvis
-BeautifulSoup
-pyCollada
+pycollada
+jinja2
