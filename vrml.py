@@ -2,8 +2,10 @@ import jinja2
 
 
 class VRMLReader:
-    pass
+    def read(self, f):
+        pass
 
 
 class VRMLWriter:
-    pass
+    def write(self, m, f):
+        pass
