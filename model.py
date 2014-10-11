@@ -65,6 +65,9 @@ class ShapeModel(object):
 
 
 class MeshModel(object):
+    """
+    Mesh model
+    """
     vertex = []       #: Vertex position (in x,y,z * 3 * N format)
     normal = []       #: Normal direction
     color = []        #: Color (in RGBA * N format)
@@ -75,6 +78,9 @@ class MeshModel(object):
 
 
 class SensorModel(object):
+    """
+    Sensor model
+    """
     sensorType = None  #: Type of sensor
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation
