@@ -9,13 +9,16 @@ class ColladaReader:
 
         for i in d.images:
             i.path
-
         for g in d.geometries:
             for p in g.primitives:
                 m.vertex = p.vertex
-                m.normal = p.normal  # vertext normal
-                p.material  # image used for UV map
-                m.uvmap = p.texcoordset  # UV map
+                m.vertex_index = p.vertex_index
+                m.normal = p.normal
+                m.normal_index = p.normal_index
+                # m.material = p.material
+                # m.uvmap = p.texcoordset
+        for e in d.effects:
+            e.ambient
 
 
 class ColladaWriter:
