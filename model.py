@@ -27,6 +27,8 @@ class LinkModel(object):
     """
     Link model
     """
+    name = None       #: Name of the link
+    mass = 0          #: Mass of the link
     inertial = None   #: Inertial (vector representation of 3x3 matrix)
     visual = None     #: Shape information used for rendering
     collision = None  #: Shape information used for collision detection
@@ -62,6 +64,8 @@ class ShapeModel(object):
 
     shapeType = None  #: Shape type
     mesh = None       #: Mesh data (if the type is SP_MESH)
+    trans = None      #: XYZ translation vector
+    rot = None        #: Rotation
 
 
 class MeshModel(object):
