@@ -1,3 +1,9 @@
+# -*- coding:utf-8 -*-
+
+"""
+Reader and writer for collada format
+"""
+
 import collada
 import model
 
