@@ -1,4 +1,5 @@
 lxml
+euclid
 visvis
 pycollada
 jinja2

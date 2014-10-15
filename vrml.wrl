@@ -88,9 +88,6 @@ PROTO Humanoid [
       Group {
         children IS viewpoints
       }
-      Group {
-        children IS humanoidBody
-      }
     ]
   }
 }
