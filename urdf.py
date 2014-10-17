@@ -4,7 +4,7 @@
 Reader and writer for URDF format
 """
 
-import lxml
+import lxml.etree
 import numpy
 import jinja2
 import model
@@ -17,7 +17,7 @@ class URDFReader:
         bm = model.BodyModel
         d = lxml.etree.parse(open(f))
 
-        for l in d.findAll('link'):
+        for l in d.findall('link'):
             lm = model.LinkModel
             lm.name = l.attrib['name']
             with l.find('inertial') as inertial:
@@ -44,7 +44,7 @@ class URDFReader:
                 lm.collision = sm
             bm.links.append(lm)
 
-        for j in d.findAll('joint'):
+        for j in d.findall('joint'):
             jm = model.JointModel
             jm.origin = self.readOrigin(j.find('origin'))
             jm.axis = j.find('axis').attrib['xyz']
