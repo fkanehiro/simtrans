@@ -20,6 +20,7 @@ class ColladaReader:
 
         >>> r = ColladaReader()
         >>> r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
+        <class 'simtrans.model.MeshModel'>
         '''
         m = model.MeshModel
         d = collada.Collada(f)
@@ -36,13 +37,8 @@ class ColladaReader:
                 # m.uvmap = p.texcoordset
         for e in d.effects:
             e.ambient
-
+        return m
 
 class ColladaWriter:
     def write(self, m, f):
         pass
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()

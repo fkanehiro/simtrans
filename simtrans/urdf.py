@@ -25,6 +25,7 @@ class URDFReader:
 
         >>> r = URDFReader()
         >>> r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        <class 'simtrans.model.BodyModel'>
         '''
         bm = model.BodyModel
         d = lxml.etree.parse(open(f))
@@ -35,15 +36,18 @@ class URDFReader:
             lm.name = l.attrib['name']
             # phisical property
             inertial = l.find('inertial')
-            lm.inertia = self.readInertia(inertial.find('inertia'))
-            lm.trans, lm.rot = self.readOrigin(inertial.find('origin'))
-            lm.mass = self.readMass(inertial.find('mass'))
+            if inertial is not None:
+                lm.inertia = self.readInertia(inertial.find('inertia'))
+                lm.trans, lm.rot = self.readOrigin(inertial.find('origin'))
+                lm.mass = self.readMass(inertial.find('mass'))
             # visual property
             visual = l.find('visual')
-            lm.visual = self.readShape(visual)
+            if visual is not None:
+                lm.visual = self.readShape(visual)
             # contact property
             collision = l.find('collision')
-            lm.collision = self.readShape(collision)
+            if collision is not None:
+                lm.collision = self.readShape(collision)
             bm.links.append(lm)
 
         for j in d.findall('joint'):
@@ -52,22 +56,31 @@ class URDFReader:
             jm.name = j.attrib['name']
             jm.jointType = j.attrib['type']
             jm.trans, jm.rot = self.readOrigin(j.find('origin'))
-            jm.axis = j.find('axis').attrib['xyz']
+            axis = j.find('axis')
+            if axis is not None:
+                jm.axis = axis.attrib['xyz']
             jm.parent = j.find('parent').attrib['link']
             jm.child = j.find('child').attrib['link']
             # phisical property
             dynamics = j.find('dynamics')
-            jm.damping = dynamics.attrib['damping']
-            jm.friction = dynamics.attrib['friction']
+            if dynamics is not None:
+                jm.damping = dynamics.attrib['damping']
+                jm.friction = dynamics.attrib['friction']
             limit = j.find('limit')
-            jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
+            if limit is not None:
+                jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
             bm.joints.append(jm)
 
         return bm
 
     def readOrigin(self, d):
-        xyz = numpy.matrix(d.attrib['xyz'])
-        rpy = numpy.matrix(d.attrib['rpy'])
+        xyz = None
+        rpy = None
+        try:
+            xyz = numpy.matrix(d.attrib['xyz'])
+            rpy = numpy.matrix(d.attrib['rpy'])
+        except KeyError:
+            pass
         return xyz, rpy
 
     def readInertia(self, d):
@@ -86,14 +99,15 @@ class URDFReader:
         sm = model.ShapeModel
         sm.trans, sm.rot = self.readOrigin(d.find('origin'))
         mesh = d.find('geometry/mesh')
-        filename = self.resolveFile(mesh.attrib['filename'])
-        fileext = os.path.splitext(filename)[1]
-        sm.shapeType = model.ShapeModel.SP_MESH
-        if fileext == '.dae':
-            reader = collada.ColladaReader()
-        else:
-            reader = stl.STLReader()
-        sm.mesh = reader.read(filename)
+        if mesh is not None:
+            filename = self.resolveFile(mesh.attrib['filename'])
+            fileext = os.path.splitext(filename)[1]
+            sm.shapeType = model.ShapeModel.SP_MESH
+            if fileext == '.dae':
+                reader = collada.ColladaReader()
+            else:
+                reader = stl.STLReader()
+                sm.mesh = reader.read(filename)
         return sm
 
     def resolveFile(self, f):
@@ -122,8 +136,3 @@ class URDFWriter:
     '''
     def write(self, m, f):
         pass
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
