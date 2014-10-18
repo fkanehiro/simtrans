@@ -102,7 +102,7 @@ DEF {{model.name}} Humanoid {
       ulimit 1
       llimit 1
       children [
-        {% for l in model.children %}
+        {%- for l in model.children recursive %}
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}
           centerOfMass {{l.link.trans}}
@@ -111,9 +111,12 @@ DEF {{model.name}} Humanoid {
             Inline {
               url ""
             }
+            {%- if l.children -%}
+            {{ loop(l.children) }}
+            {%- endif %}
           ]
         }
-        {% endfor %}
+        {%- endfor %}
       ]
     }
   ]
