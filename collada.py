@@ -5,13 +5,22 @@ Reader and writer for collada format
 """
 
 from __future__ import absolute_import
+from . import model
 import collada
 import jinja2
-import model
 
 
 class ColladaReader:
+    '''
+    Collada reader class
+    '''
     def read(self, f):
+        '''
+        Read collada model data given the file path
+
+        >>> r = ColladaReader()
+        >>> r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
+        '''
         m = model.MeshModel
         d = collada.Collada(f)
 
@@ -32,3 +41,8 @@ class ColladaReader:
 class ColladaWriter:
     def write(self, m, f):
         pass
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
