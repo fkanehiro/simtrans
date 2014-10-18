@@ -4,7 +4,9 @@
 Reader and writer for collada format
 """
 
+from __future__ import absolute_import
 import collada
+import jinja2
 import model
 
 

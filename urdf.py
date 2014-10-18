@@ -4,8 +4,11 @@
 Reader and writer for URDF format
 """
 
+import os
+import subprocess
 import lxml.etree
 import numpy
+import euclid
 import jinja2
 import model
 import collada
@@ -13,48 +16,51 @@ import stl
 
 
 class URDFReader:
+    '''
+    URDF reader class
+    '''
     def read(self, f):
+        '''
+        Read URDF model data given the model file
+
+        >>> r = URDFReader()
+        >>> r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        '''
         bm = model.BodyModel
         d = lxml.etree.parse(open(f))
 
         for l in d.findall('link'):
+            # general information
             lm = model.LinkModel
             lm.name = l.attrib['name']
-            with l.find('inertial') as inertial:
-                lm.inertia = self.readInertia(inertial.find('inertia'))
-                lm.trans = self.readOrigin(inertial.find('origin'))
-                lm.mass = self.readMass(inertial.find('mass'))
-            with l.find('visual') as visual:
-                sm = model.ShapeModel
-                sm.trans = self.readOrigin(visual.find('origin'))
-                with visual.find('geometry') as geometry:
-                    with geometry.find('mesh') as mesh:
-                        sm.shapeType = m.SP_MESH
-                        reader = collada.ColladaReader
-                        sm.mesh = reader.read(self.resolveFile(mesh.attrib['filename']))
-                lm.visual = sm
-            with l.find('collision') as collision:
-                sm = model.ShapeModel
-                sm.trans = self.readOrigin(collision.find('origin'))
-                with collision.find('geometry') as geometry:
-                    with geometry.find('mesh') as mesh:
-                        sm.shapeType = m.SP_MESH
-                        reader = stl.STLReader
-                        sm.mesh = reader.read(self.resolveFile(mesh.attrib['filename']))
-                lm.collision = sm
+            # phisical property
+            inertial = l.find('inertial')
+            lm.inertia = self.readInertia(inertial.find('inertia'))
+            lm.trans, lm.rot = self.readOrigin(inertial.find('origin'))
+            lm.mass = self.readMass(inertial.find('mass'))
+            # visual property
+            visual = l.find('visual')
+            lm.visual = self.readShape(visual)
+            # contact property
+            collision = l.find('collision')
+            lm.collision = self.readShape(collision)
             bm.links.append(lm)
 
         for j in d.findall('joint'):
             jm = model.JointModel
-            jm.origin = self.readOrigin(j.find('origin'))
+            # general property
+            jm.name = j.attrib['name']
+            jm.jointType = j.attrib['type']
+            jm.trans, jm.rot = self.readOrigin(j.find('origin'))
             jm.axis = j.find('axis').attrib['xyz']
             jm.parent = j.find('parent').attrib['link']
             jm.child = j.find('child').attrib['link']
-            with j.find('dynamics') as dynamics:
-                jm.damping = dynamics.attrib['damping']
-                jm.friction = dynamics.attrib['friction']
-            with j.find('limit') as limit:
-                jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
+            # phisical property
+            dynamics = j.find('dynamics')
+            jm.damping = dynamics.attrib['damping']
+            jm.friction = dynamics.attrib['friction']
+            limit = j.find('limit')
+            jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
             bm.joints.append(jm)
 
         return bm
@@ -62,6 +68,7 @@ class URDFReader:
     def readOrigin(self, d):
         xyz = numpy.matrix(d.attrib['xyz'])
         rpy = numpy.matrix(d.attrib['rpy'])
+        return xyz, rpy
 
     def readInertia(self, d):
         inertia = numpy.zeros((3,3))
@@ -75,14 +82,48 @@ class URDFReader:
     def readMass(self, d):
         return float(d.attrib['value'])
 
+    def readShape(self, d):
+        sm = model.ShapeModel
+        sm.trans, sm.rot = self.readOrigin(d.find('origin'))
+        mesh = d.find('geometry/mesh')
+        filename = self.resolveFile(mesh.attrib['filename'])
+        fileext = os.path.splitext(filename)[1]
+        sm.shapeType = model.ShapeModel.SP_MESH
+        if fileext == '.dae':
+            reader = collada.ColladaReader()
+        else:
+            reader = stl.STLReader()
+        sm.mesh = reader.read(filename)
+        return sm
+
     def resolveFile(self, f):
-        if f.count('package://') > 0:
-            pkgname = f.lstrip('package://').split('/')[0]
-            ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
-            return os.path.join(ppath, f.lstrip('package://'))
+        '''
+        Resolve file by repacing ROS file path heading "package://"
+        
+        >>> r = URDFReader()
+        >>> r.resolveFile('package://atlas_description/package.xml')
+        '/opt/ros/indigo/share/atlas_description/package.xml'
+        >>> r.resolveFile('package://atlas_description/urdf/atlas.urdf')
+        '/opt/ros/indigo/share/atlas_description/urdf/atlas.urdf'
+        '''
+        try:
+            if f.count('package://') > 0:
+                pkgname, pkgfile = f.replace('package://', '').split('/', 1)
+                ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
+                return os.path.join(ppath, pkgfile)
+        except Exception, e:
+            print str(e)
         return f
 
 
 class URDFWriter:
+    '''
+    URDF writer class
+    '''
     def write(self, m, f):
         pass
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
