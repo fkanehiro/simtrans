@@ -7,7 +7,7 @@ Reader and writer for VRML format
 import jinja2
 
 
-class VRMLReader:
+class VRMLReader(object):
     '''
     VRML reader class
     '''
@@ -15,27 +15,34 @@ class VRMLReader:
         pass
 
 
-class VRMLWriter:
+class VRMLWriter(object):
     '''
     VRML writer class
     '''
-    def write(self, m, f):
+    def write(self, mdata, fname):
+        '''
+        >>> from . import urdf
+        >>> r = urdf.URDFReader()
+        >>> mdata = r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        >>> w = VRMLWriter()
+        >>> w.write(mdata, 'test.wrl')
+        '''
         env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
         template = env.get_template('vrml.wrl')
-        of = open(f, 'w')
-        of.write(template.render(m))
+        ofile = open(fname, 'w')
+        ofile.write(template.render(mdata))
 
-    def findRoot(self, m):
+    def findroot(self, mdata):
         '''
         Find a root link from the parent to child relationships.
         Currently based on following simple rule:
         - Link with no parent will be the root.
         '''
-        js = {}
-        for j in m.joints:
-            js[j.parent] = 1
-        for j in m.joints:
+        joints = {}
+        for j in mdata.joints:
+            joints[j.parent] = 1
+        for j in mdata.joints:
             try:
-                del js[j.child]
+                del joints[j.child]
             except KeyError:
                 pass

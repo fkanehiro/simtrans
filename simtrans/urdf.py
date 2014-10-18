@@ -10,16 +10,16 @@ import lxml.etree
 import numpy
 import euclid
 import jinja2
-import model
-import collada
-import stl
+from . import model
+from . import collada
+from . import stl
 
 
-class URDFReader:
+class URDFReader(object):
     '''
     URDF reader class
     '''
-    def read(self, f):
+    def read(self, fname):
         '''
         Read URDF model data given the model file
 
@@ -28,7 +28,7 @@ class URDFReader:
         <class 'simtrans.model.BodyModel'>
         '''
         bm = model.BodyModel
-        d = lxml.etree.parse(open(f))
+        d = lxml.etree.parse(open(fname))
 
         for l in d.findall('link'):
             # general information
@@ -73,24 +73,24 @@ class URDFReader:
 
         return bm
 
-    def readOrigin(self, d):
+    def readOrigin(self, doc):
         xyz = None
         rpy = None
         try:
-            xyz = numpy.matrix(d.attrib['xyz'])
-            rpy = numpy.matrix(d.attrib['rpy'])
+            xyz = numpy.matrix(doc.attrib['xyz'])
+            rpy = numpy.matrix(doc.attrib['rpy'])
         except KeyError:
             pass
         return xyz, rpy
 
     def readInertia(self, d):
-        inertia = numpy.zeros((3,3))
-        inertia[0,0] = float(d.attrib['ixx'])
-        inertia[0,1] = inertia[1,0] = float(d.attrib['ixy'])
-        inertia[0,2] = inertia[2,0] = float(d.attrib['ixz'])
-        inertia[1,1] = float(d.attrib['iyy'])
-        inertia[1,2] = inertia[2,1] = float(d.attrib['iyz'])
-        inertia[2,2] = float(d.attrib['izz'])
+        inertia = numpy.zeros((3, 3))
+        inertia[0, 0] = float(d.attrib['ixx'])
+        inertia[0, 1] = inertia[1, 0] = float(d.attrib['ixy'])
+        inertia[0, 2] = inertia[2, 0] = float(d.attrib['ixz'])
+        inertia[1, 1] = float(d.attrib['iyy'])
+        inertia[1, 2] = inertia[2, 1] = float(d.attrib['iyz'])
+        inertia[2, 2] = float(d.attrib['izz'])
 
     def readMass(self, d):
         return float(d.attrib['value'])
@@ -113,7 +113,7 @@ class URDFReader:
     def resolveFile(self, f):
         '''
         Resolve file by repacing ROS file path heading "package://"
-        
+
         >>> r = URDFReader()
         >>> r.resolveFile('package://atlas_description/package.xml')
         '/opt/ros/indigo/share/atlas_description/package.xml'
@@ -125,12 +125,12 @@ class URDFReader:
                 pkgname, pkgfile = f.replace('package://', '').split('/', 1)
                 ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
                 return os.path.join(ppath, pkgfile)
-        except Exception, e:
-            print str(e)
+        except Exception, err:
+            print str(err)
         return f
 
 
-class URDFWriter:
+class URDFWriter(object):
     '''
     URDF writer class
     '''
