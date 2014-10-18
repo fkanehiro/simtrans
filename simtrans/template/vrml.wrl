@@ -92,33 +92,29 @@ PROTO Humanoid [
   }
 }
 
-DEF {{name}} Humanoid {
+DEF {{model.name}} Humanoid {
   humanoidBody [
-    {% for l in links %}
-    DEF BASE Joint {
-      jointType "rotate"
-      jointAxis 1 0 0
+    DEF {{model.joint.name}} Joint {
+      jointType "fixed"
       joint Id
       translation 0 0 0
       rotation 0 0 1 0
       ulimit 1
       llimit 1
-      rotorInertia 3
       children [
-        {% if l.child %}
-        DEF {{l.child.name}} Segment {
-          mass {{l.child.mass}}
-          centerOfMass {{l.child.translation}}
-          momentsOfInertia [{{l.child.inertia}}]
+        {% for l in model.children %}
+        DEF {{l.link.name}} Segment {
+          mass {{l.link.mass}}
+          centerOfMass {{l.link.trans}}
+          momentsOfInertia [{{l.link.inertial}}]
           children [
             Inline {
               url ""
             }
           ]
         }
-        {% endif %}
+        {% endfor %}
       ]
     }
-    {% endfor %}
   ]
 }

@@ -24,15 +24,14 @@ class URDFReader(object):
         Read URDF model data given the model file
 
         >>> r = URDFReader()
-        >>> r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
-        <class 'simtrans.model.BodyModel'>
+        >>> m = r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
         '''
-        bm = model.BodyModel
+        bm = model.BodyModel()
         d = lxml.etree.parse(open(fname))
 
         for l in d.findall('link'):
             # general information
-            lm = model.LinkModel
+            lm = model.LinkModel()
             lm.name = l.attrib['name']
             # phisical property
             inertial = l.find('inertial')
@@ -51,7 +50,7 @@ class URDFReader(object):
             bm.links.append(lm)
 
         for j in d.findall('joint'):
-            jm = model.JointModel
+            jm = model.JointModel()
             # general property
             jm.name = j.attrib['name']
             jm.jointType = j.attrib['type']
@@ -96,7 +95,7 @@ class URDFReader(object):
         return float(d.attrib['value'])
 
     def readShape(self, d):
-        sm = model.ShapeModel
+        sm = model.ShapeModel()
         sm.trans, sm.rot = self.readOrigin(d.find('origin'))
         mesh = d.find('geometry/mesh')
         if mesh is not None:
@@ -112,7 +111,7 @@ class URDFReader(object):
 
     def resolveFile(self, f):
         '''
-        Resolve file by repacing ROS file path heading "package://"
+        Resolve file by replacing ROS file path heading "package://"
 
         >>> r = URDFReader()
         >>> r.resolveFile('package://atlas_description/package.xml')
@@ -125,8 +124,8 @@ class URDFReader(object):
                 pkgname, pkgfile = f.replace('package://', '').split('/', 1)
                 ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
                 return os.path.join(ppath, pkgfile)
-        except Exception, err:
-            print str(err)
+        except Exception, e:
+            print str(e)
         return f
 
 
