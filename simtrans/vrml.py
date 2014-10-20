@@ -6,16 +6,35 @@ Reader and writer for VRML format
 
 from . import model
 import os
+import sys
 import jinja2
+import CORBA
+import CosNaming
+import OpenHRP
 
 
 class VRMLReader(object):
     '''
     VRML reader class
     '''
-    def read(self, f):
-        pass
+    def __init__(self):
+        self._orb = CORBA.ORB_init([sys.argv[0],
+                                    "-ORBInitRef",
+                                    "NameService=corbaloc::localhost:2809/NameService"],
+                                   CORBA.ORB_ID)
 
+    def read(self, f):
+        self.resolveModelLoader()
+
+    def resolveModelLoader(self):
+        nsobj = orb.resolve_initial_references("NameService")
+        ns = nsobj._narrow(CosNaming.NamingContext)
+        try:
+            obj = self.ns.resolve([CosNaming.NameComponent("ModelLoader","")])
+            self._loader = obj._narrow(OpenHRP.ModelLoader)
+        except CosNaming.NamingContext.NotFound:
+            print "unable to resolve OpenHRP model loader on CORBA name service"
+            raise
 
 class VRMLWriter(object):
     '''
