@@ -12,6 +12,9 @@ class ProjectModel(object):
     name = None        #: Name of the simulation
     bodies = []        #: List of body models
 
+    def __init__(self):
+        self.bodies = []
+
 
 class BodyModel(object):
     """
@@ -22,6 +25,10 @@ class BodyModel(object):
     joints = []        #: List of joints
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
+
+    def __init__(self):
+        self.links = []
+        self.joints = []
 
 
 class LinkModel(object):

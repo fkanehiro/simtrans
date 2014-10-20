@@ -107,17 +107,39 @@ DEF {{model.name}} Humanoid {
           mass {{l.link.mass}}
           centerOfMass {{l.link.trans}}
           momentsOfInertia [{{l.link.inertial}}]
-          children [
-            Inline {
-              url ""
-            }
-            {%- if l.children -%}
-            {{ loop(l.children) }}
+          {%- if l.joint %}
+          DEF {{l.joint.name}} Joint {
+            jointType "fixed"
+            joint Id
+            translation 0 0 0
+            rotation 0 0 1 0
+            ulimit 1
+            llimit 1
+            {%- if l.children %}
+            children [
+              Inline {
+                url ""
+              }
+              {{ loop(l.children)|indent(6, True) }}
+            ]
             {%- endif %}
-          ]
+          }
+          {%- endif %}
         }
         {%- endfor %}
       ]
     }
   ]
+  joints [
+    {%- for j in body.joints %}
+    USE {{j.name}}{%- if loop.last == False %},{%- endif %}
+    {%- endfor %}
+  ]
+  segments [
+    {%- for l in body.links %}
+    USE {{l.name}}{%- if loop.last == False %},{%- endif %}
+    {%- endfor %}
+  ]
+  name "{{body.name}}"
+  version "1.0"
 }

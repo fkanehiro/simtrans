@@ -90,6 +90,7 @@ class URDFReader(object):
         inertia[1, 1] = float(d.attrib['iyy'])
         inertia[1, 2] = inertia[2, 1] = float(d.attrib['iyz'])
         inertia[2, 2] = float(d.attrib['izz'])
+        return inertia
 
     def readMass(self, d):
         return float(d.attrib['value'])

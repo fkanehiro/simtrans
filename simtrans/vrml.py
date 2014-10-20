@@ -51,16 +51,20 @@ class VRMLWriter(object):
         env = jinja2.Environment(loader=loader)
         template = env.get_template('vrml.wrl')
         ofile = open(fname, 'w')
-        ofile.write(template.render({'model': nmodel}))
+        ofile.write(template.render({'model': nmodel, 'body': mdata}))
 
     def convertchildren(self, mdata, linkname):
         children = []
         for cjoint in self.findchildren(mdata, linkname):
-            nmodel = {}
-            nmodel['joint'] = cjoint
-            nmodel['link'] = nlink = self._linkmap[cjoint.child]
-            nmodel['children'] = self.convertchildren(mdata, nlink)
-            children.append(nmodel)
+            try:
+                nmodel = {}
+                nmodel['joint'] = cjoint
+                nmodel['link'] = nlink = self._linkmap[cjoint.child]
+                nmodel['children'] = self.convertchildren(mdata, nlink.name)
+                children.append(nmodel)
+            except KeyError:
+                # print "warning: unable to find child link %s" % cjoint.child
+                pass
         return children
 
     def findroot(self, mdata):
@@ -89,6 +93,13 @@ class VRMLWriter(object):
     def findchildren(self, mdata, linkname):
         '''
         Find child joints connected to specified link
+
+        >>> from . import urdf
+        >>> r = urdf.URDFReader()
+        >>> m = r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        >>> w = VRMLWriter()
+        >>> [c.child for c in w.findchildren(m, 'pelvis')]
+        ['ltorso', 'l_uglut', 'r_uglut']
         '''
         children = []
         for j in mdata.joints:
