@@ -1,0 +1,35 @@
+DEF {{mesh.name}} Transform {
+  translation {{mesh.trans}}
+  rotation {{mesh.rot}}
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.85 0.85 0.85
+        }
+      }
+      geometry IndexedFaceSet {
+        coord Coordinate {
+          point [
+            {%- for n in mesh.vertex %}
+            {{n}},
+            {%- endfor %}
+          ]
+        }
+        coordIndex [
+          {%- for n in mesh.vertex_index %}
+          {{n}} -1,
+          {%- endfor %}
+        ]
+        normal Normal {
+          vector [
+            {%- for n in mesh.normal %}
+            {{n}},
+            {%- endfor %}
+          ]
+        }
+        normalPerVertex FALSE
+      }
+    }
+  ]
+}

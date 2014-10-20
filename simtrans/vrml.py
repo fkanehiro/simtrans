@@ -5,6 +5,7 @@ Reader and writer for VRML format
 """
 
 from . import model
+import os
 import jinja2
 
 
@@ -49,9 +50,19 @@ class VRMLWriter(object):
         # render the data structure using template
         loader = jinja2.PackageLoader('simtrans', 'template')
         env = jinja2.Environment(loader=loader)
+
+        # render main vrml file
         template = env.get_template('vrml.wrl')
-        ofile = open(fname, 'w')
-        ofile.write(template.render({'model': nmodel, 'body': mdata}))
+        with open(fname, 'w') as ofile:
+            ofile.write(template.render({'model': nmodel, 'body': mdata}))
+
+        # render mesh vrml file for each links
+        template = env.get_template('vrml-mesh.wrl')
+        dirname = os.path.dirname(fname)
+        for l in mdata.links:
+            if l.visual is not None:
+                with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
+                    ofile.write(template.render({'mesh': l.visual.mesh}))
 
     def convertchildren(self, mdata, linkname):
         children = []
