@@ -96,36 +96,40 @@ DEF {{model.name}} Humanoid {
   humanoidBody [
     DEF {{model.joint.name}} Joint {
       jointType "fixed"
-      joint Id
-      translation 0 0 0
-      rotation 0 0 1 0
+      jointId {{jointmap[model.joint.name]}}
+      translation {{model.joint.trans}}
+      rotation {{model.joint.rot}}
       ulimit 1
       llimit 1
       children [
         {%- for l in model.children recursive %}
+        {%- if l.link %}
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}
           centerOfMass {{l.link.trans}}
           momentsOfInertia [{{l.link.inertial}}]
-          {%- if l.joint %}
-          DEF {{l.joint.name}} Joint {
-            jointType "{{l.joint.jointType}}"
-            joint Id
-            translation "{{l.joint.trans}}"
-            rotation {{l.joint.rot}}
-            ulimit 1
-            llimit 1
-            {%- if l.children %}
-            children [
-              Inline {
-                url "{{l.link.name}}.wrl"
-              }
-              {{ loop(l.children)|indent(6, True) }}
-            ]
-            {%- endif %}
-          }
+          children [
+            Inline {
+              url "{{l.link.name}}.wrl"
+            }
+          ]
+        }
+        {%- endif %}
+        {%- if l.joint %}
+        DEF {{l.joint.name}} Joint {
+          jointType "{{l.joint.jointType}}"
+          jointId {{jointmap[l.joint.name]}}
+          translation "{{l.joint.trans}}"
+          rotation {{l.joint.rot}}
+          ulimit 1
+          llimit 1
+          {%- if l.children %}
+          children [
+            {{ loop(l.children)|indent(4, True) }}
+          ]
           {%- endif %}
         }
+        {%- endif %}
         {%- endfor %}
       ]
     }

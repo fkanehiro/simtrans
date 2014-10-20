@@ -3,3 +3,4 @@ euclid
 visvis
 pycollada
 jinja2
+pyparsing
