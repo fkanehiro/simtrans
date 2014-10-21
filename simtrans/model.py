@@ -4,6 +4,8 @@
 Common data structure for model converter
 """
 
+import numpy
+
 
 class ProjectModel(object):
     """
@@ -37,18 +39,24 @@ class LinkModel(object):
     """
     name = None        #: Name of the link
     mass = 0           #: Mass of the link
-    inertial = None    #: Inertial (vector representation of 3x3 matrix)
+    inertia = None     #: Inertia (vector representation of 3x3 matrix)
     visual = None      #: Shape information used for rendering
     collision = None   #: Shape information used for collision detection
     sensors = None     #: List of sensors
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
+    def __init__(self):
+        self.inertia = numpy.identity(3)
+
 
 class JointModel(object):
     """
     Joint model
     """
+    J_FIXED = 1        #: Fixed type
+    J_REVOLUTE = 2     #: Revolute type
+
     jointType = None   #: Joint type
     axis = None        #: Joint axis
     parent = None      #: Parent link

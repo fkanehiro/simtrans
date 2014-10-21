@@ -8,7 +8,7 @@ import os
 import subprocess
 import lxml.etree
 import numpy
-import euclid
+from euclid import *
 import jinja2
 from . import model
 from . import collada
@@ -53,7 +53,7 @@ class URDFReader(object):
             jm = model.JointModel()
             # general property
             jm.name = j.attrib['name']
-            jm.jointType = j.attrib['type']
+            jm.jointType = self.readJointType(j.attrib['type'])
             jm.trans, jm.rot = self.readOrigin(j.find('origin'))
             axis = j.find('axis')
             if axis is not None:
@@ -76,11 +76,22 @@ class URDFReader(object):
         xyz = None
         rpy = None
         try:
-            xyz = numpy.matrix(doc.attrib['xyz'])
-            rpy = numpy.matrix(doc.attrib['rpy'])
+            xyz = [float(v) for v in doc.attrib['xyz'].split(' ')]
+            rpy = [float(v) for v in doc.attrib['rpy'].split(' ')]
+            q1 = Quaternion.new_rotate_axis(rpy[1], Vector3(0.0, 1.0, 0.0))
+            q2 = Quaternion.new_rotate_axis(rpy[0], Vector3(1.0, 0.0, 0.0))
+            q3 = Quaternion.new_rotate_axis(rpy[2], Vector3(0.0, 0.0, 1.0))
+            rpy = q1 * q2 *q3
         except KeyError:
             pass
         return xyz, rpy
+
+    def readJointType(self, d):
+        if d == "fixed":
+            return model.JointModel.J_FIXED
+        elif d == "revolute":
+            return model.JointModel.J_REVOLUTE
+        raise Exception('unsupported joint type')
 
     def readInertia(self, d):
         inertia = numpy.zeros((3, 3))

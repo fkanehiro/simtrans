@@ -7,6 +7,7 @@ Reader and writer for VRML format
 from . import model
 import os
 import sys
+from euclid import *
 import jinja2
 import CORBA
 import CosNaming
@@ -68,7 +69,7 @@ class VRMLWriter(object):
 
         # assign jointId
         jointcount = 2
-        jointmap = {"BASE":1}
+        jointmap = {"BASE": 1}
         for j in mdata.joints:
             jointmap[j.name] = jointcount
             jointcount = jointcount + 1
@@ -96,6 +97,7 @@ class VRMLWriter(object):
             try:
                 nmodel = {}
                 nmodel['joint'] = cjoint
+                nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
                 nmodel['link'] = nlink = self._linkmap[cjoint.child]
                 nmodel['children'] = self.convertchildren(mdata, nlink.name)
                 children.append(nmodel)
@@ -103,6 +105,12 @@ class VRMLWriter(object):
                 # print "warning: unable to find child link %s" % cjoint.child
                 pass
         return children
+
+    def convertjointtype(self, t):
+        if t == model.JointModel.J_FIXED:
+            return "fixed"
+        elif t == model.JointModel.J_REVOLUTE:
+            return "rotate"
 
     def findroot(self, mdata):
         '''

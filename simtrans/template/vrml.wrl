@@ -98,7 +98,7 @@ DEF {{model.name}} Humanoid {
       jointType "fixed"
       jointId {{jointmap[model.joint.name]}}
       translation {{model.joint.trans}}
-      rotation {{model.joint.rot}}
+      rotation 0 0 0 0
       ulimit 1
       llimit 1
       children [
@@ -106,8 +106,8 @@ DEF {{model.name}} Humanoid {
         {%- if l.link %}
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}
-          centerOfMass {{l.link.trans}}
-          momentsOfInertia [{{l.link.inertial}}]
+          centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
+          momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
           children [
             Inline {
               url "{{l.link.name}}.wrl"
@@ -117,10 +117,11 @@ DEF {{model.name}} Humanoid {
         {%- endif %}
         {%- if l.joint %}
         DEF {{l.joint.name}} Joint {
-          jointType "{{l.joint.jointType}}"
+          jointType "{{l.jointtype}}"
           jointId {{jointmap[l.joint.name]}}
-          translation "{{l.joint.trans}}"
-          rotation {{l.joint.rot}}
+          translation {{l.joint.trans[0]}} {{l.joint.trans[1]}} {{l.joint.trans[2]}}
+          {%- set angle = l.joint.rot.get_angle_axis() %}
+          rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
           ulimit 1
           llimit 1
           {%- if l.children %}
