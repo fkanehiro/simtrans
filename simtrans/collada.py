@@ -19,14 +19,13 @@ class ColladaReader:
         Read collada model data given the file path
 
         >>> r = ColladaReader()
-        >>> r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
-        <class 'simtrans.model.MeshModel'>
+        >>> m = r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
         '''
-        m = model.MeshModel
+        m = model.MeshModel()
         d = collada.Collada(f)
 
-        for i in d.images:
-            i.path
+        #for i in d.images:
+        #    i.path
         for g in d.geometries:
             for p in g.primitives:
                 m.vertex = p.vertex
@@ -35,8 +34,8 @@ class ColladaReader:
                 m.normal_index = p.normal_index
                 # m.material = p.material
                 # m.uvmap = p.texcoordset
-        for e in d.effects:
-            e.ambient
+        #for e in d.effects:
+        #    e.ambient
         return m
 
 class ColladaWriter:

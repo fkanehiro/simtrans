@@ -90,12 +90,21 @@ class MeshModel(object):
     Mesh model
     """
     vertex = []       #: Vertex position (in x,y,z * 3 * N format)
+    vertex_index = []
     normal = []       #: Normal direction
+    normal_index = []
     color = []        #: Color (in RGBA * N format)
     uvmap = []        #: UV mapping (in x,y * N format)
     image = None      #: Texture image
     trans = None      #: XYZ translation vector
     rot = None        #: Rotation (quaternion representation)
+
+    def __init__(self):
+        self.vertex = []
+        self.vertex_index = []
+        self.normal = []
+        self.normal_index = []
+        self.color = []
 
 
 class SensorModel(object):

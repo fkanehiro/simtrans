@@ -1,6 +1,4 @@
-DEF {{mesh.name}} Transform {
-  translation {{mesh.trans}}
-  rotation {{mesh.rot}}
+DEF {{name}} Transform {
   children [
     Shape {
       appearance Appearance {
@@ -12,22 +10,15 @@ DEF {{mesh.name}} Transform {
         coord Coordinate {
           point [
             {%- for n in mesh.vertex %}
-            {{n}},
+            {{n[0]}} {{n[1]}} {{n[2]}},
             {%- endfor %}
           ]
         }
         coordIndex [
           {%- for n in mesh.vertex_index %}
-          {{n}} -1,
+          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
           {%- endfor %}
         ]
-        normal Normal {
-          vector [
-            {%- for n in mesh.normal %}
-            {{n}},
-            {%- endfor %}
-          ]
-        }
         normalPerVertex FALSE
       }
     }

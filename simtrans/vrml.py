@@ -89,7 +89,7 @@ class VRMLWriter(object):
         for l in mdata.links:
             if l.visual is not None:
                 with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
-                    ofile.write(template.render({'mesh': l.visual.mesh}))
+                    ofile.write(template.render({'name': l.name, 'mesh': l.visual.mesh}))
 
     def convertchildren(self, mdata, linkname):
         children = []

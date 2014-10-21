@@ -109,8 +109,9 @@ class URDFReader(object):
     def readShape(self, d):
         sm = model.ShapeModel()
         sm.trans, sm.rot = self.readOrigin(d.find('origin'))
-        mesh = d.find('geometry/mesh')
+        mesh = d.find('geometry').find('mesh')
         if mesh is not None:
+            # print "reading mesh " + mesh.attrib['filename']
             filename = self.resolveFile(mesh.attrib['filename'])
             fileext = os.path.splitext(filename)[1]
             sm.shapeType = model.ShapeModel.SP_MESH
@@ -118,7 +119,7 @@ class URDFReader(object):
                 reader = collada.ColladaReader()
             else:
                 reader = stl.STLReader()
-                sm.mesh = reader.read(filename)
+            sm.mesh = reader.read(filename)
         return sm
 
     def resolveFile(self, f):
