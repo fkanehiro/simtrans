@@ -118,6 +118,9 @@ DEF {{model.name}} Humanoid {
         {%- if l.joint %}
         DEF {{l.joint.name}} Joint {
           jointType "{{l.jointtype}}"
+          {%- if l.joint.axis %}
+          jointAxis {{l.joint.axis}}
+          {%- endif %}
           jointId {{jointmap[l.joint.name]}}
           translation {{l.joint.trans[0]}} {{l.joint.trans[1]}} {{l.joint.trans[2]}}
           {%- set angle = l.joint.rot.get_angle_axis() %}

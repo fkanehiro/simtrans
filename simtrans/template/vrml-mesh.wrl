@@ -1,5 +1,6 @@
 DEF {{name}} Transform {
   children [
+    {%- for g in mesh.geometries %}
     Shape {
       appearance Appearance {
         material Material {
@@ -9,7 +10,6 @@ DEF {{name}} Transform {
           shininess 0.5
         }
       }
-      {%- for g in mesh.geometries %}
       geometry IndexedFaceSet {
         coord Coordinate {
           point [
@@ -25,7 +25,7 @@ DEF {{name}} Transform {
         ]
         normalPerVertex FALSE
       }
-      {%- endfor %}
     }
+    {%- endfor %}
   ]
 }
