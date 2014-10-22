@@ -1,0 +1,54 @@
+<grxui>
+ <mode name="Simulation">
+  <item class="com.generalrobotix.ui.item.GrxSimulationItem" name="simulationItem">
+   <property name="integrate" value="true"/>
+   <property name="timeStep" value="0.005"/>
+   <property name="totalTime" value="2000000.0"/>
+   <property name="method" value="EULER"/>
+  </item>
+  <item class="com.generalrobotix.ui.item.GrxModelItem" name="sample1" url="{{fname}}">
+    <property name="{{root}}.translation" value="0  0  1"/>
+    {%- for j in model.joints %}
+    <property name="{{j.name}}.mode" value="HighGain"/>
+    {%- endfor %}
+  </item>
+  <view class="com.generalrobotix.ui.view.Grx3DView" name="3DView">
+   <property name="view.mode" value="Room"/>
+   <property name="showCoM" value="false"/>
+   <property name="showCoMonFloor" value="false"/>
+   <property name="showDistance" value="false"/>
+   <property name="showIntersection" value="false"/>
+   <property name="eyeHomePosition" value="-0.70711 -0 0.70711 2 0.70711 -0 0.70711 2 0 1 0 0.8 0 0 0 1 "/>
+   <property name="showCollision" value="true"/>
+   <property name="showActualState" value="true"/>
+   <property name="showScale" value="true"/>
+  </view>
+  <item class="com.generalrobotix.ui.item.GrxModelItem" name="longfloor" url="/usr/local/share/OpenHRP-3.1/sample/model/longfloor.wrl">
+   <property name="WAIST.NumOfAABB" value="1"/>
+   <property name="WAIST.translation" value="0  0  -0.1"/>
+   <property name="WAIST.rotation" value="1 0 0 0"/>
+  </item>
+  <view class="com.generalrobotix.ui.view.Grx3DView" name="3DView">
+   <property name="view.mode" value="Room"/>
+   <property name="showCoM" value="false"/>
+   <property name="showCoMonFloor" value="false"/>
+   <property name="showDistance" value="false"/>
+   <property name="showIntersection" value="false"/>
+   <property name="eyeHomePosition" value="-0.70711 -0 0.70711 2 0.70711 -0 0.70711 2 0 1 0 0.8 0 0 0 1 "/>
+   <property name="showCollision" value="true"/>
+   <property name="showActualState" value="true"/>
+   <property name="showScale" value="true"/>
+  </view>
+  <item class="com.generalrobotix.ui.item.GrxCollisionPairItem" name="CP#longfloor_#sample1_">
+   <property name="springConstant" value="0 0 0 0 0 0"/>
+   <property name="slidingFriction" value="0.5"/>
+   <property name="jointName2" value=""/>
+   <property name="jointName1" value=""/>
+   <property name="damperConstant" value="0 0 0 0 0 0"/>
+   <property name="objectName2" value="longfloor"/>
+   <property name="objectName1" value="sample1"/>
+   <property name="springDamperModel" value="false"/>
+   <property name="staticFriction" value="0.5"/>
+  </item>
+ </mode>
+</grxui>

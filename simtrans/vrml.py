@@ -61,7 +61,7 @@ class VRMLWriter(object):
         root = self.findroot(mdata)[0]
         rootlink = self._linkmap[root]
         rootjoint = model.JointModel()
-        rootjoint.name = "BASE"
+        rootjoint.name = root
         rootjoint.jointType = "fixed"
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
@@ -69,10 +69,13 @@ class VRMLWriter(object):
 
         # assign jointId
         jointcount = 2
-        jointmap = {"BASE": 1}
+        jointmap = {root: 1}
         for j in mdata.joints:
             jointmap[j.name] = jointcount
             jointcount = jointcount + 1
+
+        # list non empty link
+        links = [l for l in mdata.links if l.visual is not None]
 
         # render the data structure using template
         loader = jinja2.PackageLoader('simtrans', 'template')
@@ -81,7 +84,7 @@ class VRMLWriter(object):
         # render main vrml file
         template = env.get_template('vrml.wrl')
         with open(fname, 'w') as ofile:
-            ofile.write(template.render({'model': nmodel, 'body': mdata, 'jointmap': jointmap}))
+            ofile.write(template.render({'model': nmodel, 'body': mdata, 'links': links, 'jointmap': jointmap}))
 
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
@@ -91,19 +94,25 @@ class VRMLWriter(object):
                 with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
                     ofile.write(template.render({'name': l.name, 'mesh': l.visual.mesh}))
 
+        # render openhrp project
+        template = env.get_template('openhrp-project.xml')
+        with open(fname.replace('.wrl', '-project.xml'), 'w') as ofile:
+            ofile.write(template.render({'model': mdata, 'root': root, 'fname': fname}))
+
+
     def convertchildren(self, mdata, linkname):
         children = []
         for cjoint in self.findchildren(mdata, linkname):
-            try:
                 nmodel = {}
                 nmodel['joint'] = cjoint
                 nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
-                nmodel['link'] = nlink = self._linkmap[cjoint.child]
+                try:
+                    nmodel['link'] = nlink = self._linkmap[cjoint.child]
+                except KeyError:
+                    # print "warning: unable to find child link %s" % cjoint.child
+                    pass
                 nmodel['children'] = self.convertchildren(mdata, nlink.name)
                 children.append(nmodel)
-            except KeyError:
-                # print "warning: unable to find child link %s" % cjoint.child
-                pass
         return children
 
     def convertjointtype(self, t):

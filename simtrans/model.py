@@ -47,6 +47,7 @@ class LinkModel(object):
     rot = None         #: Rotation (quaternion representation)
 
     def __init__(self):
+        self.trans = [0, 0, 0]
         self.inertia = numpy.identity(3)
 
 
