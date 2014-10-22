@@ -78,7 +78,7 @@ class VRMLWriter(object):
         links = [l for l in mdata.links if l.visual is not None]
 
         # render the data structure using template
-        loader = jinja2.PackageLoader('simtrans', 'template')
+        loader = jinja2.PackageLoader(self.__module__, 'template')
         env = jinja2.Environment(loader=loader)
 
         # render main vrml file
@@ -92,7 +92,7 @@ class VRMLWriter(object):
         for l in mdata.links:
             if l.visual is not None:
                 with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
-                    ofile.write(template.render({'name': l.name, 'mesh': l.visual.mesh}))
+                    ofile.write(template.render({'name': l.name, 'ShapeModel': model.ShapeModel, 'visual': l.visual}))
 
         # render openhrp project
         template = env.get_template('openhrp-project.xml')

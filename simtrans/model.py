@@ -73,6 +73,7 @@ class ShapeModel(object):
     """
     Shape model
     """
+    SP_NONE = 0        #: None shape (only transform)
     SP_MESH = 1        #: Mesh shape
     SP_BOX = 2         #: Box shape
     SP_CYLINDER = 3    #: Cylinder shape
@@ -81,25 +82,16 @@ class ShapeModel(object):
     SP_PLANE = 6       #: Plane shape
 
     shapeType = None   #: Shape type
-    mesh = None        #: Mesh data (if the type is SP_MESH)
+    children = []      #: Mesh data (if the type is SP_MESH)
+    matrix = None      #: Transformation matrix
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
+    def __init__(self):
+        self.children = []
+
 
 class MeshModel(object):
-    """
-    Mesh model
-    """
-    geometries = []   #: Geometry data
-    image = None      #: Texture image
-    trans = None      #: XYZ translation vector
-    rot = None        #: Rotation (quaternion representation)
-
-    def __init__(self):
-        self.geometries = []
-
-
-class GeometryModel(object):
     vertex = []       #: Vertex position (in x,y,z * 3 * N format)
     vertex_index = []
     normal = []       #: Normal direction
@@ -118,7 +110,7 @@ class GeometryModel(object):
         self.color_index = []
         self.uvmap = []
         self.uvmap_index = []
-    
+
 
 class SensorModel(object):
     """

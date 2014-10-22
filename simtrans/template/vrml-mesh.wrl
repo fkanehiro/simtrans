@@ -1,6 +1,16 @@
 DEF {{name}} Transform {
   children [
-    {%- for g in mesh.geometries %}
+    {%- for c in visual.children recursive %}
+    {%- if c.shapeType == ShapeModel.SP_NONE %}
+    Transform {
+      {%- if c.children %}
+      children [
+        {{ loop(c.children)|indent(4, True) }}
+      ]
+      {%- endif %}
+    }
+    {%- endif %}
+    {%- if c.shapeType == ShapeModel.SP_MESH %}
     Shape {
       appearance Appearance {
         material Material {
@@ -13,19 +23,20 @@ DEF {{name}} Transform {
       geometry IndexedFaceSet {
         coord Coordinate {
           point [
-            {%- for n in g.vertex %}
+            {%- for n in c.children[0].vertex %}
             {{n[0]}} {{n[1]}} {{n[2]}},
             {%- endfor %}
           ]
         }
         coordIndex [
-          {%- for n in g.vertex_index %}
+          {%- for n in c.children[0].vertex_index %}
           {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
           {%- endfor %}
         ]
         normalPerVertex FALSE
       }
     }
+    {%- endif %}
     {%- endfor %}
   ]
 }

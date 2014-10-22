@@ -81,7 +81,7 @@ class URDFReader(object):
             q1 = Quaternion.new_rotate_axis(rpy[1], Vector3(0.0, 1.0, 0.0))
             q2 = Quaternion.new_rotate_axis(rpy[0], Vector3(1.0, 0.0, 0.0))
             q3 = Quaternion.new_rotate_axis(rpy[2], Vector3(0.0, 0.0, 1.0))
-            rpy = q1 * q2 *q3
+            rpy = q1 * q2 * q3
         except KeyError:
             pass
         return xyz, rpy
@@ -114,12 +114,12 @@ class URDFReader(object):
             # print "reading mesh " + mesh.attrib['filename']
             filename = self.resolveFile(mesh.attrib['filename'])
             fileext = os.path.splitext(filename)[1]
-            sm.shapeType = model.ShapeModel.SP_MESH
+            sm.shapeType = model.ShapeModel.SP_NONE
             if fileext == '.dae':
                 reader = collada.ColladaReader()
             else:
                 reader = stl.STLReader()
-            sm.mesh = reader.read(filename)
+            sm.children.append(reader.read(filename))
         return sm
 
     def resolveFile(self, f):

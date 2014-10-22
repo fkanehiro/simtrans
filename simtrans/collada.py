@@ -21,23 +21,34 @@ class ColladaReader:
         >>> r = ColladaReader()
         >>> m = r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
         '''
-        m = model.MeshModel()
         d = collada.Collada(f)
+        m = model.ShapeModel()
+        m.shapeType = model.ShapeModel.SP_NONE
+        for n in d.scene.nodes:
+            m.children.append(self.convertchildren(n))
+        return m
 
-        #for i in d.images:
-        #    i.path
-        for g in d.geometries:
-            gm = model.GeometryModel()
-            for p in g.primitives:
-                gm.vertex = p.vertex
-                gm.vertex_index = p.vertex_index
-                gm.normal = p.normal
-                gm.normal_index = p.normal_index
-                # m.material = p.material
-                # m.uvmap = p.texcoordset
-            m.geometries.append(gm)
-        #for e in d.effects:
-        #    e.ambient
+    def convertchildren(self, d):
+        m = model.ShapeModel()
+        m.shapeType = model.ShapeModel.SP_NONE
+        if len(d.transforms) > 0:
+            m.matrix = d.transforms[0].matrix
+        for c in d.children:
+            if type(c) == collada.scene.Node:
+                m.children.append(self.convertchildren(c))
+            elif type(c) == collada.scene.GeometryNode:
+                gm = model.MeshModel()
+                for p in c.geometry.primitives:
+                    gm.vertex = p.vertex
+                    gm.vertex_index = p.vertex_index
+                    gm.normal = p.normal
+                    gm.normal_index = p.normal_index
+                    # gm.material = p.material
+                    # gm.uvmap = p.texcoordset
+                mm = model.ShapeModel()
+                mm.shapeType = model.ShapeModel.SP_MESH
+                mm.children.append(gm)
+                m.children.append(mm)
         return m
 
 
