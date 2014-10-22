@@ -27,16 +27,19 @@ class ColladaReader:
         #for i in d.images:
         #    i.path
         for g in d.geometries:
+            gm = model.GeometryModel()
             for p in g.primitives:
-                m.vertex = p.vertex
-                m.vertex_index = p.vertex_index
-                m.normal = p.normal
-                m.normal_index = p.normal_index
+                gm.vertex = p.vertex
+                gm.vertex_index = p.vertex_index
+                gm.normal = p.normal
+                gm.normal_index = p.normal_index
                 # m.material = p.material
                 # m.uvmap = p.texcoordset
+            m.geometries.append(gm)
         #for e in d.effects:
         #    e.ambient
         return m
+
 
 class ColladaWriter:
     def write(self, m, f):

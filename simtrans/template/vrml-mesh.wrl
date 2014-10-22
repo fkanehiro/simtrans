@@ -9,21 +9,23 @@ DEF {{name}} Transform {
           shininess 0.5
         }
       }
+      {%- for g in mesh.geometries %}
       geometry IndexedFaceSet {
         coord Coordinate {
           point [
-            {%- for n in mesh.vertex %}
+            {%- for n in g.vertex %}
             {{n[0]}} {{n[1]}} {{n[2]}},
             {%- endfor %}
           ]
         }
         coordIndex [
-          {%- for n in mesh.vertex_index %}
+          {%- for n in g.vertex_index %}
           {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
           {%- endfor %}
         ]
         normalPerVertex FALSE
       }
+      {%- endfor %}
     }
   ]
 }
