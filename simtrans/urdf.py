@@ -8,7 +8,10 @@ import os
 import subprocess
 import lxml.etree
 import numpy
-from .thridparty import transformations as tf
+try:
+    from .thridparty import transformations as tf
+except UserWarning:
+    pass
 import jinja2
 from . import model
 from . import collada

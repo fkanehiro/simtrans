@@ -7,7 +7,10 @@ Reader and writer for VRML format
 from . import model
 import os
 import sys
-from .thridparty import transformations as tf
+try:
+    from .thridparty import transformations as tf
+except UserWarning:
+    pass
 import jinja2
 import CORBA
 import CosNaming
@@ -36,6 +39,7 @@ class VRMLReader(object):
         except CosNaming.NamingContext.NotFound:
             print "unable to resolve OpenHRP model loader on CORBA name service"
             raise
+
 
 class VRMLWriter(object):
     '''
@@ -106,11 +110,11 @@ class VRMLWriter(object):
                 nmodel['joint'] = cjoint
                 nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
                 try:
-                    nmodel['link'] = nlink = self._linkmap[cjoint.child]
+                    nmodel['link'] = self._linkmap[cjoint.child]
                 except KeyError:
-                    # print "warning: unable to find child link %s" % cjoint.child
+                    #print "warning: unable to find child link %s" % cjoint.child
                     pass
-                nmodel['children'] = self.convertchildren(mdata, nlink.name)
+                nmodel['children'] = self.convertchildren(mdata, cjoint.child)
                 children.append(nmodel)
         return children
 

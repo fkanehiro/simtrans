@@ -6,7 +6,10 @@ Reader and writer for collada format
 
 from __future__ import absolute_import
 from . import model
-from .thridparty import transformations as tf
+try:
+    from .thridparty import transformations as tf
+except UserWarning:
+    pass
 import collada
 import jinja2
 

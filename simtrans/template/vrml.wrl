@@ -102,19 +102,19 @@ DEF {{model.name}} Humanoid {
       ulimit 1
       llimit 1
       children [
-        {%- for l in model.children recursive %}
-        {%- if l.link and l.link.visual %}
-        DEF {{l.link.name}} Segment {
-          mass {{l.link.mass}}
-          centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
-          momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
+        {%- if model.link and model.link.visual %}
+        DEF {{model.link.name}} Segment {
+          mass {{model.link.mass}}
+          centerOfMass {{model.link.trans[0]}} {{model.link.trans[1]}} {{model.link.trans[2]}}
+          momentsOfInertia [{{model.link.inertia[0][0]}} {{model.link.inertia[0][1]}} {{model.link.inertia[0][2]}} {{model.link.inertia[1][0]}} {{model.link.inertia[1][1]}} {{model.link.inertia[1][2]}} {{model.link.inertia[2][0]}} {{model.link.inertia[2][1]}} {{model.link.inertia[2][2]}}]
           children [
             Inline {
-              url "{{l.link.name}}.wrl"
+              url "{{model.link.name}}.wrl"
             }
           ]
         }
         {%- endif %}
+        {%- for l in model.children recursive %}
         {%- if l.joint %}
         DEF {{l.joint.name}} Joint {
           jointType "{{l.jointtype}}"
@@ -127,11 +127,23 @@ DEF {{model.name}} Humanoid {
           rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
           ulimit 1
           llimit 1
-          {%- if l.children %}
           children [
+            {%- if l.link and l.link.visual %}
+            DEF {{l.link.name}} Segment {
+              mass {{l.link.mass}}
+              centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
+              momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
+              children [
+                Inline {
+                  url "{{l.link.name}}.wrl"
+                }
+              ]
+            }
+            {%- endif %}
+            {%- if l.children %}
             {{ loop(l.children)|indent(4, True) }}
+            {%- endif %}
           ]
-          {%- endif %}
         }
         {%- endif %}
         {%- endfor %}
