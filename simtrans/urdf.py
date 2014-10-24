@@ -8,7 +8,7 @@ import os
 import subprocess
 import lxml.etree
 import numpy
-from euclid import *
+from .thridparty import transformations as tf
 import jinja2
 from . import model
 from . import collada
@@ -75,16 +75,14 @@ class URDFReader(object):
     def readOrigin(self, doc):
         xyz = None
         rpy = None
+        trans = None
         try:
             xyz = [float(v) for v in doc.attrib['xyz'].split(' ')]
             rpy = [float(v) for v in doc.attrib['rpy'].split(' ')]
-            q1 = Quaternion.new_rotate_axis(rpy[1], Vector3(0.0, 1.0, 0.0))
-            q2 = Quaternion.new_rotate_axis(rpy[0], Vector3(1.0, 0.0, 0.0))
-            q3 = Quaternion.new_rotate_axis(rpy[2], Vector3(0.0, 0.0, 1.0))
-            rpy = q1 * q2 * q3
+            trans = tf.quaternion_from_euler(rpy[0], rpy[1], rpy[2])
         except KeyError:
             pass
-        return xyz, rpy
+        return xyz, trans
 
     def readJointType(self, d):
         if d == "fixed":

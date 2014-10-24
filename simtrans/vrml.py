@@ -7,7 +7,7 @@ Reader and writer for VRML format
 from . import model
 import os
 import sys
-from euclid import *
+from .thridparty import transformations as tf
 import jinja2
 import CORBA
 import CosNaming
@@ -84,7 +84,7 @@ class VRMLWriter(object):
         # render main vrml file
         template = env.get_template('vrml.wrl')
         with open(fname, 'w') as ofile:
-            ofile.write(template.render({'model': nmodel, 'body': mdata, 'links': links, 'jointmap': jointmap}))
+            ofile.write(template.render({'model': nmodel, 'body': mdata, 'links': links, 'jointmap': jointmap, 'tf': tf}))
 
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
@@ -92,13 +92,12 @@ class VRMLWriter(object):
         for l in mdata.links:
             if l.visual is not None:
                 with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
-                    ofile.write(template.render({'name': l.name, 'ShapeModel': model.ShapeModel, 'visual': l.visual}))
+                    ofile.write(template.render({'name': l.name, 'ShapeModel': model.ShapeModel, 'tf': tf, 'visual': l.visual}))
 
         # render openhrp project
         template = env.get_template('openhrp-project.xml')
         with open(fname.replace('.wrl', '-project.xml'), 'w') as ofile:
             ofile.write(template.render({'model': mdata, 'root': root, 'fname': fname}))
-
 
     def convertchildren(self, mdata, linkname):
         children = []

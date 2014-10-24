@@ -1,6 +1,9 @@
 lxml
-euclid
+numpy
 visvis
 pycollada
 jinja2
 pyparsing
+simpleparse
+PyDispatcher
+PyVRML97==2.3.0a4

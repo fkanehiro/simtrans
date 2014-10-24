@@ -1,8 +1,15 @@
+#VRML V2.0 utf8
+
 DEF {{name}} Transform {
   children [
     {%- for c in visual.children recursive %}
     {%- if c.shapeType == ShapeModel.SP_NONE %}
     Transform {
+      {%- if c.trans is not none %}
+      translation {{c.trans[0]}} {{c.trans[1]}} {{c.trans[2]}}
+      {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(c.rot)) %}
+      rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+      {%- endif %}
       {%- if c.children %}
       children [
         {{ loop(c.children)|indent(4, True) }}
@@ -11,31 +18,32 @@ DEF {{name}} Transform {
     }
     {%- endif %}
     {%- if c.shapeType == ShapeModel.SP_MESH %}
+    {%- for g in c.children %}
     Shape {
       appearance Appearance {
         material Material {
           diffuseColor 0.85 0.85 0.85
           specularColor 0.85 0.85 0.85
           emissiveColor 0.05 0.05 0.05
-          shininess 0.5
         }
       }
       geometry IndexedFaceSet {
         coord Coordinate {
           point [
-            {%- for n in c.children[0].vertex %}
+            {%- for n in g.vertex %}
             {{n[0]}} {{n[1]}} {{n[2]}},
             {%- endfor %}
           ]
         }
         coordIndex [
-          {%- for n in c.children[0].vertex_index %}
+          {%- for n in g.vertex_index %}
           {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
           {%- endfor %}
         ]
         normalPerVertex FALSE
       }
     }
+    {%- endfor %}
     {%- endif %}
     {%- endfor %}
   ]
