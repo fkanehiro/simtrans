@@ -14,7 +14,7 @@ import collada
 import jinja2
 
 
-class ColladaReader:
+class ColladaReader(object):
     '''
     Collada reader class
     '''
@@ -29,21 +29,24 @@ class ColladaReader:
         m = model.ShapeModel()
         m.shapeType = model.ShapeModel.SP_NONE
         for n in d.scene.nodes:
-            m.children.append(self.convertchildren(n))
+            m.children.extend(self.convertchildren(n))
         return m
 
     def convertchildren(self, d):
-        m = model.ShapeModel()
-        m.shapeType = model.ShapeModel.SP_NONE
+        nodes = []
         for c in d.children:
             if type(c) == collada.scene.Node:
+                m = model.ShapeModel()
+                m.shapeType = model.ShapeModel.SP_NONE
                 dmat = tf.decompose_matrix(c.matrix)
                 m.trans = dmat[3].tolist()
                 m.rot = tf.quaternion_from_matrix(tf.compose_matrix(angles=dmat[2]))
-                m.children.append(self.convertchildren(c))
+                # TODO: Should we add scale here?
+                m.children = self.convertchildren(c)
+                nodes.append(m)
             elif type(c) == collada.scene.GeometryNode:
-                mm = model.ShapeModel()
-                mm.shapeType = model.ShapeModel.SP_MESH
+                m = model.ShapeModel()
+                m.shapeType = model.ShapeModel.SP_MESH
                 for p in c.geometry.primitives:
                     gm = model.MeshModel()
                     gm.vertex = p.vertex
@@ -52,11 +55,11 @@ class ColladaReader:
                     gm.normal_index = p.normal_index
                     # gm.material = p.material
                     # gm.uvmap = p.texcoordset
-                    mm.children.append(gm)
-                m.children.append(mm)
-        return m
+                    m.children.append(gm)
+                nodes.append(m)
+        return nodes
 
 
-class ColladaWriter:
+class ColladaWriter(object):
     def write(self, m, f):
         pass
