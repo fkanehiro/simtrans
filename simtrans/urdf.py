@@ -27,10 +27,10 @@ class URDFReader(object):
         Read URDF model data given the model file
 
         >>> r = URDFReader()
-        >>> m = r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         '''
         bm = model.BodyModel()
-        d = lxml.etree.parse(open(fname))
+        d = lxml.etree.parse(open(self.resolveFile(fname)))
 
         for l in d.findall('link'):
             # general information

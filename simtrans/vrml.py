@@ -54,9 +54,15 @@ class VRMLWriter(object):
 
         >>> from . import urdf
         >>> r = urdf.URDFReader()
-        >>> m = r.read('/opt/ros/indigo/share/atlas_description/urdf/atlas_v3.urdf')
+        >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         >>> w = VRMLWriter()
-        >>> w.write(m, '/tmp/test.wrl')
+        >>> w.write(m, '/tmp/atlas.wrl')
+
+        >>> from . import sdf
+        >>> r = sdf.SDFReader()
+        >>> m = r.read('model://pr2/model.sdf')
+        >>> w = VRMLWriter()
+        >>> w.write(m, '/tmp/pr2.wrl')
         '''
         # first convert data structure (VRML uses tree structure)
         nmodel = {}

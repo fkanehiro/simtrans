@@ -4,6 +4,9 @@
 Reader and writer for SDF format
 """
 
+from logging import getLogger
+logger = getLogger(__name__)
+
 import os
 import lxml
 import lxml.etree
@@ -27,12 +30,14 @@ class SDFReader(object):
         Read SDF model data given the model file
 
         >>> r = SDFReader()
-        >>> m = r.read('~/gazebo_models/pr2/model.sdf')
+        >>> m = r.read('model://pr2/model.sdf')
         '''
         bm = model.BodyModel()
-        d = lxml.etree.parse(open(fname))
+        d = lxml.etree.parse(open(self.resolveFile(fname)))
+        dm = d.find('model')
+        bm.name = dm.attrib['name']
 
-        for l in d.findall('link'):
+        for l in dm.findall('link'):
             # general information
             lm = model.LinkModel()
             lm.name = l.attrib['name']
@@ -40,7 +45,9 @@ class SDFReader(object):
             inertial = l.find('inertial')
             if inertial is not None:
                 lm.inertia = self.readInertia(inertial.find('inertia'))
-                lm.trans, lm.rot = self.readPose(inertial.find('pose'))
+                pose = inertial.find('pose')
+                if pose is not None:
+                    lm.trans, lm.rot = self.readPose(pose)
                 lm.mass = self.readMass(inertial.find('mass'))
             # visual property
             visual = l.find('visual')
@@ -52,25 +59,27 @@ class SDFReader(object):
                 lm.collision = self.readShape(collision)
             bm.links.append(lm)
 
-        for j in d.findall('joint'):
+        for j in dm.findall('joint'):
             jm = model.JointModel()
             # general property
             jm.name = j.attrib['name']
             jm.jointType = self.readJointType(j.attrib['type'])
-            jm.trans, jm.rot = self.readOrigin(j.find('origin'))
+            pose = j.find('pose')
+            if pose is not None:
+                jm.trans, jm.rot = self.readPose(pose)
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = axis.attrib['xyz']
-            jm.parent = j.find('parent').attrib['link']
-            jm.child = j.find('child').attrib['link']
+                jm.axis = axis.find('xyz').text
+                dynamics = axis.find('dynamics')
+                if dynamics is not None:
+                    jm.damping = dynamics.find('damping').text
+                    jm.friction = dynamics.find('friction').text
+                limit = axis.find('limit')
+                if limit is not None:
+                    jm.limit = [limit.find('upper').text, limit.find('lower').text]
+            jm.parent = j.find('parent').text
+            jm.child = j.find('child').text
             # phisical property
-            dynamics = j.find('dynamics')
-            if dynamics is not None:
-                jm.damping = dynamics.attrib['damping']
-                jm.friction = dynamics.attrib['friction']
-            limit = j.find('limit')
-            if limit is not None:
-                jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
             bm.joints.append(jm)
 
         return bm
@@ -92,7 +101,11 @@ class SDFReader(object):
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
-        raise Exception('unsupported joint type')
+        elif d == 'prismatic':
+            return model.JointModel.J_PRISMATIC
+        elif d == 'screw':
+            return model.JointModel.J_SCREW
+        raise Exception('unsupported joint type: %s' % d)
 
     def readInertia(self, d):
         inertia = numpy.zeros((3, 3))
@@ -109,7 +122,9 @@ class SDFReader(object):
 
     def readShape(self, d):
         sm = model.ShapeModel()
-        sm.trans, sm.rot = self.readPose(d.find('pose'))
+        pose = d.find('pose')
+        if pose is not None:
+            sm.trans, sm.rot = self.readPose(pose)
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
                 # print "reading mesh " + mesh.attrib['filename']
@@ -129,24 +144,18 @@ class SDFReader(object):
                 radius = float(g.find('radius').text)
                 length = float(g.find('length').text)
             else:
-                print "unsupported shape type: %s" % g.tag
+                raise Exception('unsupported shape type: %s' % g.tag)
         return sm
 
     def resolveFile(self, f):
         '''
         Resolve file by replacing ROS file path heading "model://"
-
-        >>> r = SDFReader()
-        >>> r.resolveFile('model://pr2/model.sdf')
-        '/opt/ros/indigo/share/pr2/model.sdf'
-        >>> r.resolveFile('model://pr2/meshes/base_v0/base.dae')
-        '/opt/ros/indigo/share/pr2/meshes/base_v0/base.dae'
         '''
         try:
             if f.count('model://') > 0:
-                return f.replace('model://', os.environ['GAZEBO_MODELS'])
+                return os.path.join(os.environ['GAZEBO_MODELS'], f.replace('model://', ''))
         except Exception, e:
-            print str(e)
+            logger.warn(str(e))
         return f
 
 

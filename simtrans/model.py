@@ -57,6 +57,8 @@ class JointModel(object):
     """
     J_FIXED = 1        #: Fixed type
     J_REVOLUTE = 2     #: Revolute type
+    J_PRISMATIC = 3    #: Prismatic type
+    J_SCREW = 4        #: Screw type
 
     jointType = None   #: Joint type
     axis = None        #: Joint axis
