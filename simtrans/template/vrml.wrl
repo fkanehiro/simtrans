@@ -122,9 +122,13 @@ DEF {{model.name}} Humanoid {
           jointAxis {{l.joint.axis}}
           {%- endif %}
           jointId {{jointmap[l.joint.name]}}
+          {%- if l.joint.trans is not none %}
           translation {{l.joint.trans[0]}} {{l.joint.trans[1]}} {{l.joint.trans[2]}}
+          {%- endif %}
+          {%- if l.joint.rot is not none %}
           {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.joint.rot)) %}
           rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+          {%- endif %}
           ulimit 1
           llimit 1
           children [
