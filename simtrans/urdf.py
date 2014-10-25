@@ -9,7 +9,7 @@ import subprocess
 import lxml.etree
 import numpy
 try:
-    from .thridparty import transformations as tf
+    from .thirdparty import transformations as tf
 except UserWarning:
     pass
 import jinja2

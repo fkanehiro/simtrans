@@ -8,7 +8,7 @@ from . import model
 import os
 import sys
 try:
-    from .thridparty import transformations as tf
+    from .thirdparty import transformations as tf
 except UserWarning:
     pass
 import jinja2

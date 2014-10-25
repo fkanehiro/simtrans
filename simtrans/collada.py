@@ -7,7 +7,7 @@ Reader and writer for collada format
 from __future__ import absolute_import
 from . import model
 try:
-    from .thridparty import transformations as tf
+    from .thirdparty import transformations as tf
 except UserWarning:
     pass
 import collada
