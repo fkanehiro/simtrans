@@ -39,9 +39,9 @@ class ColladaReader(object):
                 m = model.ShapeModel()
                 m.shapeType = model.ShapeModel.SP_NONE
                 dmat = tf.decompose_matrix(c.matrix)
+                m.scale = dmat[0].tolist()
                 m.trans = dmat[3].tolist()
-                m.rot = tf.quaternion_from_matrix(tf.compose_matrix(angles=dmat[2]))
-                # TODO: Should we add scale here?
+                m.rot = tf.quaternion_from_matrix(tf.compose_matrix(shear=dmat[1], angles=dmat[2]))
                 m.children = self.convertchildren(c)
                 nodes.append(m)
             elif type(c) == collada.scene.GeometryNode:

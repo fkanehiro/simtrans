@@ -25,6 +25,7 @@ class BodyModel(object):
     name = None        #: Name of the body
     links = []         #: List of links
     joints = []        #: List of joints
+    scale = None       #: XYZ scale vector
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
@@ -43,6 +44,7 @@ class LinkModel(object):
     visual = None      #: Shape information used for rendering
     collision = None   #: Shape information used for collision detection
     sensors = None     #: List of sensors
+    scale = None       #: XYZ scale vector
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
@@ -85,7 +87,7 @@ class ShapeModel(object):
 
     shapeType = None   #: Shape type
     children = []      #: Mesh data (if the type is SP_MESH)
-    matrix = None      #: Transformation matrix
+    scale = None       #: XYZ scale vector
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
