@@ -163,18 +163,27 @@ class VRMLWriter(object):
         >>> r = urdf.URDFReader()
         >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         >>> w = VRMLWriter()
-        >>> w.findroot(m)
-        ['pelvis']
+        >>> w.findroot(m)[0]
+        'pelvis'
+        >>> from . import sdf
+        >>> r = sdf.SDFReader()
+        >>> m = r.read('model://pr2/model.sdf')
+        >>> w = VRMLWriter()
+        >>> w.findroot(m)[0]
+        'base_footprint'
         '''
         joints = {}
         for j in mdata.joints:
-            joints[j.parent] = 1
+            try:
+                joints[j.parent] = joints[j.parent] + 1
+            except KeyError:
+                joints[j.parent] = 1
         for j in mdata.joints:
             try:
                 del joints[j.child]
             except KeyError:
                 pass
-        return joints.keys()
+        return [j[0] for j in sorted(joints.items(), key=lambda x: x[1], reverse=True)]
 
     def findchildren(self, mdata, linkname):
         '''
