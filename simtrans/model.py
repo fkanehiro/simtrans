@@ -98,22 +98,22 @@ class ShapeModel(object):
 class MeshModel(object):
     vertex = []       #: Vertex position (in x,y,z * 3 * N format)
     vertex_index = []
-    normal = []       #: Normal direction
-    normal_index = []
-    color = []        #: Color (in RGBA * N format)
-    color_index = []
-    uvmap = []        #: UV mapping (in x,y * N format)
-    uvmap_index = []
+    normal = None     #: Normal direction
+    normal_index = None
+    color = None      #: Color (in RGBA * N format)
+    color_index = None
+    uvmap = None      #: UV mapping (in x,y * N format)
+    uvmap_index = None
 
     def __init__(self):
         self.vertex = []
         self.vertex_index = []
-        self.normal = []
-        self.normal_index = []
-        self.color = []
-        self.color_index = []
-        self.uvmap = []
-        self.uvmap_index = []
+        #self.normal = []
+        #self.normal_index = []
+        #self.color = []
+        #self.color_index = []
+        #self.uvmap = []
+        #self.uvmap_index = []
 
 
 class SensorModel(object):
