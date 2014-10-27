@@ -87,6 +87,7 @@ class ShapeModel(object):
 
     shapeType = None   #: Shape type
     children = []      #: Mesh data (if the type is SP_MESH)
+    image = None
     scale = None       #: XYZ scale vector
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
@@ -108,12 +109,6 @@ class MeshModel(object):
     def __init__(self):
         self.vertex = []
         self.vertex_index = []
-        #self.normal = []
-        #self.normal_index = []
-        #self.color = []
-        #self.color_index = []
-        #self.uvmap = []
-        #self.uvmap_index = []
 
 
 class SensorModel(object):

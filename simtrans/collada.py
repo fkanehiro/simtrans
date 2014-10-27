@@ -10,6 +10,7 @@ try:
     from .thirdparty import transformations as tf
 except UserWarning:
     pass
+import os
 import collada
 import jinja2
 
@@ -63,11 +64,10 @@ class ColladaReader(object):
                         gm.uvmap = p.texcoordset[0]
                         gm.uvmap_index = p.texcoord_indexset[0]
                     m.children.append(gm)
-                for ml in c.materials:
                     try:
-                        for p in self._materials[ml.symbol].effect.params:
-                            if type(p) == collada.material.Surface:
-                                m.image = p.image.path
+                        for pr in self._materials[p.material].effect.params:
+                            if type(pr) == collada.material.Surface:
+                                m.image = os.path.basename(pr.image.path)
                     except KeyError:
                         pass
                 nodes.append(m)
