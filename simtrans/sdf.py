@@ -8,7 +8,6 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 import os
-import lxml
 import lxml.etree
 import numpy
 try:
