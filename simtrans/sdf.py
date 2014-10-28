@@ -49,13 +49,15 @@ class SDFReader(object):
                     lm.trans, lm.rot = self.readPose(pose)
                 lm.mass = self.readMass(inertial.find('mass'))
             # visual property
-            visual = l.find('visual')
-            if visual is not None:
-                lm.visual = self.readShape(visual)
+            lm.visual = model.ShapeModel()
+            lm.visual.shapeType = model.ShapeModel.SP_NONE
+            lm.visual.children = []
+            for v in l.findall('visual'):
+                lm.visual.children.append(self.readShape(v))
             # contact property
-            collision = l.find('collision')
-            if collision is not None:
-                lm.collision = self.readShape(collision)
+            #collision = l.find('collision')
+            #if collision is not None:
+            #    lm.collision = self.readShape(collision)
             bm.links.append(lm)
 
         for j in dm.findall('joint'):
@@ -128,12 +130,14 @@ class SDFReader(object):
             if g.tag == 'mesh':
                 # print "reading mesh " + mesh.attrib['filename']
                 filename = self.resolveFile(g.find('uri').text)
-                fileext = os.path.splitext(filename)[1]
+                fileext = os.path.splitext(filename)[1].lower()
                 sm.shapeType = model.ShapeModel.SP_NONE
                 if fileext == '.dae':
                     reader = collada.ColladaReader()
-                else:
+                elif fileext == '.stl':
                     reader = stl.STLReader()
+                else:
+                    raise Exception('unsupported mesh format: %s' % fileext)
                 sm.children.append(reader.read(filename))
             elif g.tag == 'box':
                 sm.shapeType = model.ShapeModel.SP_BOX
@@ -142,6 +146,8 @@ class SDFReader(object):
                 sm.shapeType = model.ShapeModel.SP_CYLINDER
                 radius = float(g.find('radius').text)
                 length = float(g.find('length').text)
+            elif g.tag == 'sphere':
+                sm.shapeType = model.ShapeModel.SP_SPHERE
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
         return sm

@@ -1,6 +1,7 @@
 lxml
 numpy
 visvis
+numpy-stl
 pycollada
 jinja2
 pyparsing
