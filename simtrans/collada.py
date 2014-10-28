@@ -20,15 +20,19 @@ class ColladaReader(object):
     Collada reader class
     '''
     def __init__(self):
+        self._basepath = None
+        self._assethandler = None
         self._materials = {}
 
-    def read(self, f):
+    def read(self, f, assethandler=None):
         '''
         Read collada model data given the file path
 
         >>> r = ColladaReader()
         >>> m = r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
         '''
+        self._basepath = os.path.dirname(f)
+        self._assethandler = assethandler
         d = collada.Collada(f)
         for m in d.materials:
             self._materials[m.id] = m
@@ -67,7 +71,11 @@ class ColladaReader(object):
                     try:
                         for pr in self._materials[p.material].effect.params:
                             if type(pr) == collada.material.Surface:
-                                m.image = os.path.basename(pr.image.path)
+                                fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
+                                if self._assethandler:
+                                    m.image = self._assethandler(fname)
+                                else:
+                                    m.image = fname
                     except KeyError:
                         pass
                 nodes.append(m)
