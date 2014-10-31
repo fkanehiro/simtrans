@@ -48,35 +48,33 @@ class VRMLReader(object):
             lm.name = l.name
             sm = model.ShapeModel()
             for s in l.shapeIndices:
-                if type(s) == OpenHRP.TransformedShapeIndex:
-                    ssm = model.ShapeModel()
-                    ssm.trans = tf.decompose_matrix(s.transformMatrix)
-                    sdata = b._get_shapes()[s.shapeIndex]
-                    if sdata.primitiveType == OpenHRP.ModelLoader.SP_MESH:
-                        mesh = model.MeshModel()
-                        mesh.vertex = sdata.vertices
-                        mesh.vertex_index = sdata.triangles
-                        sm.children.append(ssm)
-                    else:
-                        raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
+                ssm = model.ShapeModel()
+                # ssm.trans = tf.decompose_matrix(s.transformMatrix)
+                sdata = b._get_shapes()[s.shapeIndex]
+                if sdata.primitiveType == OpenHRP.SP_MESH:
+                    mesh = model.MeshModel()
+                    mesh.vertex = sdata.vertices
+                    mesh.vertex_index = sdata.triangles
+                    sm.children.append(ssm)
                 else:
-                    raise Exception('unsupported shape type: %s' % type(s))
-
+                    raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
             # then create joint pairs
             for c in l.childIndices:
-                child = b._get_links[c]
+                child = b._get_links()[c]
                 m = model.JointModel()
                 m.parent = l.name
                 m.child = child.name
                 m.name = m.parent + '-' + m.child
                 if l.jointType == 'fixed':
                     m.jointType = model.JointModel.J_FIXED
+                elif l.jointType == 'rotate':
+                    m.jointType = model.JointModel.J_REVOLUTE
                 else:
                     raise Exception('unsupported joint type: %s' % l.jointType)
-                    m.limit = [l.ulimit, l.llimit]
-                    m.axis = l.axis
-                    m.trans = l.translation
-                    m.rot = tf.quaternion_about_axis(l.rotation[3], l.rotation[0:2])
+                m.limit = [l.ulimit, l.llimit]
+                m.axis = l.jointAxis
+                m.trans = l.translation
+                m.rot = tf.quaternion_about_axis(l.rotation[3], l.rotation[0:3])
         for j in b._get_extraJoints():
             # extra joint for closed links models
             pass
