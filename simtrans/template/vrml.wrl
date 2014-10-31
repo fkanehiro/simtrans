@@ -131,23 +131,35 @@ DEF {{model.name}} Humanoid {
           {%- endif %}
           ulimit 1
           llimit 1
-          children [
-            {%- if l.link and l.link.visual %}
-            DEF {{l.link.name}} Segment {
-              mass {{l.link.mass}}
-              centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
-              momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
-              children [
-                Inline {
-                  url "{{l.link.name}}.wrl"
-                }
-              ]
-            }
+          {%- if l.link and l.link.visual %}
+          Transform {
+            {%- if l.link.visual.scale is not none %}
+            scale {{l.link.visual.scale[0]}} {{l.link.visual.scale[1]}} {{l.link.visual.scale[2]}}
             {%- endif %}
-            {%- if l.children %}
-            {{ loop(l.children)|indent(4, True) }}
+            {%- if l.link.visual.trans is not none %}
+            translation {{l.link.visual.trans[0]}} {{l.link.visual.trans[1]}} {{l.link.visual.trans[2]}}
             {%- endif %}
-          ]
+            {%- if l.link.visual.rot is not none %}
+            {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.visual.rot)) %}
+            rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+            {%- endif %}
+            children [
+              DEF {{l.link.name}} Segment {
+                mass {{l.link.mass}}
+                centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
+                momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
+                children [
+                  Inline {
+                    url "{{l.link.name}}.wrl"
+                  }
+                ]
+              }
+              {%- if l.children %}
+              {{ loop(l.children)|indent(4, True) }}
+              {%- endif %}
+            ]
+          }
+          {%- endif %}
         }
         {%- endif %}
         {%- endfor %}

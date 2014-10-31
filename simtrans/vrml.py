@@ -30,13 +30,62 @@ class VRMLReader(object):
         self._ns = None
 
     def read(self, f):
+        '''
+        Read vrml model data given the file path
+
+        >>> r = VRMLReader()
+        >>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
+        '''
         self.resolveModelLoader()
+        try:
+            b = self._loader.loadBodyInfo(f)
+        except CORBA.TRANSIENT:
+            print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
+            raise
+        for l in b._get_links():
+            # first convert link shape information
+            lm = model.LinkModel()
+            lm.name = l.name
+            sm = model.ShapeModel()
+            for s in l.shapeIndices:
+                if type(s) == OpenHRP.TransformedShapeIndex:
+                    ssm = model.ShapeModel()
+                    ssm.trans = tf.decompose_matrix(s.transformMatrix)
+                    sdata = b._get_shapes()[s.shapeIndex]
+                    if sdata.primitiveType == OpenHRP.ModelLoader.SP_MESH:
+                        mesh = model.MeshModel()
+                        mesh.vertex = sdata.vertices
+                        mesh.vertex_index = sdata.triangles
+                        sm.children.append(ssm)
+                    else:
+                        raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
+                else:
+                    raise Exception('unsupported shape type: %s' % type(s))
+
+            # then create joint pairs
+            for c in l.childIndices:
+                child = b._get_links[c]
+                m = model.JointModel()
+                m.parent = l.name
+                m.child = child.name
+                m.name = m.parent + '-' + m.child
+                if l.jointType == 'fixed':
+                    m.jointType = model.JointModel.J_FIXED
+                else:
+                    raise Exception('unsupported joint type: %s' % l.jointType)
+                    m.limit = [l.ulimit, l.llimit]
+                    m.axis = l.axis
+                    m.trans = l.translation
+                    m.rot = tf.quaternion_about_axis(l.rotation[3], l.rotation[0:2])
+        for j in b._get_extraJoints():
+            # extra joint for closed links models
+            pass
 
     def resolveModelLoader(self):
         nsobj = self._orb.resolve_initial_references("NameService")
         self._ns = nsobj._narrow(CosNaming.NamingContext)
         try:
-            obj = self._ns.resolve([CosNaming.NameComponent("ModelLoader","")])
+            obj = self._ns.resolve([CosNaming.NameComponent("ModelLoader", "")])
             self._loader = obj._narrow(OpenHRP.ModelLoader)
         except CosNaming.NamingContext.NotFound:
             print "unable to resolve OpenHRP model loader on CORBA name service"

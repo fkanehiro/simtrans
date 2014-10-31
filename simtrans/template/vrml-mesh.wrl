@@ -1,6 +1,16 @@
 #VRML V2.0 utf8
 
 DEF {{name}} Transform {
+  {%- if visual.scale is not none %}
+  scale {{visual.scale[0]}} {{visual.scale[1]}} {{visual.scale[2]}}
+  {%- endif %}
+  {%- if visual.trans is not none %}
+  translation {{visual.trans[0]}} {{visual.trans[1]}} {{visual.trans[2]}}
+  {%- endif %}
+  {%- if visual.rot is not none %}
+  {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(visual.rot)) %}
+  rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+  {%- endif %}
   children [
     {%- for c in visual.children recursive %}
     {%- if c.shapeType == ShapeModel.SP_NONE %}
