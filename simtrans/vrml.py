@@ -42,7 +42,11 @@ class VRMLReader(object):
         except CORBA.TRANSIENT:
             print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
             raise
-        for l in b._get_links():
+        links = b._get_links()
+        shapes = b._get_shapes()
+        materials = b._get_materials()
+        extrajoints = b._get_extraJoints()
+        for l in links:
             # first convert link shape information
             lm = model.LinkModel()
             lm.name = l.name
@@ -50,7 +54,7 @@ class VRMLReader(object):
             for s in l.shapeIndices:
                 ssm = model.ShapeModel()
                 # ssm.trans = tf.decompose_matrix(s.transformMatrix)
-                sdata = b._get_shapes()[s.shapeIndex]
+                sdata = shapes[s.shapeIndex]
                 if sdata.primitiveType == OpenHRP.SP_MESH:
                     mesh = model.MeshModel()
                     mesh.vertex = sdata.vertices
@@ -60,7 +64,7 @@ class VRMLReader(object):
                     raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
             # then create joint pairs
             for c in l.childIndices:
-                child = b._get_links()[c]
+                child = links[c]
                 m = model.JointModel()
                 m.parent = l.name
                 m.child = child.name
@@ -75,9 +79,13 @@ class VRMLReader(object):
                 m.axis = l.jointAxis
                 m.trans = l.translation
                 m.rot = tf.quaternion_about_axis(l.rotation[3], l.rotation[0:3])
-        for j in b._get_extraJoints():
+        for j in extrajoints:
             # extra joint for closed links models
-            pass
+            m = model.JointModel()
+            m.parent = j.link[0]
+            m.child = j.link[1]
+            m.name = m.parent + '-' + m.child
+            m.axis = j.axis
 
     def resolveModelLoader(self):
         nsobj = self._orb.resolve_initial_references("NameService")
