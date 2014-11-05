@@ -12,7 +12,7 @@ except UserWarning:
     pass
 import os
 import collada
-import jinja2
+import numpy
 
 
 class ColladaReader(object):
@@ -92,15 +92,32 @@ class ColladaWriter(object):
         '''
         if type(m) != model.MeshModel:
             raise Exception('collada format can only be used to store mesh model')
-        # render the data structure using template
-        loader = jinja2.PackageLoader(self.__module__, 'template')
-        env = jinja2.Environment(loader=loader)
-
-        # render mesh collada file for each links
-        template = env.get_template('collada-mesh.dae')
-        with open(f, 'w') as ofile:
-            ofile.write(template.render({
-                'model': m,
-                'ShapeModel': model.ShapeModel,
-                'tf': tf
-            }))
+        # we use pycollada to generate the dae file
+        mesh = collada.Collada()
+        # create effect and material
+        effect = collada.material.Effect("effect0", [], "phong", diffuse=(1,0,0), specular=(0,1,0))
+        mat = collada.material.Material("material0", "mymaterial", effect)
+        mesh.effects.append(effect)
+        mesh.materials.append(mat)
+        # append geometric data
+        sources = []
+        sources.append(collada.source.FloatSource(m.name+'-vertex', m.vertex, ('X', 'Y', 'Z')))
+        sources.append(collada.source.FloatSource(m.name+'-normal', m.normal, ('X', 'Y', 'Z')))
+        geom = collada.geometry.Geometry(mesh, 'geometry0', m.name, sources)
+        # create triangles
+        input_list = collada.source.InputList()
+        input_list.addInput(0, 'VERTEX', '#'+m.name+'-vertex')
+        input_list.addInput(1, 'NORMAL', '#'+m.name+'-normal')
+        # TODO concatinate vertex and normal index
+        indices = numpy.array()
+        triset = geom.createTriangleSet(indices, input_list, 'materialref')
+        geom.primitives.append(triset)
+        mesh.geometries.append(geom)
+        # create scene graph
+        matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
+        geomnode = collada.scene.GeometryNode(geom, [matnode])
+        node = collada.scene.Node("node0", children=[geomnode])
+        myscene = collada.scene.Scene("myscene", [node])
+        mesh.scenes.append(myscene)
+        mesh.scene = myscene
+        mesh.write(f)

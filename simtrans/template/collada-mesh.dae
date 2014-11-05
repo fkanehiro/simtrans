@@ -6,7 +6,7 @@
       <authoring_tool>simtrans COLLADA writer</authoring_tool>
       <comments></comments>
     </contributor>
-    <created>2013-08-22T19:50:19Z</created>
+    <created></created>
     <keywords></keywords>
     <modified></modified>
     <revision></revision>
@@ -20,7 +20,9 @@
       <mesh>
         <source id="head_ncl1_1-POSITION">
           <float_array id="head_ncl1_1-POSITION-array" count="5211">
-            -0.109743 -0.011587 0.016418
+            {%- for n in g.vertex %}
+            {{n[0]}} {{n[1]}} {{n[2]}}
+            {%- endfor %}
           </float_array>
           <technique_common>
             <accessor source="#head_ncl1_1-POSITION-array" count="1737" stride="3">
@@ -30,9 +32,12 @@
             </accessor>
           </technique_common>
         </source>
+        {%- if g.normal is not none %}
         <source id="head_ncl1_1-Normal0">
           <float_array id="head_ncl1_1-Normal0-array" count="9891">
-            -0.000000 0.624016 0.781412
+            {%- for n in g.normal %}
+            {{n[0]}} {{n[1]}} {{n[2]}}
+            {%- endfor %}
           </float_array>
           <technique_common>
             <accessor source="#head_ncl1_1-Normal0-array" count="3297" stride="3">
@@ -42,9 +47,13 @@
             </accessor>
           </technique_common>
         </source>
+        {%- endif %}
+        {%- if g.uvmap is not none %}
         <source id="head_ncl1_1-UV0">
           <float_array id="head_ncl1_1-UV0-array" count="3432">
-            0.132284 0.925401
+            {%- for n in g.uvmap %}
+            {{n[0]}} {{n[1]}}
+            {%- endfor %}
           </float_array>
           <technique_common>
             <accessor source="#head_ncl1_1-UV0-array" count="1716" stride="2">
@@ -53,6 +62,7 @@
             </accessor>
           </technique_common>
         </source>
+        {%- endif %}
         <vertices id="head_ncl1_1-VERTEX">
           <input semantic="POSITION" source="#head_ncl1_1-POSITION"/>
         </vertices>
