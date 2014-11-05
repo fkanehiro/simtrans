@@ -28,6 +28,8 @@ class VRMLReader(object):
                                    CORBA.ORB_ID)
         self._loader = None
         self._ns = None
+        self._joints = []
+        self._links = []
 
     def read(self, f):
         '''
@@ -42,50 +44,64 @@ class VRMLReader(object):
         except CORBA.TRANSIENT:
             print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
             raise
-        links = b._get_links()
-        shapes = b._get_shapes()
-        materials = b._get_materials()
-        extrajoints = b._get_extraJoints()
-        for l in links:
-            # first convert link shape information
-            lm = model.LinkModel()
-            lm.name = l.name
-            sm = model.ShapeModel()
-            for s in l.shapeIndices:
-                ssm = model.ShapeModel()
-                # ssm.trans = tf.decompose_matrix(s.transformMatrix)
-                sdata = shapes[s.shapeIndex]
-                if sdata.primitiveType == OpenHRP.SP_MESH:
-                    mesh = model.MeshModel()
-                    mesh.vertex = sdata.vertices
-                    mesh.vertex_index = sdata.triangles
-                    sm.children.append(ssm)
-                else:
-                    raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
-            # then create joint pairs
-            for c in l.childIndices:
-                child = links[c]
-                m = model.JointModel()
-                m.parent = l.name
-                m.child = child.name
-                m.name = m.parent + '-' + m.child
-                if l.jointType == 'fixed':
-                    m.jointType = model.JointModel.J_FIXED
-                elif l.jointType == 'rotate':
-                    m.jointType = model.JointModel.J_REVOLUTE
-                else:
-                    raise Exception('unsupported joint type: %s' % l.jointType)
-                m.limit = [l.ulimit, l.llimit]
-                m.axis = l.jointAxis
-                m.trans = l.translation
-                m.rot = tf.quaternion_about_axis(l.rotation[3], l.rotation[0:3])
-        for j in extrajoints:
-            # extra joint for closed links models
+        bm = model.BodyModel()
+        self._joints = []
+        self._links = []
+        self._hrplinks = b._get_links()
+        self._hrpshapes = b._get_shapes()
+        self._hrpmaterials = b._get_materials()
+        self._hrpextrajoints = b._get_extraJoints()
+        for c in self._hrplinks[0].childIndices:
+            self.readChild(self._hrplinks[0], self._hrplinks[c])
+        for j in self._hrpextrajoints:
+            # extra joint for closed link models
             m = model.JointModel()
             m.parent = j.link[0]
             m.child = j.link[1]
-            m.name = m.parent + '-' + m.child
+            m.name = j.name
             m.axis = j.axis
+            self._joints.append(m)
+        bm.links = self._links
+        bm.joints = self._joints
+        return bm
+
+    def readChild(self, parent, child):
+        # first convert link shape information
+        lm = model.LinkModel()
+        lm.name = parent.name
+        sm = model.ShapeModel()
+        for s in parent.shapeIndices:
+            ssm = model.ShapeModel()
+            # ssm.trans = tf.decompose_matrix(s.transformMatrix)
+            sdata = self._hrpshapes[s.shapeIndex]
+            if sdata.primitiveType == OpenHRP.SP_MESH:
+                mesh = model.MeshModel()
+                mesh.vertex = sdata.vertices
+                mesh.vertex_index = sdata.triangles
+                sm.children.append(ssm)
+            else:
+                raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
+        self._links.append(sm)
+        # then create joint pairs
+        jm = model.JointModel()
+        jm.parent = parent.name
+        jm.child = child.name
+        jm.name = jm.parent + jm.child
+        if child.jointType == 'fixed':
+            jm.jointType = model.JointModel.J_FIXED
+        elif child.jointType == 'rotate':
+            jm.jointType = model.JointModel.J_REVOLUTE
+        elif child.jointType == 'slide':
+            jm.jointType = model.JointModel.J_PRISMATIC
+        else:
+            raise Exception('unsupported joint type: %s' % child.jointType)
+        jm.limit = [child.ulimit, child.llimit]
+        jm.axis = child.jointAxis
+        jm.trans = child.translation
+        jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
+        self._joints.append(jm)
+        for c in child.childIndices:
+            self.readChild(child, self._hrplinks[c])
 
     def resolveModelLoader(self):
         nsobj = self._orb.resolve_initial_references("NameService")

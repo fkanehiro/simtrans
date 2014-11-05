@@ -92,6 +92,28 @@ PROTO Humanoid [
   }
 }
 
+PROTO ExtraJoint [
+  exposedField SFString link1Name ""
+  exposedField SFString link2Name ""
+  exposedField SFVec3f  link1LocalPos 0 0 0
+  exposedField SFVec3f  link2LocalPos 0 0 0
+  exposedField SFString jointType "xyz"
+  exposedField SFVec3f  jointAxis 1 0 0
+]
+{
+}
+
+{%- for j in model.extrajoints %}
+DEF {{j.name}} ExtraJoint {
+  link1Name "{{j.link1}}"
+  link2Name "{{j.link2}}"
+  link1LocalPos {{j.trans1[0]}} {{j.trans1[1]}} {{j.trans1[2]}}
+  link2LocalPos {{j.trans2[0]}} {{j.trans2[1]}} {{j.trans2[2]}}
+  jointType "{{j.jointType}}"
+  jointAxis {{j.jointAxis[0]}} {{j.jointAxis[1]}} {{j.jointAxis[2]}}
+}
+{%- endfor %}
+
 DEF {{model.name}} Humanoid {
   humanoidBody [
     DEF {{model.joint.name}} Joint {
