@@ -83,5 +83,24 @@ class ColladaReader(object):
 
 
 class ColladaWriter(object):
+    '''
+    Collada writer class
+    '''
     def write(self, m, f):
-        pass
+        '''
+        Write simulation model in collada format
+        '''
+        if type(m) != model.MeshModel:
+            raise Exception('collada format can only be used to store mesh model')
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader)
+
+        # render mesh collada file for each links
+        template = env.get_template('collada-mesh.dae')
+        with open(f, 'w') as ofile:
+            ofile.write(template.render({
+                'model': m,
+                'ShapeModel': model.ShapeModel,
+                'tf': tf
+            }))

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author></author>
+      <authoring_tool>simtrans COLLADA writer</authoring_tool>
+      <comments></comments>
+    </contributor>
+    <created>2013-08-22T19:50:19Z</created>
+    <keywords></keywords>
+    <modified></modified>
+    <revision></revision>
+    <subject></subject>
+    <title></title>
+    <unit meter="1.000000" name="centimeter"></unit>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_geometries>
+    <geometry id="head_ncl1_1-lib" name="head_ncl1_1Mesh">
+      <mesh>
+        <source id="head_ncl1_1-POSITION">
+          <float_array id="head_ncl1_1-POSITION-array" count="5211">
+            -0.109743 -0.011587 0.016418
+          </float_array>
+          <technique_common>
+            <accessor source="#head_ncl1_1-POSITION-array" count="1737" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="head_ncl1_1-Normal0">
+          <float_array id="head_ncl1_1-Normal0-array" count="9891">
+            -0.000000 0.624016 0.781412
+          </float_array>
+          <technique_common>
+            <accessor source="#head_ncl1_1-Normal0-array" count="3297" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="head_ncl1_1-UV0">
+          <float_array id="head_ncl1_1-UV0-array" count="3432">
+            0.132284 0.925401
+          </float_array>
+          <technique_common>
+            <accessor source="#head_ncl1_1-UV0-array" count="1716" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="head_ncl1_1-VERTEX">
+          <input semantic="POSITION" source="#head_ncl1_1-POSITION"/>
+        </vertices>
+        <triangles count="1099" material="drc_torso_head_diffuse">
+          <input semantic="VERTEX" offset="0" source="#head_ncl1_1-VERTEX"/>
+          <input semantic="NORMAL" offset="1" source="#head_ncl1_1-Normal0"/>
+          <input semantic="TEXCOORD" offset="2" set="0" source="#head_ncl1_1-UV0"/>
+          <p>
+            0 0 0
+          </p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="head" name="head">
+      <node name="g27" id="g27" sid="g27">
+        <matrix sid="matrix">
+          1.000000 0.000000 0.000000 0.000000
+          0.000000 1.000000 0.000000 0.000000
+          0.000000 0.000000 1.000000 0.000000
+          0.000000 0.000000 0.000000 1.000000
+        </matrix>
+        <extra>
+          <technique profile="FCOLLADA">
+            <visibility>1.000000</visibility>
+          </technique>
+        </extra>
+        <node name="head" id="head" sid="head">
+          <matrix sid="matrix">
+            1.000000 0.000000 0.000000 0.000000
+            0.000000 1.000000 0.000000 0.000000
+            0.000000 0.000000 1.000000 0.000000
+            0.000000 0.000000 0.000000 1.000000
+          </matrix>
+          <node name="head_ncl1_1" id="head_ncl1_1" sid="head_ncl1_1">
+            <matrix sid="matrix">
+              1.000000 0.000000 0.000000 0.000000
+              0.000000 1.000000 0.000000 -0.000000
+              0.000000 0.000000 1.000000 0.000000
+              0.000000 0.000000 0.000000 1.000000
+            </matrix>
+            <instance_geometry url="#head_ncl1_1-lib">
+              <bind_material>
+                <technique_common>
+                  <instance_material symbol="drc_torso_head_diffuse" target="#drc_torso_head_diffuse"/>
+                </technique_common>
+              </bind_material>
+            </instance_geometry>
+          </node>
+        </node>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#head"></instance_visual_scene>
+  </scene>
+</COLLADA>

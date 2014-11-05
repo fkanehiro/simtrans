@@ -1,0 +1,30 @@
+<robot name="{{model.name}}">
+  {%- for l in model.links %}
+  <link name="{{l.name}}">
+    <inertial>
+      <mass value="3.45" />
+      <origin xyz="0 0.048 0.084" rpy="0 -0 0" />
+      <inertia ixx="0.011" ixy="0" ixz="0" iyy="0.009" iyz="-0.004" izz="0.004" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="{{l.name}}.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="{{l.name}}.stl" scale="1 1 1" />
+      </geometry>
+    </collision>
+  </link>
+  {%- endfor %}
+  {%- for j in model.joints %}
+  <joint name="{{j.name}}" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.5708 0.0 -1.5708" />
+    <parent link="{{j.parent}}" />
+    <child link="{{j.child}}"/>
+  </joint>
+  {%- endfor %}
+</robot>
