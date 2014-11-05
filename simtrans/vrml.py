@@ -79,6 +79,15 @@ class VRMLReader(object):
                 mesh.vertex = sdata.vertices
                 mesh.vertex_index = sdata.triangles
                 sm.children.append(ssm)
+            elif sdata.primitiveType == OpenHRP.SP_SPHERE:
+                ssm.shapeType = model.ShapeModel.SP_SPHERE
+                sm.children.append(ssm)
+            elif sdata.primitiveType == OpenHRP.SP_CYLINDER:
+                ssm.shapeType = model.ShapeModel.SP_CYLINDER
+                sm.children.append(ssm)
+            elif sdata.primitiveType == OpenHRP.SP_BOX:
+                ssm.shapeType = model.ShapeModel.SP_BOX
+                sm.children.append(ssm)
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
         self._links.append(sm)
