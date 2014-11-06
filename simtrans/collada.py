@@ -70,9 +70,9 @@ class ColladaReader(object):
                         if type(pr) == collada.material.Surface:
                             fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
                             if self._assethandler:
-                                m.image = self._assethandler(fname)
+                                sm.image = self._assethandler(fname)
                             else:
-                                m.image = fname
+                                sm.image = fname
                 except KeyError:
                     pass
                 m.children.append(sm)
