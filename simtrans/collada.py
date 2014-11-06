@@ -87,8 +87,6 @@ class ColladaWriter(object):
         '''
         Write simulation model in collada format
         '''
-        if type(m) != model.MeshModel:
-            raise Exception('collada format can only be used to store mesh model')
         # we use pycollada to generate the dae file
         mesh = collada.Collada()
         # create effect and material

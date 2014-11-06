@@ -149,6 +149,12 @@ class URDFWriter(object):
     def write(self, m, f):
         '''
         Write simulation model in URDF format
+
+        >>> from . import vrml
+        >>> r = vrml.VRMLReader()
+        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+        >>> w = URDFWriter()
+        >>> w.write(m, '/tmp/hrp4c.urdf')
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')

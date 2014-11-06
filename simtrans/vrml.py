@@ -99,7 +99,8 @@ class VRMLReader(object):
                 sm.children.append(ssm)
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
-        self._links.append(sm)
+        lm.visual = sm
+        self._links.append(lm)
         # then create joint pairs
         jm = model.JointModel()
         jm.parent = parent.name
