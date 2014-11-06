@@ -36,7 +36,7 @@ Convert robot simulation model from one another.'''
     if options.fromformat == "sdf":
         reader = sdf.SDFReader()
     if reader is None:
-        ext = os.path.splitext(options.fromfile)
+        ext = os.path.splitext(options.fromfile)[1]
         if ext == '.wrl':
             reader = vrml.VRMLReader()
         elif ext == '.urdf':
@@ -57,7 +57,7 @@ Convert robot simulation model from one another.'''
     if options.toformat == "dot":
         writer = graphviz.GraphvizWriter()
     if writer is None:
-        ext = os.path.splitext(options.tofile)
+        ext = os.path.splitext(options.tofile)[1]
         if ext == '.wrl':
             writer = vrml.VRMLWriter()
         elif ext == '.urdf':
