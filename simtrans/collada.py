@@ -6,10 +6,10 @@ Reader and writer for collada format
 
 from __future__ import absolute_import
 from . import model
-try:
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
-except UserWarning:
-    pass
 import os
 import collada
 import numpy

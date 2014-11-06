@@ -8,10 +8,10 @@ import os
 import subprocess
 import lxml.etree
 import numpy
-try:
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
-except UserWarning:
-    pass
 import jinja2
 from . import model
 from . import collada

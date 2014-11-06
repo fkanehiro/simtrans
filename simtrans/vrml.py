@@ -7,10 +7,10 @@ Reader and writer for VRML format
 from . import model
 import os
 import sys
-try:
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
-except UserWarning:
-    pass
 import numpy
 import jinja2
 import CORBA
