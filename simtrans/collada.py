@@ -13,6 +13,7 @@ except UserWarning:
 import os
 import collada
 import numpy
+import uuid
 
 
 class ColladaReader(object):
@@ -83,36 +84,63 @@ class ColladaWriter(object):
     '''
     Collada writer class
     '''
+    def __init__(self):
+        self._mesh = None
+        self._matnode = None
+
     def write(self, m, f):
         '''
         Write simulation model in collada format
         '''
         # we use pycollada to generate the dae file
-        mesh = collada.Collada()
+        self._mesh = collada.Collada()
+
         # create effect and material
         effect = collada.material.Effect("effect0", [], "phong", diffuse=(1,0,0), specular=(0,1,0))
         mat = collada.material.Material("material0", "mymaterial", effect)
-        mesh.effects.append(effect)
-        mesh.materials.append(mat)
-        # append geometric data
-        sources = []
-        sources.append(collada.source.FloatSource(m.name+'-vertex', m.vertex, ('X', 'Y', 'Z')))
-        sources.append(collada.source.FloatSource(m.name+'-normal', m.normal, ('X', 'Y', 'Z')))
-        geom = collada.geometry.Geometry(mesh, 'geometry0', m.name, sources)
-        # create triangles
-        input_list = collada.source.InputList()
-        input_list.addInput(0, 'VERTEX', '#'+m.name+'-vertex')
-        input_list.addInput(1, 'NORMAL', '#'+m.name+'-normal')
-        # TODO concatinate vertex and normal index
-        indices = numpy.array()
-        triset = geom.createTriangleSet(indices, input_list, 'materialref')
-        geom.primitives.append(triset)
-        mesh.geometries.append(geom)
+        self._mesh.effects.append(effect)
+        self._mesh.materials.append(mat)
+        self._matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
+
+        # convert shapes recursively
+        node = self.convertchild(m)
+
         # create scene graph
-        matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
-        geomnode = collada.scene.GeometryNode(geom, [matnode])
-        node = collada.scene.Node("node0", children=[geomnode])
         myscene = collada.scene.Scene("myscene", [node])
-        mesh.scenes.append(myscene)
-        mesh.scene = myscene
-        mesh.write(f)
+        self._mesh.scenes.append(myscene)
+        self._mesh.scene = myscene
+        self._mesh.write(f)
+
+    def convertchild(self, m):
+        if type(m) == model.NodeModel:
+            children = []
+            name = 'node-' + str(uuid.uuid1()).replace('-', '')
+            for c in m.children:
+                cn = self.convertchild(c)
+                if cn:
+                    children.append(cn)
+            node = collada.scene.Node(name, children=children)
+            return node
+        elif type(m) == model.ShapeModel:
+            # append geometric data
+            if m.shapeType == model.ShapeModel.SP_MESH:
+                name = 'shape-' + str(uuid.uuid1()).replace('-', '')
+                vertexname = name + '-vertex'
+                normalname = name + '-normal'
+                sources = []
+                input_list = collada.source.InputList()
+                sources.append(collada.source.FloatSource(vertexname, m.data.vertex.reshape(1, m.data.vertex.size), ('X', 'Y', 'Z')))
+                indices = m.data.vertex_index.reshape(1, m.data.vertex_index.size)
+                input_list.addInput(0, 'VERTEX', '#' + vertexname)
+                if m.data.normal:
+                    sources.append(collada.source.FloatSource(normalname, m.data.normal.reshape(1, m.data.normal.size), ('X', 'Y', 'Z')))
+                    indices = numpy.vstack([indices, m.data.normal_index.reshape(1, m.data.normal_index.size)])
+                    input_list.addInput(1, 'NORMAL', '#' + normalname)
+                geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources)
+                # create triangles
+                triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
+                geom.primitives.append(triset)
+                self._mesh.geometries.append(geom)
+                node = collada.scene.GeometryNode(geom, [self._matnode])
+                return node
+        return None

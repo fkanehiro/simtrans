@@ -42,7 +42,8 @@ class STLWriter(object):
         Write mesh model in STL format
         This method first generates collada and use meshlab to output stl
         '''
-        daefile = tempfile.mkstemp(suffix='dae')
+        fd, daefile = tempfile.mkstemp(suffix='.dae')
+        os.close(fd)
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
         subprocess.check_output(['meshlabserver', '-i', daefile, '-o', f])

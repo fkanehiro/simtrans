@@ -11,6 +11,7 @@ try:
     from .thirdparty import transformations as tf
 except UserWarning:
     pass
+import numpy
 import jinja2
 import CORBA
 import CosNaming
@@ -51,8 +52,11 @@ class VRMLReader(object):
         self._hrpshapes = b._get_shapes()
         self._hrpmaterials = b._get_materials()
         self._hrpextrajoints = b._get_extraJoints()
-        for c in self._hrplinks[0].childIndices:
-            self.readChild(self._hrplinks[0], self._hrplinks[c])
+        root = self._hrplinks[0]
+        lm = self.readLink(root)
+        self._links.append(lm)
+        for c in root.childIndices:
+            self.readChild(root, self._hrplinks[c])
         for j in self._hrpextrajoints:
             # extra joint for closed link models
             m = model.JointModel()
@@ -65,19 +69,19 @@ class VRMLReader(object):
         bm.joints = self._joints
         return bm
 
-    def readChild(self, parent, child):
-        # first convert link shape information
+    def readLink(self, m):
         lm = model.LinkModel()
-        lm.name = parent.name
+        lm.name = m.name
         sm = model.NodeModel()
-        for s in parent.shapeIndices:
+        for s in m.shapeIndices:
             ssm = model.ShapeModel()
             # ssm.trans = tf.decompose_matrix(s.transformMatrix)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
-                mesh = model.MeshData()
-                mesh.vertex = sdata.vertices
-                mesh.vertex_index = sdata.triangles
+                ssm.shapeType = model.ShapeModel.SP_MESH
+                ssm.data = model.MeshData()
+                ssm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
+                ssm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
                 sm.children.append(ssm)
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 ssm.shapeType = model.ShapeModel.SP_SPHERE
@@ -100,6 +104,11 @@ class VRMLReader(object):
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
         lm.visual = sm
+        return lm
+
+    def readChild(self, parent, child):
+        # first convert link shape information
+        lm = self.readLink(child)
         self._links.append(lm)
         # then create joint pairs
         jm = model.JointModel()
