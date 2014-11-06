@@ -13,7 +13,7 @@ DEF {{name}} Transform {
   {%- endif %}
   children [
     {%- for c in visual.children recursive %}
-    {%- if c.shapeType %}
+    {%- if c.shapeType is not none %}
     {%- if c.shapeType == ShapeModel.SP_MESH %}
     Shape {
       appearance Appearance {

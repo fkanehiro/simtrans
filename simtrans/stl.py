@@ -14,7 +14,7 @@ import tempfile
 from stl import stl
 
 
-class STLReader:
+class STLReader(object):
     '''
     STL reader class
     '''
@@ -22,7 +22,7 @@ class STLReader:
         '''
         Read mesh model in STL format
         '''
-        m = model.MeshModel()
+        m = model.MeshData()
         p = stl.StlMesh(f)
         npoints = p.v0.shape[0]
         idx = numpy.array(range(0, npoints))
@@ -31,7 +31,7 @@ class STLReader:
         return m
 
 
-class STLWriter:
+class STLWriter(object):
     '''
     STL writer class
     '''

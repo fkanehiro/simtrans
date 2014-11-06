@@ -56,15 +56,15 @@ class ColladaReader(object):
             for p in d.geometry.primitives:
                 sm = model.ShapeModel()
                 sm.shapeType = model.ShapeModel.SP_MESH
-                gm = model.MeshData()
-                gm.vertex = p.vertex
-                gm.vertex_index = p.vertex_index
+                sm.data = model.MeshData()
+                sm.data.vertex = p.vertex
+                sm.data.vertex_index = p.vertex_index
                 if p.normal.size > 0:
-                    gm.normal = p.normal
-                    gm.normal_index = p.normal_index
+                    sm.data.normal = p.normal
+                    sm.data.normal_index = p.normal_index
                 if len(p.texcoordset) > 0:
-                    gm.uvmap = p.texcoordset[0]
-                    gm.uvmap_index = p.texcoord_indexset[0]
+                    sm.data.uvmap = p.texcoordset[0]
+                    sm.data.uvmap_index = p.texcoord_indexset[0]
                 try:
                     for pr in self._materials[p.material].effect.params:
                         if type(pr) == collada.material.Surface:
@@ -75,7 +75,6 @@ class ColladaReader(object):
                                 m.image = fname
                 except KeyError:
                     pass
-                sm.data = gm
                 m.children.append(sm)
         return m
 
