@@ -147,4 +147,26 @@ class URDFWriter(object):
     URDF writer class
     '''
     def write(self, m, f):
-        pass
+        '''
+        Write simulation model in URDF format
+        '''
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader)
+
+        # render mesh collada file for each links
+        template = env.get_template('urdf.xml')
+        with open(f, 'w') as ofile:
+            ofile.write(template.render({
+                'model': m,
+                'ShapeModel': model.ShapeModel,
+                'tf': tf
+            }))
+
+        cwriter = collada.ColladaWriter()
+        swriter = stl.STLWriter()
+        dirname = os.path.dirname(f)
+        for l in m.links:
+            if l.visual is not None:
+                cwriter.write(l.visual, os.path.join(dirname, l.name + ".dae"))
+                swriter.write(l.visual, os.path.join(dirname, l.name + ".stl"))

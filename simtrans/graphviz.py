@@ -29,9 +29,9 @@ class GraphvizWriter(object):
 
         >>> from . import vrml
         >>> r = vrml.VRMLReader()
-        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+        >>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl')
         >>> w = GraphvizWriter()
-        >>> w.write(m, '/tmp/hrp4c.dot')
+        >>> w.write(m, '/tmp/pa10.dot')
         '''
         with open(fname, 'w') as f:
             f.write("digraph model {\n")
