@@ -69,24 +69,33 @@ class VRMLReader(object):
         # first convert link shape information
         lm = model.LinkModel()
         lm.name = parent.name
-        sm = model.ShapeModel()
+        sm = model.NodeModel()
         for s in parent.shapeIndices:
             ssm = model.ShapeModel()
             # ssm.trans = tf.decompose_matrix(s.transformMatrix)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
-                mesh = model.MeshModel()
+                mesh = model.MeshData()
                 mesh.vertex = sdata.vertices
                 mesh.vertex_index = sdata.triangles
                 sm.children.append(ssm)
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 ssm.shapeType = model.ShapeModel.SP_SPHERE
+                ssm.data = model.SphereData()
+                ssm.data.radius = sdata.primitiveParameters[0]
                 sm.children.append(ssm)
             elif sdata.primitiveType == OpenHRP.SP_CYLINDER:
                 ssm.shapeType = model.ShapeModel.SP_CYLINDER
+                ssm.data = model.CylinderData()
+                ssm.data.radius = sdata.primitiveParameters[0]
+                ssm.data.height = sdata.primitiveParameters[1]
                 sm.children.append(ssm)
             elif sdata.primitiveType == OpenHRP.SP_BOX:
                 ssm.shapeType = model.ShapeModel.SP_BOX
+                ssm.data = model.BoxData()
+                ssm.data.x = sdata.primitiveParameters[0]
+                ssm.data.y = sdata.primitiveParameters[1]
+                ssm.data.z = sdata.primitiveParameters[2]
                 sm.children.append(ssm)
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)

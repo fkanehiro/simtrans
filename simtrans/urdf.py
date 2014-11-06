@@ -108,14 +108,13 @@ class URDFReader(object):
         return float(d.attrib['value'])
 
     def readShape(self, d):
-        sm = model.ShapeModel()
+        sm = model.NodeModel()
         sm.trans, sm.rot = self.readOrigin(d.find('origin'))
         mesh = d.find('geometry').find('mesh')
         if mesh is not None:
             # print "reading mesh " + mesh.attrib['filename']
             filename = self.resolveFile(mesh.attrib['filename'])
             fileext = os.path.splitext(filename)[1]
-            sm.shapeType = model.ShapeModel.SP_NONE
             if fileext == '.dae':
                 reader = collada.ColladaReader()
             else:

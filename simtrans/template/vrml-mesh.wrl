@@ -13,7 +13,106 @@ DEF {{name}} Transform {
   {%- endif %}
   children [
     {%- for c in visual.children recursive %}
-    {%- if c.shapeType == ShapeModel.SP_NONE %}
+    {%- if c.shapeType %}
+    {%- if c.shapeType == ShapeModel.SP_MESH %}
+    Shape {
+      appearance Appearance {
+
+        material Material {
+          diffuseColor 0.85 0.85 0.85
+          specularColor 0.85 0.85 0.85
+          emissiveColor 0.05 0.05 0.05
+        }
+        {%- if c.image is not none %}
+        texture ImageTexture {
+          url "{{c.image}}"
+        }
+        {%- endif %}
+      }
+      geometry IndexedFaceSet {
+        coord Coordinate {
+          point [
+            {%- for n in c.data.vertex %}
+            {{n[0]}} {{n[1]}} {{n[2]}},
+            {%- endfor %}
+          ]
+        }
+        coordIndex [
+          {%- for n in c.data.vertex_index %}
+          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+          {%- endfor %}
+        ]
+        {%- if c.data.normal is not none %}
+        normal Normal {
+          vector [
+            {%- for n in c.data.normal %}
+            {{n[0]}} {{n[1]}} {{n[2]}},
+            {%- endfor %}
+          ]
+        }
+        normalIndex [
+          {%- for n in c.data.normal_index %}
+          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+          {%- endfor %}
+        ]
+        normalPerVertex TRUE
+        {%- else %}
+        normalPerVertex FALSE
+        {%- endif %}
+        {%- if c.data.color is not none %}
+        color Color {
+          vector [
+            {%- for n in c.data.color %}
+            {{n[0]}} {{n[1]}} {{n[2]}},
+            {%- endfor %}
+          ]
+        }
+        colorIndex [
+          {%- for n in c.data.color_index %}
+          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+          {%- endfor %}
+        ]
+        colorPerVertex TRUE
+        {%- else %}
+        colorPerVertex FALSE
+        {%- endif %}
+        {%- if c.data.uvmap is not none %}
+        texCoord TextureCoordinate {
+          point [
+            {%- for n in c.data.uvmap %}
+            {{n[0]}} {{n[1]}},
+            {%- endfor %}
+          ]
+        }
+        texCoordIndex [
+          {%- for n in c.data.uvmap_index %}
+          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+          {%- endfor %}
+        ]
+        {%- endif %}
+      }
+    }
+    {%- elif c.shapeType == ShapeModel.SP_BOX %}
+    Shape {
+      geometry Box {
+        size {{c.data.x}} {{c.data.y}} {{c.data.z}}
+      }
+    }
+    {%- elif c.shapeType == ShapeModel.SP_SPHERE %}
+    Shape {
+      geometry Sphere {
+        radius {{c.data.radius}}
+      }
+    }
+    {%- elif c.shapeType == ShapeModel.SP_CYLINDER %}
+    Shape {
+      geometry Cylinder {
+        radius {{c.data.radius}}
+        height {{c.data.height}}
+      }
+    }
+    {%- endif %}
+    {%- else %}
     Transform {
       {%- if c.scale is not none %}
       scale {{c.scale[0]}} {{c.scale[1]}} {{c.scale[2]}}
@@ -31,86 +130,6 @@ DEF {{name}} Transform {
       ]
       {%- endif %}
     }
-    {%- endif %}
-    {%- if c.shapeType == ShapeModel.SP_MESH %}
-    {%- for g in c.children %}
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0.85 0.85 0.85
-          specularColor 0.85 0.85 0.85
-          emissiveColor 0.05 0.05 0.05
-        }
-        {%- if c.image is not none %}
-        texture ImageTexture {
-          url "{{c.image}}"
-        }
-        {%- endif %}
-      }
-      geometry IndexedFaceSet {
-        coord Coordinate {
-          point [
-            {%- for n in g.vertex %}
-            {{n[0]}} {{n[1]}} {{n[2]}},
-            {%- endfor %}
-          ]
-        }
-        coordIndex [
-          {%- for n in g.vertex_index %}
-          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
-          {%- endfor %}
-        ]
-        {%- if g.normal is not none %}
-        normal Normal {
-          vector [
-            {%- for n in g.normal %}
-            {{n[0]}} {{n[1]}} {{n[2]}},
-            {%- endfor %}
-          ]
-        }
-        normalIndex [
-          {%- for n in g.normal_index %}
-          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
-          {%- endfor %}
-        ]
-        normalPerVertex TRUE
-        {%- else %}
-        normalPerVertex FALSE
-        {%- endif %}
-        {%- if g.color is not none %}
-        color Color {
-          vector [
-            {%- for n in g.color %}
-            {{n[0]}} {{n[1]}} {{n[2]}},
-            {%- endfor %}
-          ]
-        }
-        colorIndex [
-          {%- for n in g.color_index %}
-          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
-          {%- endfor %}
-        ]
-        colorPerVertex TRUE
-        {%- else %}
-        colorPerVertex FALSE
-        {%- endif %}
-        {%- if g.uvmap is not none %}
-        texCoord TextureCoordinate {
-          point [
-            {%- for n in g.uvmap %}
-            {{n[0]}} {{n[1]}},
-            {%- endfor %}
-          ]
-        }
-        texCoordIndex [
-          {%- for n in g.uvmap_index %}
-          {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
-          {%- endfor %}
-        ]
-        {%- endif %}
-      }
-    }
-    {%- endfor %}
     {%- endif %}
     {%- endfor %}
   ]

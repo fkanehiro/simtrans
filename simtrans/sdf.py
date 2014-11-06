@@ -49,8 +49,7 @@ class SDFReader(object):
                     lm.trans, lm.rot = self.readPose(pose)
                 lm.mass = self.readMass(inertial.find('mass'))
             # visual property
-            lm.visual = model.ShapeModel()
-            lm.visual.shapeType = model.ShapeModel.SP_NONE
+            lm.visual = model.NodeModel()
             lm.visual.children = []
             for v in l.findall('visual'):
                 lm.visual.children.append(self.readShape(v))
@@ -122,35 +121,47 @@ class SDFReader(object):
         return float(d.text)
 
     def readShape(self, d):
-        sm = model.ShapeModel()
+        m = model.NodeModel()
         pose = d.find('pose')
         if pose is not None:
-            sm.trans, sm.rot = self.readPose(pose)
+            m.trans, m.rot = self.readPose(pose)
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
                 # print "reading mesh " + mesh.attrib['filename']
                 filename = self.resolveFile(g.find('uri').text)
                 fileext = os.path.splitext(filename)[1].lower()
-                sm.shapeType = model.ShapeModel.SP_NONE
                 if fileext == '.dae':
                     reader = collada.ColladaReader()
                 elif fileext == '.stl':
                     reader = stl.STLReader()
                 else:
                     raise Exception('unsupported mesh format: %s' % fileext)
-                sm.children.append(reader.read(filename))
+                m.children.append(reader.read(filename))
             elif g.tag == 'box':
+                sm = model.ShapeModel()
                 sm.shapeType = model.ShapeModel.SP_BOX
-                size = [float(v) for v in g.find('size').text.split(' ')]
+                boxsize = [float(v) for v in g.find('size').text.split(' ')]
+                sm.data = model.BoxData()
+                sm.data.x = boxsize[0]
+                sm.data.y = boxsize[1]
+                sm.data.z = boxsize[2]
+                m.children.append(sm)
             elif g.tag == 'cylinder':
+                sm = model.ShapeModel()
                 sm.shapeType = model.ShapeModel.SP_CYLINDER
-                radius = float(g.find('radius').text)
-                length = float(g.find('length').text)
+                sm.data = model.CylinderData()
+                sm.data.radius = float(g.find('radius').text)
+                sm.data.height = float(g.find('length').text)
+                m.children.append(sm)
             elif g.tag == 'sphere':
+                sm = model.ShapeModel()
                 sm.shapeType = model.ShapeModel.SP_SPHERE
+                sm.data = model.SphereData()
+                sm.data.radius = float(g.find('radius').text)
+                m.children.append(sm)
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
-        return sm
+        return m
 
     def resolveFile(self, f):
         '''

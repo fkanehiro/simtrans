@@ -12,7 +12,7 @@ from stl import stl
 
 class STLReader:
     def read(self, f):
-        m = model.MeshModel
+        m = model.MeshData()
         p = stl.StlMesh(f)
         npoints = p.v0.shape[0]
         idx = numpy.array(range(0, npoints))

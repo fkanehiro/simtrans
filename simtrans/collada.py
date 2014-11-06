@@ -36,18 +36,15 @@ class ColladaReader(object):
         d = collada.Collada(f)
         for m in d.materials:
             self._materials[m.id] = m
-        m = model.ShapeModel()
-        m.shapeType = model.ShapeModel.SP_NONE
+        m = model.NodeModel()
         m.children = []
         for n in d.scene.nodes:
             m.children.append(self.convertchild(n))
         return m
 
     def convertchild(self, d):
-        m = None
+        m = model.NodeModel()
         if type(d) == collada.scene.Node:
-            m = model.ShapeModel()
-            m.shapeType = model.ShapeModel.SP_NONE
             dmat = tf.decompose_matrix(d.matrix)
             m.scale = dmat[0].tolist()
             m.trans = dmat[3].tolist()
@@ -56,10 +53,10 @@ class ColladaReader(object):
             for c in d.children:
                 m.children.append(self.convertchild(c))
         elif type(d) == collada.scene.GeometryNode:
-            m = model.ShapeModel()
-            m.shapeType = model.ShapeModel.SP_MESH
             for p in d.geometry.primitives:
-                gm = model.MeshModel()
+                sm = model.ShapeModel()
+                sm.shapeType = model.ShapeModel.SP_MESH
+                gm = model.MeshData()
                 gm.vertex = p.vertex
                 gm.vertex_index = p.vertex_index
                 if p.normal.size > 0:
@@ -68,7 +65,6 @@ class ColladaReader(object):
                 if len(p.texcoordset) > 0:
                     gm.uvmap = p.texcoordset[0]
                     gm.uvmap_index = p.texcoord_indexset[0]
-                m.children.append(gm)
                 try:
                     for pr in self._materials[p.material].effect.params:
                         if type(pr) == collada.material.Surface:
@@ -79,6 +75,8 @@ class ColladaReader(object):
                                 m.image = fname
                 except KeyError:
                     pass
+                sm.data = gm
+                m.children.append(sm)
         return m
 
 

@@ -57,10 +57,10 @@ class JointModel(object):
     """
     Joint model
     """
-    J_FIXED = 1        #: Fixed type
-    J_REVOLUTE = 2     #: Revolute type
-    J_PRISMATIC = 3    #: Prismatic type
-    J_SCREW = 4        #: Screw type
+    J_FIXED = 'fixed'         #: Fixed type
+    J_REVOLUTE = 'revolute'   #: Revolute type
+    J_PRISMATIC = 'prismatic' #: Prismatic type
+    J_SCREW = 'screw'         #: Screw type
 
     jointType = None   #: Joint type
     axis = None        #: Joint axis
@@ -73,21 +73,8 @@ class JointModel(object):
     rot = None         #: Rotation (quaternion representation)
 
 
-class ShapeModel(object):
-    """
-    Shape model
-    """
-    SP_NONE = 0        #: None shape (only transform)
-    SP_MESH = 1        #: Mesh shape
-    SP_BOX = 2         #: Box shape
-    SP_CYLINDER = 3    #: Cylinder shape
-    SP_CONE = 4        #: Cone shape
-    SP_SPHERE = 5      #: Sphere shape
-    SP_PLANE = 6       #: Plane shape
-
-    shapeType = None   #: Shape type
-    children = []      #: Mesh data (if the type is SP_MESH)
-    image = None
+class NodeModel(object):
+    children = []      #: Shape data
     scale = None       #: XYZ scale vector
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
@@ -96,7 +83,21 @@ class ShapeModel(object):
         self.children = []
 
 
-class MeshModel(object):
+class ShapeModel(object):
+    """
+    Shape model
+    """
+    SP_MESH = 'mesh'         #: Mesh shape
+    SP_BOX = 'box'           #: Box shape
+    SP_CYLINDER = 'cylinder' #: Cylinder shape
+    SP_SPHERE = 'sphere'     #: Sphere shape
+
+    shapeType = None   #: Shape type
+    data = None        #: Shape data
+    image = None
+
+
+class MeshData(object):
     vertex = []       #: Vertex position (in x,y,z * 3 * N format)
     vertex_index = []
     normal = None     #: Normal direction
@@ -109,6 +110,21 @@ class MeshModel(object):
     def __init__(self):
         self.vertex = []
         self.vertex_index = []
+
+
+class BoxData(object):
+    x = None
+    y = None
+    z = None
+
+
+class CylinderData(object):
+    radius = None
+    height = None
+
+
+class SphereData(object):
+    radius = None
 
 
 class SensorModel(object):
