@@ -148,6 +148,7 @@ class VRMLWriter(object):
     '''
     def __init__(self):
         self._linkmap = {}
+        self._roots = []
 
     def write(self, mdata, fname):
         '''
@@ -169,7 +170,8 @@ class VRMLWriter(object):
         nmodel = {}
         for m in mdata.links:
             self._linkmap[m.name] = m
-        root = self.findroot(mdata)[0]
+        self._roots = self.findroot(mdata)
+        root = self._roots[0]
         rootlink = self._linkmap[root]
         rootjoint = model.JointModel()
         rootjoint.name = root
@@ -186,7 +188,9 @@ class VRMLWriter(object):
             jointcount = jointcount + 1
 
         # list non empty link
-        links = [l for l in mdata.links if l.visual is not None]
+        links = [l for l in mdata.links if l.visual is not None and l.name not in self._roots[1:]]
+        # list joint with parent
+        joints = [j for j in mdata.joints if j.parent not in self._roots[1:]]
 
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
@@ -199,6 +203,7 @@ class VRMLWriter(object):
                 'model': nmodel,
                 'body': mdata,
                 'links': links,
+                'joints': joints,
                 'jointmap': jointmap,
                 'tf': tf
             }))

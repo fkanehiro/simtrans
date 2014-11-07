@@ -191,7 +191,7 @@ DEF {{model.name}} Humanoid {
     }
   ]
   joints [
-    {%- for j in body.joints %}
+    {%- for j in joints %}
     USE {{j.name}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
