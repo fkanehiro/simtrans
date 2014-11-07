@@ -181,8 +181,8 @@ class VRMLWriter(object):
         nmodel['children'] = self.convertchildren(mdata, root)
 
         # assign jointId
-        jointcount = 2
-        jointmap = {root: 1}
+        jointcount = 1
+        jointmap = {root: 0}
         for j in mdata.joints:
             jointmap[j.name] = jointcount
             jointcount = jointcount + 1

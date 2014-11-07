@@ -74,6 +74,9 @@ class JointModel(object):
     trans = None       #: XYZ translation vector
     rot = None         #: Rotation (quaternion representation)
 
+    def __init__(self):
+        self.limit = [1, 1]
+
 
 class NodeModel(object):
     children = []      #: Shape data

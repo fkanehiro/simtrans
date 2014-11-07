@@ -151,35 +151,49 @@ DEF {{model.name}} Humanoid {
           {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.joint.rot)) %}
           rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
           {%- endif %}
-          ulimit 1
-          llimit 1
+          ulimit {{l.joint.limit[0]}}
+          llimit {{l.joint.limit[1]}}
           {%- if l.link and l.link.visual %}
           children [
             Transform {
-              {%- if l.link.visual.scale is not none %}
-              scale {{l.link.visual.scale[0]}} {{l.link.visual.scale[1]}} {{l.link.visual.scale[2]}}
+              {%- if l.link.scale is not none %}
+              scale {{l.link.scale[0]}} {{l.link.scale[1]}} {{l.link.scale[2]}}
               {%- endif %}
-              {%- if l.link.visual.trans is not none %}
-              translation {{l.link.visual.trans[0]}} {{l.link.visual.trans[1]}} {{l.link.visual.trans[2]}}
+              {%- if l.link.trans is not none %}
+              translation {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
               {%- endif %}
-              {%- if l.link.visual.rot is not none %}
-              {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.visual.rot)) %}
+              {%- if l.link.rot is not none %}
+              {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.rot)) %}
               rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
               {%- endif %}
               children [
-                DEF {{l.link.name}} Segment {
-                  mass {{l.link.mass}}
-                  centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
-                  momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
+                Transform {
+                  {%- if l.link.visual.scale is not none %}
+                  scale {{l.link.visual.scale[0]}} {{l.link.visual.scale[1]}} {{l.link.visual.scale[2]}}
+                  {%- endif %}
+                  {%- if l.link.visual.trans is not none %}
+                  translation {{l.link.visual.trans[0]}} {{l.link.visual.trans[1]}} {{l.link.visual.trans[2]}}
+                  {%- endif %}
+                  {%- if l.link.visual.rot is not none %}
+                  {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.visual.rot)) %}
+                  rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+                  {%- endif %}
                   children [
-                    Inline {
-                      url "{{l.link.name}}.wrl"
+                    DEF {{l.link.name}} Segment {
+                      mass {{l.link.mass}}
+                      centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
+                      momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
+                      children [
+                        Inline {
+                          url "{{l.link.name}}.wrl"
+                        }
+                      ]
                     }
+                    {%- if l.children %}
+                    {{ loop(l.children)|indent(12, True) }}
+                    {%- endif %}
                   ]
                 }
-                {%- if l.children %}
-                {{ loop(l.children)|indent(4, True) }}
-                {%- endif %}
               ]
             }
           ]
