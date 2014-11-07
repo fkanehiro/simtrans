@@ -127,7 +127,7 @@ DEF {{model.name}} Humanoid {
         {%- if model.link and model.link.visual %}
         DEF {{model.link.name}} Segment {
           mass {{model.link.mass}}
-          centerOfMass {{model.link.trans[0]}} {{model.link.trans[1]}} {{model.link.trans[2]}}
+          centerOfMass {{model.link.centerofmass[0]}} {{model.link.centerofmass[1]}} {{model.link.centerofmass[2]}}
           momentsOfInertia [{{model.link.inertia[0][0]}} {{model.link.inertia[0][1]}} {{model.link.inertia[0][2]}} {{model.link.inertia[1][0]}} {{model.link.inertia[1][1]}} {{model.link.inertia[1][2]}} {{model.link.inertia[2][0]}} {{model.link.inertia[2][1]}} {{model.link.inertia[2][2]}}]
           children [
             Inline {
@@ -169,7 +169,7 @@ DEF {{model.name}} Humanoid {
               children [
                 DEF {{l.link.name}} Segment {
                   mass {{l.link.mass}}
-                  centerOfMass {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
+                  centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
                   momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
                   children [
                     Inline {

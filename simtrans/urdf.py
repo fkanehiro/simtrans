@@ -40,9 +40,9 @@ class URDFReader(object):
             # phisical property
             inertial = l.find('inertial')
             if inertial is not None:
-                lm.inertia = self.readInertia(inertial.find('inertia'))
-                lm.trans, lm.rot = self.readOrigin(inertial.find('origin'))
                 lm.mass = self.readMass(inertial.find('mass'))
+                lm.centerofmass, tmp = self.readOrigin(inertial.find('origin'))
+                lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             visual = l.find('visual')
             if visual is not None:

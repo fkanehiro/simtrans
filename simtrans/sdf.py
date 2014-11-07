@@ -40,14 +40,17 @@ class SDFReader(object):
             # general information
             lm = model.LinkModel()
             lm.name = l.attrib['name']
+            pose = l.find('pose')
+            if pose is not None:
+                lm.trans, lm.rot = self.readPose(pose)
             # phisical property
             inertial = l.find('inertial')
             if inertial is not None:
-                lm.inertia = self.readInertia(inertial.find('inertia'))
+                lm.mass = self.readMass(inertial.find('mass'))
                 pose = inertial.find('pose')
                 if pose is not None:
-                    lm.trans, lm.rot = self.readPose(pose)
-                lm.mass = self.readMass(inertial.find('mass'))
+                    lm.centerofmass, tmp = self.readPose(pose)
+                lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             lm.visual = model.NodeModel()
             lm.visual.children = []
@@ -87,14 +90,14 @@ class SDFReader(object):
     def readPose(self, doc):
         pose = None
         xyz = None
-        trans = None
+        rot = None
         try:
             pose = [float(v) for v in doc.text.split(' ')]
             xyz = [pose[0], pose[1], pose[2]]
-            trans = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
+            rot = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
         except KeyError:
             pass
-        return xyz, trans
+        return xyz, rot
 
     def readJointType(self, d):
         if d == "fixed":
