@@ -16,6 +16,7 @@ import jinja2
 from . import model
 from . import collada
 from . import stl
+from . import utils
 
 
 class URDFReader(object):
@@ -30,7 +31,7 @@ class URDFReader(object):
         >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         '''
         bm = model.BodyModel()
-        d = lxml.etree.parse(open(self.resolveFile(fname)))
+        d = lxml.etree.parse(open(utils.resolveFile(fname)))
 
         for l in d.findall('link'):
             # general information

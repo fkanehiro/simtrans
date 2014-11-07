@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export OPENHRP_MODEL_PATH=/usr/local/share/OpenHRP-3.1/sample/model
 export ORBgiopMaxMsgSize=2097152000
-export GAZEBO_MODELS=$HOME/gazebo_models
 . /opt/ros/indigo/setup.sh
+. /usr/share/drcsim/setup.sh

@@ -44,7 +44,7 @@ Convert robot simulation model from one another.'''
         elif ext == '.sdf':
             reader = sdf.SDFReader()
         else:
-            print >> sys.stderr, 'unable to detect input format (may be not supported)'
+            print >> sys.stderr, 'unable to detect input format (may be not supported?)'
             return 1
 
     writer = None
@@ -67,7 +67,7 @@ Convert robot simulation model from one another.'''
         elif ext == '.dot':
             writer = graphviz.GraphvizWriter()
         else:
-            print >> sys.stderr, 'unable to detect output format (may be not supported)'
+            print >> sys.stderr, 'unable to detect output format (may be not supported?)'
             return 1
 
     model = reader.read(options.fromfile)

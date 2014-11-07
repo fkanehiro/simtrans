@@ -18,7 +18,7 @@ import jinja2
 from . import model
 from . import collada
 from . import stl
-
+from . import utils
 
 class SDFReader(object):
     '''
@@ -32,7 +32,7 @@ class SDFReader(object):
         >>> m = r.read('model://pr2/model.sdf')
         '''
         bm = model.BodyModel()
-        d = lxml.etree.parse(open(self.resolveFile(fname)))
+        d = lxml.etree.parse(open(utils.resolveFile(fname)))
         dm = d.find('model')
         bm.name = dm.attrib['name']
 
@@ -128,7 +128,7 @@ class SDFReader(object):
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
                 # print "reading mesh " + mesh.attrib['filename']
-                filename = self.resolveFile(g.find('uri').text)
+                filename = utils.resolveFile(g.find('uri').text)
                 fileext = os.path.splitext(filename)[1].lower()
                 if fileext == '.dae':
                     reader = collada.ColladaReader()
@@ -162,17 +162,6 @@ class SDFReader(object):
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
         return m
-
-    def resolveFile(self, f):
-        '''
-        Resolve file by replacing ROS file path heading "model://"
-        '''
-        try:
-            if f.count('model://') > 0:
-                return os.path.join(os.environ['GAZEBO_MODELS'], f.replace('model://', ''))
-        except Exception, e:
-            logger.warn(str(e))
-        return f
 
 
 class SDFWriter(object):
