@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+from simtrans import __version__
 
 setup(name='simtrans',
-      version='0.0.1',
+      version=__version__,
       description='Utility to convert robot simulation model to one another.',
       long_description='Utility to convert robot simulation model to one another.',
       author='',
@@ -19,11 +20,11 @@ setup(name='simtrans',
           'Operating System :: OS Independent',
           'Programming Language :: Python :: 2.7',
           'Topic :: Software Development',
-          ],
+      ],
       packages=['simtrans',
                 'OpenHRP',
                 'OpenHRP__POA'],
       entry_points={
-        'console_scripts': ['simtrans = simtrans.simtrans:main']
-      }
-)
+          'console_scripts': ['simtrans = simtrans.cli:main']
+      },
+      test_suite='nose2.collector.collector')
