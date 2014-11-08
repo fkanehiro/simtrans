@@ -38,18 +38,19 @@ class LinkModel(object):
     """
     Link model
     """
-    name = None         #: Name of the link
-    mass = 0            #: Mass of the link
-    centerofmass = None #: Center of mass
-    inertia = None      #: Inertia (vector representation of 3x3 matrix)
-    visual = None       #: Shape information used for rendering
-    collision = None    #: Shape information used for collision detection
-    sensors = None      #: List of sensors
-    scale = None        #: XYZ scale vector
-    trans = None        #: XYZ translation vector
-    rot = None          #: Rotation (quaternion representation)
+    name = None          #: Name of the link
+    mass = 0             #: Mass of the link
+    centerofmass = None  #: Center of mass
+    inertia = None       #: Inertia (vector representation of 3x3 matrix)
+    visual = None        #: Shape information used for rendering
+    collision = None     #: Shape information used for collision detection
+    sensors = None       #: List of sensors
+    scale = None         #: XYZ scale vector
+    trans = None         #: XYZ translation vector
+    rot = None           #: Rotation (quaternion representation)
 
     def __init__(self):
+        self.scale = [1, 1, 1]
         self.trans = [0, 0, 0]
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
@@ -59,10 +60,10 @@ class JointModel(object):
     """
     Joint model
     """
-    J_FIXED = 'fixed'         #: Fixed type
-    J_REVOLUTE = 'revolute'   #: Revolute type
-    J_PRISMATIC = 'prismatic' #: Prismatic type
-    J_SCREW = 'screw'         #: Screw type
+    J_FIXED = 'fixed'          #: Fixed type
+    J_REVOLUTE = 'revolute'    #: Revolute type
+    J_PRISMATIC = 'prismatic'  #: Prismatic type
+    J_SCREW = 'screw'          #: Screw type
 
     jointType = None   #: Joint type
     axis = None        #: Joint axis
@@ -86,6 +87,8 @@ class NodeModel(object):
 
     def __init__(self):
         self.children = []
+        self.scale = [1, 1, 1]
+        self.trans = [0, 0, 0]
 
 
 class ShapeModel(object):
