@@ -2,10 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
-from simtrans import __version__
+import versioneer
+
+
+versioneer.VCS = 'git'
+versioneer.versionfile_source = 'simtrans/_version.py'
+versioneer.versionfile_build = 'simtrans/_version.py'
+versioneer.tag_prefix = ''
+versioneer.parentdir_prefix = 'simtrans-'
 
 setup(name='simtrans',
-      version=__version__,
+      version=versioneer.get_version(),
       description='Utility to convert robot simulation model to one another.',
       long_description='Utility to convert robot simulation model to one another.',
       author='',
@@ -27,4 +34,5 @@ setup(name='simtrans',
       entry_points={
           'console_scripts': ['simtrans = simtrans.cli:main']
       },
+      cmdclass=versioneer.get_cmdclass(),
       test_suite='nose2.collector.collector')
