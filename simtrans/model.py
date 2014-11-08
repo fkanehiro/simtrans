@@ -4,7 +4,13 @@
 Common data structure for model converter
 """
 
+from __future__ import absolute_import
 import numpy
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    from .thirdparty import transformations as tf
+from .thirdparty import hrputil as hrputil
 
 
 class ProjectModel(object):
@@ -18,45 +24,79 @@ class ProjectModel(object):
         self.bodies = []
 
 
-class BodyModel(object):
+class TransformationModel(object):
+    """
+    Transformation model with utility methods
+
+    Used as a base class for each models
+    """
+    matrix = None     #: Transformation matrix (4x4 numpy matrix)
+
+    def __init__(self):
+        self.matrix = numpy.identity(4)
+
+    def gettranslation(self):
+        return tf.translation_from_matrix(self.matrix)
+
+    def applytranslation(self, v):
+        self.matrix = self.matrix * tf.translation_matrix(v)
+
+    def getscale(self):
+        return tf.scale_from_matrix(self.matrix)
+
+    def applyscale(self, v):
+        self.matrix = self.matrix * tf.scale_matrix(v)
+
+    def getrpy(self):
+        m = self.matrix.copy()
+        return tf.euler_from_matrix(m)
+
+    def applyrpy(self, v):
+        self.matrix = self.matrix * tf.euler_matrix(v[0], v[1], v[2])
+
+    def getangle(self):
+        m = self.matrix.copy()
+        return hrputil.omegaFromRot(m)
+
+    def applyangle(self, v):
+        v2 = v[0] * v[1]
+        self.matrix = self.matrix * tf.rotation_matrix(v2[0], v2[1], v2[2])
+
+
+class BodyModel(TransformationModel):
     """
     Body model
     """
     name = None        #: Name of the body
     links = []         #: List of links
     joints = []        #: List of joints
-    scale = None       #: XYZ scale vector
-    trans = None       #: XYZ translation vector
-    rot = None         #: Rotation (quaternion representation)
+    sensors = []       #: List of sensors
+    materials = []     #: List of materials
 
     def __init__(self):
         self.links = []
         self.joints = []
+        self.sensors = []
+        self.materials = []
 
 
-class LinkModel(object):
+class LinkModel(TransformationModel):
     """
     Link model
     """
     name = None          #: Name of the link
     mass = 0             #: Mass of the link
-    centerofmass = None  #: Center of mass
-    inertia = None       #: Inertia (vector representation of 3x3 matrix)
-    visual = None        #: Shape information used for rendering
-    collision = None     #: Shape information used for collision detection
-    sensors = None       #: List of sensors
-    scale = None         #: XYZ scale vector
-    trans = None         #: XYZ translation vector
-    rot = None           #: Rotation (quaternion representation)
+    centerofmass = None  #: Center of mass (3-dim array)
+    inertia = None       #: Inertia (3x3 numpy matrix)
+    visuals = []         #: List of shape information used for rendering
+    collisions = []      #: List of shape information used for collision detection
 
     def __init__(self):
-        self.scale = [1, 1, 1]
-        self.trans = [0, 0, 0]
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
 
 
-class JointModel(object):
+class JointModel(TransformationModel):
     """
     Joint model
     """
@@ -65,33 +105,20 @@ class JointModel(object):
     J_PRISMATIC = 'prismatic'  #: Prismatic type
     J_SCREW = 'screw'          #: Screw type
 
+    name = None        #: Joint name
     jointType = None   #: Joint type
-    axis = None        #: Joint axis
-    parent = None      #: Parent link
-    child = None       #: Child link
-    damping = None     #: Damping
-    friction = None    #: Friction
-    limit = None       #: Joint limits (upper and lower in vector)
-    trans = None       #: XYZ translation vector
-    rot = None         #: Rotation (quaternion representation)
+    axis = None        #: Joint axis (relative to parent link)
+    parent = None      #: Name of parent link
+    child = None       #: Name of child link
+    damping = None     #: Damping factor
+    friction = None    #: Friction factor
+    limit = None       #: Joint limits (upper and lower limits in 2-dim array)
 
     def __init__(self):
         self.limit = [1, 1]
 
 
-class NodeModel(object):
-    children = []      #: Shape data
-    scale = None       #: XYZ scale vector
-    trans = None       #: XYZ translation vector
-    rot = None         #: Rotation (quaternion representation)
-
-    def __init__(self):
-        self.children = []
-        self.scale = [1, 1, 1]
-        self.trans = [0, 0, 0]
-
-
-class ShapeModel(object):
+class ShapeModel(TransformationModel):
     """
     Shape model
     """
@@ -100,20 +127,35 @@ class ShapeModel(object):
     SP_CYLINDER = 'cylinder' #: Cylinder shape
     SP_SPHERE = 'sphere'     #: Sphere shape
 
-    shapeType = None   #: Shape type
-    data = None        #: Shape data
-    image = None
+    shapeType = None         #: Shape type
+    data = None              #: Store properties for each specific type of shape
+
+
+class MeshTransformData(TransformationModel):
+    """
+    Mesh transform data
+
+    Intended to store scenegraph structure inside collada or vrml
+    """
+    children = []      #: Children (store MeshData or MeshTransformData)
+
+    def __init__(self):
+        self.children = []
 
 
 class MeshData(object):
-    vertex = []       #: Vertex position (in x,y,z * 3 * N format)
-    vertex_index = []
-    normal = None     #: Normal direction
-    normal_index = None
-    color = None      #: Color (in RGBA * N format)
-    color_index = None
-    uvmap = None      #: UV mapping (in x,y * N format)
-    uvmap_index = None
+    """
+    Mesh data
+    """
+    vertex = []          #: Vertex position ([x,y,z] * N numpy matrix)
+    vertex_index = []    #: Vertex index  ([p1,p2,p3] * N numpy matrix)
+    normal = None        #: Normal direction ([x,y,z] * N numpy matrix)
+    normal_index = None  #: Normal index  ([p1,p2,p3] * N numpy matrix)
+    color = None         #: Color ([R,G,B,A] * N numpy matrix)
+    color_index = None   #: Color index  ([p1,p2,p3] * N numpy matrix)
+    uvmap = None         #: UV mapping ([u,v] * N numpy matrix)
+    uvmap_index = None   #: Vertex index  ([p1,p2,p3] * N numpy matrix)
+    material = None      #: Name of material
 
     def __init__(self):
         self.vertex = []
@@ -121,24 +163,53 @@ class MeshData(object):
 
 
 class BoxData(object):
-    x = None
-    y = None
-    z = None
+    """
+    Box shape data
+    """
+    x = None             #: Width
+    y = None             #: Height
+    z = None             #: Depth
+    material = None      #: Name of material
 
 
 class CylinderData(object):
-    radius = None
-    height = None
+    """
+    Cylinder shape data
+    """
+    radius = None        #: Radius
+    height = None        #: Height
+    material = None      #: Name of material
 
 
 class SphereData(object):
-    radius = None
+    """
+    Sphere shape data
+    """
+    radius = None        #: Radius
+    material = None      #: Name of material
 
 
-class SensorModel(object):
+class SensorModel(TransformationModel):
     """
     Sensor model
     """
+    SS_CAMERA = "camera"  #: Camera (color, mono, depth)
+    SS_RANGE = "range"    #: Laser range finder
+    SS_IMU = "imu"        #: IMU sensor
+
     sensorType = None  #: Type of sensor
-    trans = None       #: XYZ translation vector
-    rot = None         #: Rotation (quaternion representation)
+    parent = None      #: Name of parent link
+    data = None
+
+
+class MaterialModel(object):
+    """
+    Material model
+    """
+    name = None          #: Name of the material
+    ambient = None       #: [r,g,b,a] array or path string of texture image
+    diffuse = None       #: [r,g,b,a] array or path string of texture image
+    specular = None      #: [r,g,b,a] array or path string of texture image
+    emission = None      #: [r,g,b,a] array or path string of texture image
+    shininess = None     #: float value or path string of texture image
+    transparency = None  #: float value or path string of texture image
