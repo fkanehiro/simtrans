@@ -1,6 +1,0 @@
-tricks:
-- watchdog.tricks.ShellCommandTrick:
-    patterns: ["*.py"]
-    wait_for_process: True
-    drop_during_process: True
-    shell_command: "python testrunner.py"
