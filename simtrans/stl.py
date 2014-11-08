@@ -46,5 +46,5 @@ class STLWriter(object):
         os.close(fd)
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
-        subprocess.check_output(['meshlabserver', '-i', daefile, '-o', f])
+        subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         os.unlink(daefile)
