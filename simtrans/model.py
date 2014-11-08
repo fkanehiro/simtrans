@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# pylint: disable=too-few-public-methods, line-too-long
 
 """
 Common data structure for model converter
@@ -74,6 +75,7 @@ class BodyModel(TransformationModel):
     materials = []     #: List of materials
 
     def __init__(self):
+        TransformationModel.__init__(self)
         self.links = []
         self.joints = []
         self.sensors = []
@@ -92,6 +94,7 @@ class LinkModel(TransformationModel):
     collisions = []      #: List of shape information used for collision detection
 
     def __init__(self):
+        TransformationModel.__init__(self)
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
 
@@ -115,6 +118,7 @@ class JointModel(TransformationModel):
     limit = None       #: Joint limits (upper and lower limits in 2-dim array)
 
     def __init__(self):
+        TransformationModel.__init__(self)
         self.limit = [1, 1]
 
 
@@ -130,6 +134,8 @@ class ShapeModel(TransformationModel):
     shapeType = None         #: Shape type
     data = None              #: Store properties for each specific type of shape
 
+    def __init__(self):
+        TransformationModel.__init__(self)
 
 class MeshTransformData(TransformationModel):
     """
@@ -140,6 +146,7 @@ class MeshTransformData(TransformationModel):
     children = []      #: Children (store MeshData or MeshTransformData)
 
     def __init__(self):
+        TransformationModel.__init__(self)
         self.children = []
 
 
@@ -200,6 +207,9 @@ class SensorModel(TransformationModel):
     sensorType = None  #: Type of sensor
     parent = None      #: Name of parent link
     data = None
+
+    def __init__(self):
+        TransformationModel.__init__(self)
 
 
 class MaterialModel(object):
