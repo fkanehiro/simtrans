@@ -32,7 +32,10 @@ setup(name='simtrans',
                 'OpenHRP',
                 'OpenHRP__POA'],
       entry_points={
-          'console_scripts': ['simtrans = simtrans.cli:main']
+          'console_scripts': [
+              'simtrans = simtrans.cli:main',
+              'gzfetch = simtrans.gzfetch:main'
+          ]
       },
       cmdclass=versioneer.get_cmdclass(),
       test_suite='nose2.collector.collector')
