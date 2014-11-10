@@ -42,20 +42,19 @@ class SDFReader(object):
             lm.name = l.attrib['name']
             pose = l.find('pose')
             if pose is not None:
-                lm.trans, lm.rot = self.readPose(pose)
+                self.readPose(lm, pose)
             # phisical property
             inertial = l.find('inertial')
             if inertial is not None:
-                lm.mass = self.readMass(inertial.find('mass'))
+                lm.mass = float(inertial.find('mass').text)
                 pose = inertial.find('pose')
                 if pose is not None:
-                    lm.centerofmass, tmp = self.readPose(pose)
+                    lm.centerofmass = [float(v) for v in pose.text.split(' ')][0:3]
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
-            lm.visual = model.NodeModel()
-            lm.visual.children = []
+            lm.visuals = []
             for v in l.findall('visual'):
-                lm.visual.children.append(self.readShape(v))
+                lm.visuals.append(self.readShape(v))
             # contact property
             #collision = l.find('collision')
             #if collision is not None:
@@ -69,7 +68,7 @@ class SDFReader(object):
             jm.jointType = self.readJointType(j.attrib['type'])
             pose = j.find('pose')
             if pose is not None:
-                jm.trans, jm.rot = self.readPose(pose)
+                self.readPose(jm, pose)
             axis = j.find('axis')
             if axis is not None:
                 jm.axis = axis.find('xyz').text
@@ -87,17 +86,14 @@ class SDFReader(object):
 
         return bm
 
-    def readPose(self, doc):
+    def readPose(self, m, doc):
         pose = None
-        xyz = None
-        rot = None
         try:
-            pose = [float(v) for v in doc.text.split(' ')]
-            xyz = [pose[0], pose[1], pose[2]]
-            rot = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
+            pose = numpy.array([float(v) for v in doc.text.split(' ')])
+            m.applytranslation(pose[0:3])
+            m.applyrpy(pose[3:6])
         except KeyError:
             pass
-        return xyz, rot
 
     def readJointType(self, d):
         if d == "fixed":
@@ -120,16 +116,14 @@ class SDFReader(object):
         inertia[2, 2] = float(d.find('izz').text)
         return inertia
 
-    def readMass(self, d):
-        return float(d.text)
-
     def readShape(self, d):
-        m = model.NodeModel()
+        m = model.ShapeModel()
         pose = d.find('pose')
         if pose is not None:
-            m.trans, m.rot = self.readPose(pose)
+            self.readPose(m, pose)
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
+                m.shapeType = model.ShapeModel.SP_MESH
                 # print "reading mesh " + mesh.attrib['filename']
                 filename = utils.resolveFile(g.find('uri').text)
                 fileext = os.path.splitext(filename)[1].lower()
@@ -139,29 +133,23 @@ class SDFReader(object):
                     reader = stl.STLReader()
                 else:
                     raise Exception('unsupported mesh format: %s' % fileext)
-                m.children.append(reader.read(filename))
+                m.data = reader.read(filename)
             elif g.tag == 'box':
-                sm = model.ShapeModel()
-                sm.shapeType = model.ShapeModel.SP_BOX
+                m.shapeType = model.ShapeModel.SP_BOX
                 boxsize = [float(v) for v in g.find('size').text.split(' ')]
-                sm.data = model.BoxData()
-                sm.data.x = boxsize[0]
-                sm.data.y = boxsize[1]
-                sm.data.z = boxsize[2]
-                m.children.append(sm)
+                m.data = model.BoxData()
+                m.data.x = boxsize[0]
+                m.data.y = boxsize[1]
+                m.data.z = boxsize[2]
             elif g.tag == 'cylinder':
-                sm = model.ShapeModel()
-                sm.shapeType = model.ShapeModel.SP_CYLINDER
-                sm.data = model.CylinderData()
-                sm.data.radius = float(g.find('radius').text)
-                sm.data.height = float(g.find('length').text)
-                m.children.append(sm)
+                m.shapeType = model.ShapeModel.SP_CYLINDER
+                m.data = model.CylinderData()
+                m.data.radius = float(g.find('radius').text)
+                m.data.height = float(g.find('length').text)
             elif g.tag == 'sphere':
-                sm = model.ShapeModel()
-                sm.shapeType = model.ShapeModel.SP_SPHERE
-                sm.data = model.SphereData()
-                sm.data.radius = float(g.find('radius').text)
-                m.children.append(sm)
+                m.shapeType = model.ShapeModel.SP_SPHERE
+                m.data = model.SphereData()
+                m.data.radius = float(g.find('radius').text)
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
         return m

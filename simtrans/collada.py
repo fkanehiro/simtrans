@@ -37,35 +37,34 @@ class ColladaReader(object):
         d = collada.Collada(f)
         for m in d.materials:
             self._materials[m.id] = m
-        m = model.NodeModel()
+        m = model.MeshTransformData()
         m.children = []
         for n in d.scene.nodes:
-            m.children.append(self.convertchild(n))
+            cm = self.convertchild(n)
+            if cm is not None:
+                m.children.append(cm)
         return m
 
     def convertchild(self, d):
-        m = model.NodeModel()
+        m = None
         if type(d) == collada.scene.Node:
-            dmat = tf.decompose_matrix(d.matrix)
-            m.scale = dmat[0].tolist()
-            m.trans = dmat[3].tolist()
-            m.rot = tf.quaternion_from_matrix(tf.compose_matrix(shear=dmat[1], angles=dmat[2]))
+            m = model.MeshTransformData()
+            m.matrix = d.matrix
             m.children = []
             for c in d.children:
                 m.children.append(self.convertchild(c))
         elif type(d) == collada.scene.GeometryNode:
+            m = model.MeshTransformData()
             for p in d.geometry.primitives:
-                sm = model.ShapeModel()
-                sm.shapeType = model.ShapeModel.SP_MESH
-                sm.data = model.MeshData()
-                sm.data.vertex = p.vertex
-                sm.data.vertex_index = p.vertex_index
+                sm = model.MeshData()
+                sm.vertex = p.vertex
+                sm.vertex_index = p.vertex_index
                 if p.normal.size > 0:
-                    sm.data.normal = p.normal
-                    sm.data.normal_index = p.normal_index
+                    sm.normal = p.normal
+                    sm.normal_index = p.normal_index
                 if len(p.texcoordset) > 0:
-                    sm.data.uvmap = p.texcoordset[0]
-                    sm.data.uvmap_index = p.texcoord_indexset[0]
+                    sm.uvmap = p.texcoordset[0]
+                    sm.uvmap_index = p.texcoord_indexset[0]
                 try:
                     for pr in self._materials[p.material].effect.params:
                         if type(pr) == collada.material.Surface:
@@ -112,7 +111,7 @@ class ColladaWriter(object):
         self._mesh.write(f)
 
     def convertchild(self, m):
-        if type(m) == model.NodeModel:
+        if type(m) == model.MeshTransformData:
             children = []
             name = 'node-' + str(uuid.uuid1()).replace('-', '')
             for c in m.children:
@@ -121,26 +120,24 @@ class ColladaWriter(object):
                     children.append(cn)
             node = collada.scene.Node(name, children=children)
             return node
-        elif type(m) == model.ShapeModel:
-            # append geometric data
-            if m.shapeType == model.ShapeModel.SP_MESH:
-                name = 'shape-' + str(uuid.uuid1()).replace('-', '')
-                vertexname = name + '-vertex'
-                normalname = name + '-normal'
-                sources = []
-                input_list = collada.source.InputList()
-                sources.append(collada.source.FloatSource(vertexname, m.data.vertex.reshape(1, m.data.vertex.size), ('X', 'Y', 'Z')))
-                indices = m.data.vertex_index.reshape(1, m.data.vertex_index.size)
-                input_list.addInput(0, 'VERTEX', '#' + vertexname)
-                if m.data.normal:
-                    sources.append(collada.source.FloatSource(normalname, m.data.normal.reshape(1, m.data.normal.size), ('X', 'Y', 'Z')))
-                    indices = numpy.vstack([indices, m.data.normal_index.reshape(1, m.data.normal_index.size)])
-                    input_list.addInput(1, 'NORMAL', '#' + normalname)
-                geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources)
-                # create triangles
-                triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
-                geom.primitives.append(triset)
-                self._mesh.geometries.append(geom)
-                node = collada.scene.GeometryNode(geom, [self._matnode])
-                return node
+        elif type(m) == model.MeshData:
+            name = 'shape-' + str(uuid.uuid1()).replace('-', '')
+            vertexname = name + '-vertex'
+            normalname = name + '-normal'
+            sources = []
+            input_list = collada.source.InputList()
+            sources.append(collada.source.FloatSource(vertexname, m.data.vertex.reshape(1, m.data.vertex.size), ('X', 'Y', 'Z')))
+            indices = m.data.vertex_index.reshape(1, m.data.vertex_index.size)
+            input_list.addInput(0, 'VERTEX', '#' + vertexname)
+            if m.data.normal:
+                sources.append(collada.source.FloatSource(normalname, m.data.normal.reshape(1, m.data.normal.size), ('X', 'Y', 'Z')))
+                indices = numpy.vstack([indices, m.data.normal_index.reshape(1, m.data.normal_index.size)])
+                input_list.addInput(1, 'NORMAL', '#' + normalname)
+            geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources)
+            # create triangles
+            triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
+            geom.primitives.append(triset)
+            self._mesh.geometries.append(geom)
+            node = collada.scene.GeometryNode(geom, [self._matnode])
+            return node
         return None

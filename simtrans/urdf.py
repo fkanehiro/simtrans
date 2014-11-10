@@ -5,7 +5,6 @@ Reader and writer for URDF format
 """
 
 import os
-import subprocess
 import lxml.etree
 import numpy
 import warnings
@@ -40,17 +39,17 @@ class URDFReader(object):
             # phisical property
             inertial = l.find('inertial')
             if inertial is not None:
-                lm.mass = self.readMass(inertial.find('mass'))
-                lm.centerofmass, tmp = self.readOrigin(inertial.find('origin'))
+                lm.mass = float(inertial.find('mass').attrib['value'])
+                lm.centerofmass = inertial.find('origin').attrib['xyz']
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
-            visual = l.find('visual')
-            if visual is not None:
-                lm.visual = self.readShape(visual)
+            lm.visuals = []
+            for v in l.findall('visual'):
+                lm.visuals.append(self.readShape(v))
             # contact property
-            collision = l.find('collision')
-            if collision is not None:
-                lm.collision = self.readShape(collision)
+            lm.collisions = []
+            for c in l.findall('collision'):
+                lm.collisions.append(self.readShape(c))
             bm.links.append(lm)
 
         for j in d.findall('joint'):
@@ -58,7 +57,7 @@ class URDFReader(object):
             # general property
             jm.name = j.attrib['name']
             jm.jointType = self.readJointType(j.attrib['type'])
-            jm.trans, jm.rot = self.readOrigin(j.find('origin'))
+            self.readOrigin(jm, j.find('origin'))
             axis = j.find('axis')
             if axis is not None:
                 jm.axis = axis.attrib['xyz']
@@ -76,17 +75,16 @@ class URDFReader(object):
 
         return bm
 
-    def readOrigin(self, doc):
+    def readOrigin(self, m, doc):
         xyz = None
         rpy = None
-        trans = None
         try:
-            xyz = [float(v) for v in doc.attrib['xyz'].split(' ')]
-            rpy = [float(v) for v in doc.attrib['rpy'].split(' ')]
-            trans = tf.quaternion_from_euler(rpy[0], rpy[1], rpy[2])
+            xyz = numpy.array([float(v) for v in doc.attrib['xyz'].split(' ')])
+            m.applytranslation(xyz)
+            rpy = numpy.array([float(v) for v in doc.attrib['rpy'].split(' ')])
+            m.applyrpy(rpy)
         except KeyError:
             pass
-        return xyz, trans
 
     def readJointType(self, d):
         if d == "fixed":
@@ -105,42 +103,30 @@ class URDFReader(object):
         inertia[2, 2] = float(d.attrib['izz'])
         return inertia
 
-    def readMass(self, d):
-        return float(d.attrib['value'])
-
     def readShape(self, d):
-        sm = model.NodeModel()
-        sm.trans, sm.rot = self.readOrigin(d.find('origin'))
-        mesh = d.find('geometry').find('mesh')
-        if mesh is not None:
-            # print "reading mesh " + mesh.attrib['filename']
-            filename = self.resolveFile(mesh.attrib['filename'])
-            fileext = os.path.splitext(filename)[1]
-            if fileext == '.dae':
-                reader = collada.ColladaReader()
+        sm = model.ShapeModel()
+        self.readOrigin(sm, d.find('origin'))
+        for g in d.find('geometry').getchildren():
+            if g.tag == 'mesh':
+                sm.shapeType = model.ShapeModel.SP_MESH
+                # print "reading mesh " + mesh.attrib['filename']
+                filename = utils.resolveFile(g.attrib['filename'])
+                fileext = os.path.splitext(filename)[1]
+                if fileext == '.dae':
+                    reader = collada.ColladaReader()
+                else:
+                    reader = stl.STLReader()
+                sm.data = reader.read(filename)
+            elif g.tag == 'box':
+                sm.shapeType = model.ShapeModel.SP_BOX
+                sm.data = model.BoxData()
+                boxsize = [float(s) for s in g.attrib['size'].split(' ')]
+                sm.data.x = boxsize[0]
+                sm.data.y = boxsize[1]
+                sm.data.z = boxsize[2]
             else:
-                reader = stl.STLReader()
-            sm.children.append(reader.read(filename))
+                raise Exception('unsupported shape type: %s' % g.tag)
         return sm
-
-    def resolveFile(self, f):
-        '''
-        Resolve file by replacing ROS file path heading "package://"
-
-        >>> r = URDFReader()
-        >>> r.resolveFile('package://atlas_description/package.xml')
-        '/opt/ros/indigo/share/atlas_description/package.xml'
-        >>> r.resolveFile('package://atlas_description/urdf/atlas.urdf')
-        '/opt/ros/indigo/share/atlas_description/urdf/atlas.urdf'
-        '''
-        try:
-            if f.count('package://') > 0:
-                pkgname, pkgfile = f.replace('package://', '').split('/', 1)
-                ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
-                return os.path.join(ppath, pkgfile)
-        except Exception, e:
-            print str(e)
-        return f
 
 
 class URDFWriter(object):
@@ -170,10 +156,12 @@ class URDFWriter(object):
                 'tf': tf
             }))
 
+        # render mesh data to each separate collada file
         cwriter = collada.ColladaWriter()
         swriter = stl.STLWriter()
         dirname = os.path.dirname(f)
         for l in m.links:
-            if l.visual is not None:
-                cwriter.write(l.visual, os.path.join(dirname, l.name + ".dae"))
-                swriter.write(l.visual, os.path.join(dirname, l.name + ".stl"))
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    cwriter.write(v, os.path.join(dirname, l.name + ".dae"))
+                    swriter.write(v, os.path.join(dirname, l.name + ".stl"))

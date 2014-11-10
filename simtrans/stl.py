@@ -22,15 +22,13 @@ class STLReader(object):
         '''
         Read mesh model in STL format
         '''
-        m = model.ShapeModel()
-        m.shapeType = model.ShapeModel.SP_MESH
-        m.data = model.MeshData()
+        data = model.MeshData()
         p = stl.StlMesh(f)
         npoints = p.v0.shape[0]
         idx = numpy.array(range(0, npoints))
-        m.data.vertex = numpy.concatenate([p.v0, p.v1, p.v2])
-        m.data.vertex_index = numpy.vstack([idx, idx+npoints, idx+2*npoints]).T
-        return m
+        data.vertex = numpy.concatenate([p.v0, p.v1, p.v2])
+        data.vertex_index = numpy.vstack([idx, idx+npoints, idx+2*npoints]).T
+        return data
 
 
 class STLWriter(object):

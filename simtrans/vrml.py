@@ -72,38 +72,34 @@ class VRMLReader(object):
     def readLink(self, m):
         lm = model.LinkModel()
         lm.name = m.name
-        sm = model.NodeModel()
+        lm.visuals = []
         for s in m.shapeIndices:
-            ssm = model.ShapeModel()
+            sm = model.ShapeModel()
             # ssm.trans = tf.decompose_matrix(s.transformMatrix)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
-                ssm.shapeType = model.ShapeModel.SP_MESH
-                ssm.data = model.MeshData()
-                ssm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
-                ssm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
-                sm.children.append(ssm)
+                sm.shapeType = model.ShapeModel.SP_MESH
+                sm.data = model.MeshData()
+                sm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
+                sm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
-                ssm.shapeType = model.ShapeModel.SP_SPHERE
-                ssm.data = model.SphereData()
-                ssm.data.radius = sdata.primitiveParameters[0]
-                sm.children.append(ssm)
+                sm.shapeType = model.ShapeModel.SP_SPHERE
+                sm.data = model.SphereData()
+                sm.data.radius = sdata.primitiveParameters[0]
             elif sdata.primitiveType == OpenHRP.SP_CYLINDER:
-                ssm.shapeType = model.ShapeModel.SP_CYLINDER
-                ssm.data = model.CylinderData()
-                ssm.data.radius = sdata.primitiveParameters[0]
-                ssm.data.height = sdata.primitiveParameters[1]
-                sm.children.append(ssm)
+                sm.shapeType = model.ShapeModel.SP_CYLINDER
+                sm.data = model.CylinderData()
+                sm.data.radius = sdata.primitiveParameters[0]
+                sm.data.height = sdata.primitiveParameters[1]
             elif sdata.primitiveType == OpenHRP.SP_BOX:
-                ssm.shapeType = model.ShapeModel.SP_BOX
-                ssm.data = model.BoxData()
-                ssm.data.x = sdata.primitiveParameters[0]
-                ssm.data.y = sdata.primitiveParameters[1]
-                ssm.data.z = sdata.primitiveParameters[2]
-                sm.children.append(ssm)
+                sm.shapeType = model.ShapeModel.SP_BOX
+                sm.data = model.BoxData()
+                sm.data.x = sdata.primitiveParameters[0]
+                sm.data.y = sdata.primitiveParameters[1]
+                sm.data.z = sdata.primitiveParameters[2]
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
-        lm.visual = sm
+            lm.visuals.append(sm)
         return lm
 
     def readChild(self, parent, child):
@@ -188,7 +184,7 @@ class VRMLWriter(object):
             jointcount = jointcount + 1
 
         # list non empty link
-        links = [l for l in mdata.links if l.visual is not None and l.name not in self._roots[1:]]
+        links = [l for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
         # list joint with parent
         joints = [j for j in mdata.joints if j.parent not in self._roots[1:]]
 
