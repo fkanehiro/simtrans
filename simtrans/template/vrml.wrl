@@ -116,93 +116,69 @@ DEF {{j.name}} ExtraJoint {
 
 DEF {{model.name}} Humanoid {
   humanoidBody [
-    DEF {{model.joint.name}} Joint {
-      jointType "fixed"
-      jointId {{jointmap[model.joint.name]}}
-      translation 0 0 0
-      rotation 0 1 0 0
-      ulimit 1
-      llimit 1
+    {%- for l in model.children recursive %}
+    DEF {{l.joint.name}} Joint {
+      jointType "{{l.jointtype}}"
+      {%- if l.joint.axis %}
+      jointAxis {{l.joint.axis}}
+      {%- endif %}
+      jointId {{jointmap[l.joint.name]}}
+      {%- set trans = l.joint.gettranslation() %}
+      translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
+      {%- set angle = l.joint.getangle() %}
+      rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+      ulimit {{l.joint.limit[0]}}
+      llimit {{l.joint.limit[1]}}
+      {%- if l.link %}
       children [
-        {%- if model.link and model.link.visual %}
-        DEF {{model.link.name}} Segment {
-          mass {{model.link.mass}}
-          centerOfMass {{model.link.centerofmass[0]}} {{model.link.centerofmass[1]}} {{model.link.centerofmass[2]}}
-          momentsOfInertia [{{model.link.inertia[0][0]}} {{model.link.inertia[0][1]}} {{model.link.inertia[0][2]}} {{model.link.inertia[1][0]}} {{model.link.inertia[1][1]}} {{model.link.inertia[1][2]}} {{model.link.inertia[2][0]}} {{model.link.inertia[2][1]}} {{model.link.inertia[2][2]}}]
+        DEF {{l.link.name}} Segment {
+          mass {{l.link.mass}}
+          centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
+          momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
           children [
-            Inline {
-              url "{{model.link.name}}.wrl"
-            }
-          ]
-        }
-        {%- endif %}
-        {%- for l in model.children recursive %}
-        {%- if l.joint %}
-        DEF {{l.joint.name}} Joint {
-          jointType "{{l.jointtype}}"
-          {%- if l.joint.axis %}
-          jointAxis {{l.joint.axis}}
-          {%- endif %}
-          jointId {{jointmap[l.joint.name]}}
-          {%- if l.joint.trans is not none %}
-          translation {{l.joint.trans[0]}} {{l.joint.trans[1]}} {{l.joint.trans[2]}}
-          {%- endif %}
-          {%- if l.joint.rot is not none %}
-          {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.joint.rot)) %}
-          rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
-          {%- endif %}
-          ulimit {{l.joint.limit[0]}}
-          llimit {{l.joint.limit[1]}}
-          {%- if l.link and l.link.visual %}
-          children [
+            {%- for v in l.link.visuals %}
             Transform {
-              {%- if l.link.scale is not none %}
-              scale {{l.link.scale[0]}} {{l.link.scale[1]}} {{l.link.scale[2]}}
-              {%- endif %}
-              {%- if l.link.trans is not none %}
-              translation {{l.link.trans[0]}} {{l.link.trans[1]}} {{l.link.trans[2]}}
-              {%- endif %}
-              {%- if l.link.rot is not none %}
-              {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.rot)) %}
+              {%- set scale = v.getscale() %}
+              scale {{scale[0]}} {{scale[1]}} {{scale[2]}}
+              {%- set trans = v.gettranslation() %}
+              translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
+              {%- set angle = v.getangle() %}
               rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
-              {%- endif %}
               children [
-                Transform {
-                  {%- if l.link.visual.scale is not none %}
-                  scale {{l.link.visual.scale[0]}} {{l.link.visual.scale[1]}} {{l.link.visual.scale[2]}}
-                  {%- endif %}
-                  {%- if l.link.visual.trans is not none %}
-                  translation {{l.link.visual.trans[0]}} {{l.link.visual.trans[1]}} {{l.link.visual.trans[2]}}
-                  {%- endif %}
-                  {%- if l.link.visual.rot is not none %}
-                  {%- set angle = tf.rotation_from_matrix(tf.quaternion_matrix(l.link.visual.rot)) %}
-                  rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
-                  {%- endif %}
-                  children [
-                    DEF {{l.link.name}} Segment {
-                      mass {{l.link.mass}}
-                      centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
-                      momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
-                      children [
-                        Inline {
-                          url "{{l.link.name}}.wrl"
-                        }
-                      ]
-                    }
-                    {%- if l.children %}
-                    {{ loop(l.children)|indent(12, True) }}
-                    {%- endif %}
-                  ]
+                {%- if v.shapeType == ShapeModel.SP_MESH %}
+                Inline {
+                  url "{{l.link.name}}.wrl"
                 }
+                {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
+                Shape {
+                  geometry Sphere {
+                    radius {{v.data.radius}}
+                  }
+                }
+                {%- elif v.shapeType == ShapeModel.SP_BOX %}
+                Shape {
+                  geometry Box {
+                    size {{v.data.x}} {{v.data.y}} {{v.data.z}}
+                  }
+                }
+                {%- elif v.shapeType == ShapeModel.SP_CYLINDER %}
+                Shape {
+                  geometry Cylinder {
+                    radius {{v.data.radius}}
+                    height {{v.data.height}}
+                  }
+                }
+                {%- endif %}
               ]
             }
+            {%- endfor %}
           ]
           {%- endif %}
         }
-        {%- endif %}
-        {%- endfor %}
+        {{ loop(l.children)|indent(4, True) }}
       ]
     }
+    {%- endfor %}
   ]
   joints [
     {%- for j in joints %}

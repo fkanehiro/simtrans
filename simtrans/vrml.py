@@ -175,6 +175,8 @@ class VRMLWriter(object):
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
         nmodel['children'] = self.convertchildren(mdata, root)
+        rmodel = {}
+        rmodel['children'] = [nmodel]
 
         # assign jointId
         jointcount = 1
@@ -196,26 +198,28 @@ class VRMLWriter(object):
         template = env.get_template('vrml.wrl')
         with open(fname, 'w') as ofile:
             ofile.write(template.render({
-                'model': nmodel,
+                'model': rmodel,
                 'body': mdata,
                 'links': links,
                 'joints': joints,
                 'jointmap': jointmap,
-                'tf': tf
+                'ShapeModel': model.ShapeModel
             }))
 
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
         dirname = os.path.dirname(fname)
         for l in mdata.links:
-            if l.visual is not None:
-                with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
-                    ofile.write(template.render({
-                        'name': l.name,
-                        'ShapeModel': model.ShapeModel,
-                        'tf': tf,
-                        'visual': l.visual
-                    }))
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    m = {}
+                    m['children'] = [v.data]
+                    with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
+                        ofile.write(template.render({
+                            'name': l.name,
+                            'ShapeModel': model.ShapeModel,
+                            'mesh': m
+                        }))
 
         # render openhrp project
         template = env.get_template('openhrp-project.xml')
