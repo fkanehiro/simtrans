@@ -17,6 +17,7 @@ Shape {
     {%- endif %}
   }
   {%- else %}
+  {%- if c.vertex is defined %}
   appearance Appearance {
     material Material {
       diffuseColor 0.85 0.85 0.85
@@ -91,6 +92,7 @@ Shape {
     ]
     {%- endif %}
   }
+  {%- endif %}
   {%- endif %}
   {%- endfor %}
 }
