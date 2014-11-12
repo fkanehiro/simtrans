@@ -37,5 +37,6 @@ setup(name='simtrans',
               'gzfetch = simtrans.gzfetch:main'
           ]
       },
+      install_requires=['python-graph-core'],
       cmdclass=versioneer.get_cmdclass(),
       test_suite='nose2.collector.collector')
