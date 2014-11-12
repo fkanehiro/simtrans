@@ -2,22 +2,58 @@
   {%- for l in model.links %}
   <link name="{{l.name}}">
     <inertial>
-      <mass value="3.45" />
-      <origin xyz="0 0.048 0.084" rpy="0 -0 0" />
-      <inertia ixx="0.011" ixy="0" ixz="0" iyy="0.009" iyz="-0.004" izz="0.004" />
+      <mass value="{{l.mass}}" />
+      <origin xyz="{{l.centerofmass[0]}} {{l.centerofmass[1]}} {{l.centerofmass[2]}}" rpy="0 -0 0" />
+      <inertia ixx="{{l.inertia[0][0]}}" ixy="{{l.inertia[0][1]}}" ixz="{{l.inertia[0][2]}}" iyy="{{l.inertia[1][1]}}" iyz="{{l.inertia[1][2]}}" izz="{{l.inertia[2][2]}}" />
     </inertial>
+    {%- for v in l.visuals %}
     <visual>
       <origin xyz="0 0 0" rpy="0 -0 0" />
+      {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
         <mesh filename="{{l.name}}.dae" scale="1 1 1" />
       </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_BOX %}
+      <geometry>
+        <box size="{{v.data.x}} {{v.data.y}} {{v.data.z}}" />
+      </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
+      <geometry>
+        <cylinder radius="{{v.data.radius}}" length="{{v.data.length}}" />
+      </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_SPHERE %}
+      <geometry>
+        <sphere radius="{{v.data.radius}}" />
+      </geometry>
+      {%- endif %}
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 -0 0" />
+      {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
         <mesh filename="{{l.name}}.stl" scale="1 1 1" />
       </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_BOX %}
+      <geometry>
+        <box size="{{v.data.x}} {{v.data.y}} {{v.data.z}}" />
+      </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
+      <geometry>
+        <cylinder radius="{{v.data.radius}}" length="{{v.data.length}}" />
+      </geometry>
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_SPHERE %}
+      <geometry>
+        <sphere radius="{{v.data.radius}}" />
+      </geometry>
+      {%- endif %}
     </collision>
+    {%- endfor %}
   </link>
   {%- endfor %}
   {%- for j in model.joints %}

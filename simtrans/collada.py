@@ -102,7 +102,7 @@ class ColladaWriter(object):
         self._matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
 
         # convert shapes recursively
-        node = self.convertchild(m.data)
+        node = collada.scene.Node("root", children=[self.convertchild(m.data)])
 
         # create scene graph
         myscene = collada.scene.Scene("myscene", [node])
