@@ -39,6 +39,7 @@ def omegaFromRot(m):
             (m[0, 1] - m[1, 0]) * k
         ])
 
+
 def decomposeMatrix(m):
     '''
     decompose transformation matrix to transform, scale, rotation

@@ -87,13 +87,9 @@ class SDFReader(object):
         return bm
 
     def readPose(self, m, doc):
-        pose = None
-        try:
-            pose = numpy.array([float(v) for v in doc.text.split(' ')])
-            m.applytranslation(pose[0:3])
-            m.applyrpy(pose[3:6])
-        except KeyError:
-            pass
+        pose = numpy.array([float(v) for v in doc.text.split(' ')])
+        m.applytranslation(pose[0:3])
+        m.applyrpy(pose[3:6])
 
     def readJointType(self, d):
         if d == "fixed":

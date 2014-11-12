@@ -102,7 +102,7 @@ class ColladaWriter(object):
         self._matnode = collada.scene.MaterialNode("materialref", mat, inputs=[])
 
         # convert shapes recursively
-        node = self.convertchild(m)
+        node = self.convertchild(m.data)
 
         # create scene graph
         myscene = collada.scene.Scene("myscene", [node])
@@ -126,12 +126,12 @@ class ColladaWriter(object):
             normalname = name + '-normal'
             sources = []
             input_list = collada.source.InputList()
-            sources.append(collada.source.FloatSource(vertexname, m.data.vertex.reshape(1, m.data.vertex.size), ('X', 'Y', 'Z')))
-            indices = m.data.vertex_index.reshape(1, m.data.vertex_index.size)
+            sources.append(collada.source.FloatSource(vertexname, m.vertex.reshape(1, m.vertex.size), ('X', 'Y', 'Z')))
+            indices = m.vertex_index.reshape(1, m.vertex_index.size)
             input_list.addInput(0, 'VERTEX', '#' + vertexname)
-            if m.data.normal:
-                sources.append(collada.source.FloatSource(normalname, m.data.normal.reshape(1, m.data.normal.size), ('X', 'Y', 'Z')))
-                indices = numpy.vstack([indices, m.data.normal_index.reshape(1, m.data.normal_index.size)])
+            if m.normal:
+                sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
+                indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
             geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources)
             # create triangles

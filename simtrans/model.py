@@ -30,6 +30,16 @@ class TransformationModel(object):
     Transformation model with utility methods
 
     Used as a base class for each models
+
+    >>> m = TransformationModel()
+    >>> numpy.allclose(m.gettranslation(), [0, 0, 0])
+    True
+    >>> numpy.allclose(m.getscale(), [1, 1, 1])
+    True
+    >>> numpy.allclose(m.getrpy(), [0, 0, 0])
+    True
+    >>> numpy.allclose(m.getangle(), [0, 0, 0])
+    True
     """
     matrix = None     #: Transformation matrix (4x4 numpy matrix)
 
@@ -37,13 +47,15 @@ class TransformationModel(object):
         self.matrix = numpy.identity(4)
 
     def gettranslation(self):
-        return tf.translation_from_matrix(self.matrix)
+        translation, scale, axis = hrputil.decomposeMatrix(self.matrix)
+        return translation
 
     def applytranslation(self, v):
         self.matrix = self.matrix * tf.translation_matrix(v)
 
     def getscale(self):
-        return tf.scale_from_matrix(self.matrix)
+        transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+        return scale
 
     def applyscale(self, v):
         self.matrix = self.matrix * tf.scale_matrix(v)
@@ -56,8 +68,8 @@ class TransformationModel(object):
         self.matrix = self.matrix * tf.euler_matrix(v[0], v[1], v[2])
 
     def getangle(self):
-        m = self.matrix.copy()
-        return hrputil.omegaFromRot(m)
+        transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+        return axis
 
     def applyangle(self, v):
         v2 = v[0] * v[1]
