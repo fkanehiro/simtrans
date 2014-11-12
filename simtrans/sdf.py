@@ -42,7 +42,7 @@ class SDFReader(object):
             lm.name = l.attrib['name']
             pose = l.find('pose')
             if pose is not None:
-                self.readPose(lm, pose)
+                lm = self.readPose(lm, pose)
             # phisical property
             inertial = l.find('inertial')
             if inertial is not None:
@@ -68,7 +68,7 @@ class SDFReader(object):
             jm.jointType = self.readJointType(j.attrib['type'])
             pose = j.find('pose')
             if pose is not None:
-                self.readPose(jm, pose)
+                jm = self.readPose(jm, pose)
             axis = j.find('axis')
             if axis is not None:
                 jm.axis = axis.find('xyz').text
@@ -90,6 +90,7 @@ class SDFReader(object):
         pose = numpy.array([float(v) for v in doc.text.split(' ')])
         m.applytranslation(pose[0:3])
         m.applyrpy(pose[3:6])
+        return m
 
     def readJointType(self, d):
         if d == "fixed":
@@ -116,7 +117,7 @@ class SDFReader(object):
         m = model.ShapeModel()
         pose = d.find('pose')
         if pose is not None:
-            self.readPose(m, pose)
+            m = self.readPose(m, pose)
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
                 m.shapeType = model.ShapeModel.SP_MESH

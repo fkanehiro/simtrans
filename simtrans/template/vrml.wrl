@@ -117,6 +117,7 @@ DEF {{j.name}} ExtraJoint {
 DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
+    {%- if l.link and l.link.visuals|length %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
       {%- if l.joint.axis %}
@@ -126,10 +127,9 @@ DEF {{model.name}} Humanoid {
       {%- set trans = l.joint.gettranslation() %}
       translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
       {%- set angle = l.joint.getangle() %}
-      rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+      rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
       ulimit {{l.joint.limit[0]}}
       llimit {{l.joint.limit[1]}}
-      {%- if l.link %}
       children [
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}
@@ -143,7 +143,7 @@ DEF {{model.name}} Humanoid {
               {%- set trans = v.gettranslation() %}
               translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
               {%- set angle = v.getangle() %}
-              rotation {{angle[1][0]}} {{angle[1][1]}} {{angle[1][2]}} {{angle[0]}}
+              rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
               children [
                 {%- if v.shapeType == ShapeModel.SP_MESH %}
                 Inline {
@@ -173,21 +173,21 @@ DEF {{model.name}} Humanoid {
             }
             {%- endfor %}
           ]
-          {%- endif %}
         }
         {{ loop(l.children)|indent(4, True) }}
       ]
     }
+    {%- endif %}
     {%- endfor %}
   ]
   joints [
     {%- for j in joints %}
-    USE {{j.name}}{%- if loop.last == False %},{%- endif %}
+    USE {{j}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
   segments [
     {%- for l in links %}
-    USE {{l.name}}{%- if loop.last == False %},{%- endif %}
+    USE {{l}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
   name "{{body.name}}"

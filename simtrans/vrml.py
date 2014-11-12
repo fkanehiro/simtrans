@@ -75,7 +75,7 @@ class VRMLReader(object):
         lm.visuals = []
         for s in m.shapeIndices:
             sm = model.ShapeModel()
-            # ssm.trans = tf.decompose_matrix(s.transformMatrix)
+            sm.matrix = numpy.matrix(s.transformMatrix+[0, 0, 0, 1]).reshape(4, 4)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
                 sm.shapeType = model.ShapeModel.SP_MESH
@@ -186,9 +186,9 @@ class VRMLWriter(object):
             jointcount = jointcount + 1
 
         # list non empty link
-        links = [l for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
+        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
         # list joint with parent
-        joints = [j for j in mdata.joints if j.parent not in self._roots[1:]]
+        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
 
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')

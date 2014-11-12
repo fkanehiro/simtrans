@@ -59,5 +59,8 @@ def decomposeMatrix(m):
                        [xaxis[2], yaxis[2], zaxis[2]]])
     omega = omegaFromRot(mm)
     th = numpy.linalg.norm(omega)
-    axis = [omega/th, th]
+    if th > 1.0e-6:
+        axis = [omega/th, th]
+    else:
+        axis = [[0, 1, 0], 0]
     return (transform, scale, axis)

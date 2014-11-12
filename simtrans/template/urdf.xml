@@ -21,7 +21,7 @@
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
       <geometry>
-        <cylinder radius="{{v.data.radius}}" length="{{v.data.length}}" />
+        <cylinder radius="{{v.data.radius}}" length="{{v.data.height}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_SPHERE %}
@@ -44,7 +44,7 @@
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
       <geometry>
-        <cylinder radius="{{v.data.radius}}" length="{{v.data.length}}" />
+        <cylinder radius="{{v.data.radius}}" length="{{v.data.height}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_SPHERE %}
