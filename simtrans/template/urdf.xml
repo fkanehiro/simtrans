@@ -7,8 +7,10 @@
       <inertia ixx="{{l.inertia[0][0]}}" ixy="{{l.inertia[0][1]}}" ixz="{{l.inertia[0][2]}}" iyy="{{l.inertia[1][1]}}" iyz="{{l.inertia[1][2]}}" izz="{{l.inertia[2][2]}}" />
     </inertial>
     {%- for v in l.visuals %}
+    {%- set trans = v.gettranslation() %}
+    {%- set rpy = v.getrpy() %}
     <visual>
-      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
         <mesh filename="{{l.name}}.dae" scale="1 1 1" />
@@ -31,7 +33,7 @@
       {%- endif %}
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
         <mesh filename="{{l.name}}.stl" scale="1 1 1" />

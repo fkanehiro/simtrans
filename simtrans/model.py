@@ -149,6 +149,7 @@ class ShapeModel(TransformationModel):
     def __init__(self):
         TransformationModel.__init__(self)
 
+
 class MeshTransformData(TransformationModel):
     """
     Mesh transform data
