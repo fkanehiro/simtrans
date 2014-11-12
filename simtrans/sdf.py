@@ -115,6 +115,7 @@ class SDFReader(object):
 
     def readShape(self, d):
         m = model.ShapeModel()
+        m.name = d.attrib['name']
         pose = d.find('pose')
         if pose is not None:
             m = self.readPose(m, pose)
@@ -153,5 +154,37 @@ class SDFReader(object):
 
 
 class SDFWriter(object):
+    '''
+    SDF writer class
+    '''
     def write(self, m, f):
-        pass
+        '''
+        Write simulation model in SDF format
+
+        >>> from . import vrml
+        >>> r = vrml.VRMLReader()
+        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+        >>> w = SDFWriter()
+        >>> w.write(m, '/tmp/hrp4c.sdf')
+        '''
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader)
+
+        # render mesh data to each separate collada file
+        cwriter = collada.ColladaWriter()
+        swriter = stl.STLWriter()
+        dirname = os.path.dirname(f)
+        for l in m.links:
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
+                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
+
+        # render mesh collada file for each links
+        template = env.get_template('sdf.xml')
+        with open(f, 'w') as ofile:
+            ofile.write(template.render({
+                'model': m,
+                'ShapeModel': model.ShapeModel
+            }))

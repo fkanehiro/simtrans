@@ -143,6 +143,7 @@ class ShapeModel(TransformationModel):
     SP_CYLINDER = 'cylinder' #: Cylinder shape
     SP_SPHERE = 'sphere'     #: Sphere shape
 
+    name = None              #: Shape name
     shapeType = None         #: Shape type
     data = None              #: Store properties for each specific type of shape
 

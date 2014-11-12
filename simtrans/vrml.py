@@ -16,6 +16,9 @@ import jinja2
 import CORBA
 import CosNaming
 import OpenHRP
+from pygraph.classes.graph import graph
+from pygraph.classes.digraph import digraph
+from pygraph.algorithms.searching import breadth_first_search
 
 
 class VRMLReader(object):
@@ -75,6 +78,7 @@ class VRMLReader(object):
         lm.visuals = []
         for s in m.shapeIndices:
             sm = model.ShapeModel()
+            sm.name = "shape-%i" % s.shapeIndex
             sm.matrix = numpy.matrix(s.transformMatrix+[0, 0, 0, 1]).reshape(4, 4)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:

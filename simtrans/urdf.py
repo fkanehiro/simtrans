@@ -12,6 +12,7 @@ with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
 import jinja2
+import uuid
 from . import model
 from . import collada
 from . import stl
@@ -105,6 +106,7 @@ class URDFReader(object):
 
     def readShape(self, d):
         sm = model.ShapeModel()
+        sm.name = 'shape-' + str(uuid.uuid1()).replace('-', '')
         self.readOrigin(sm, d.find('origin'))
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
@@ -147,6 +149,16 @@ class URDFWriter(object):
         loader = jinja2.PackageLoader(self.__module__, 'template')
         env = jinja2.Environment(loader=loader)
 
+        # render mesh data to each separate collada file
+        cwriter = collada.ColladaWriter()
+        swriter = stl.STLWriter()
+        dirname = os.path.dirname(f)
+        for l in m.links:
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
+                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
+
         # render mesh collada file for each links
         template = env.get_template('urdf.xml')
         with open(f, 'w') as ofile:
@@ -155,13 +167,3 @@ class URDFWriter(object):
                 'ShapeModel': model.ShapeModel,
                 'tf': tf
             }))
-
-        # render mesh data to each separate collada file
-        cwriter = collada.ColladaWriter()
-        swriter = stl.STLWriter()
-        dirname = os.path.dirname(f)
-        for l in m.links:
-            for v in l.visuals:
-                if v.shapeType == model.ShapeModel.SP_MESH:
-                    cwriter.write(v, os.path.join(dirname, l.name + ".dae"))
-                    swriter.write(v, os.path.join(dirname, l.name + ".stl"))

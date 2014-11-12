@@ -22,7 +22,11 @@ def omegaFromRot(m):
     if math.fabs(alpha - 1.0) < 1.0e-6:
         return numpy.array([0, 0, 0])
     else:
-        th = math.acos(alpha)
+        try:
+            th = math.acos(alpha)
+        except ValueError:
+            print "value error: %f" % alpha
+            th = 0
         s = math.sin(th)
         if s < numpy.finfo(float).eps:
             return numpy.array([

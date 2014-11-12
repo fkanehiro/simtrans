@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="{{model.name}}">
+    <static>0</static>
+    {%- for l in model.links %}
+    <link name="{{l.name}}">
+      <inertial>
+        <mass>{{l.mass}}</mass>
+        <pose>{{l.centerofmass[0]}} {{l.centerofmass[1]}} {{l.centerofmass[2]}} 0 -0 0</pose>
+        <inertia>
+          <ixx>{{l.inertia[0][0]}}</ixx>
+          <ixy>{{l.inertia[0][1]}}</ixy>
+          <ixz>{{l.inertia[0][2]}}</ixz>
+          <iyy>{{l.inertia[1][1]}}</iyy>
+          <iyz>{{l.inertia[1][2]}}</iyz>
+          <izz>{{l.inertia[2][2]}}</izz>
+        </inertia>
+      </inertial>
+      {%- for v in l.visuals %}
+      {%- set trans = v.gettranslation() %}
+      {%- set rpy = v.getrpy() %}
+      <visual name="{{v.name}}">
+        <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
+        {%- if v.shapeType == ShapeModel.SP_MESH %}
+        <geometry>
+          <mesh>
+            <uri>{{v.name}}.dae</uri>
+        </mesh>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_BOX %}
+        <geometry>
+          <box>
+            <size>{{v.data.x}} {{v.data.y}} {{v.data.z}}</size>
+          </box>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
+        <geometry>
+          <cylinder>
+            <radius>{{v.data.radius}}</radius>
+            <length>{{v.data.height}}</length>
+          </cylinder>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_SPHERE %}
+        <geometry>
+          <sphere>
+            <radius>{{v.data.radius}}</radius>
+          </sphere>
+        </geometry>
+        {%- endif %}
+      </visual>
+      <collision>
+        <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
+        {%- if v.shapeType == ShapeModel.SP_MESH %}
+        <geometry>
+          <mesh>
+            <uri>{{v.name}}.dae</uri>
+          </mesh>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_BOX %}
+        <geometry>
+          <box>
+            <size>{{v.data.x}} {{v.data.y}} {{v.data.z}}</size>
+          </box>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
+        <geometry>
+          <cylinder>
+            <radius>{{v.data.radius}}</radius>
+            <length>{{v.data.height}}</length>
+          </cylinder>
+        </geometry>
+        {%- endif %}
+        {%- if v.shapeType == ShapeModel.SP_SPHERE %}
+        <geometry>
+        <sphere>
+          <radius>{{v.data.radius}}</radius>
+        </sphere>
+        </geometry>
+        {%- endif %}
+      </collision>
+      {%- endfor %}
+    </link>
+    {%- endfor %}
+    {%- for j in model.joints %}
+    <joint name="{{j.name}}" type="{{j.jointType}}">
+      <parent>{{j.parent}}</parent>
+      <child>{{j.child}}</child>
+      <axis>
+        <xyz>{{j.axis}}</xyz>
+        <limit>
+          <lower>{{j.limit[1]}}</lower>
+          <upper>{{j.limit[0]}}</upper>
+        </limit>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+    </joint>
+    {%- endfor %}
+  </model>
+</sdf>
