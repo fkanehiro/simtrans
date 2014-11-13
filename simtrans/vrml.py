@@ -171,6 +171,12 @@ class VRMLWriter(object):
         >>> w = VRMLWriter()
         >>> w.write(m, '/tmp/pr2.wrl')
         '''
+        
+        fpath, fext = os.path.splitext(fname)
+        basename = os.path.basename(fpath)
+        if mdata.name is None:
+            mdata.name = basename
+
         # first convert data structure (VRML uses tree structure)
         nmodel = {}
         for m in mdata.links:

@@ -198,10 +198,14 @@ class SDFWriter(object):
             f = os.path.join(dirname, 'model.sdf')
 
         # render mesh collada file for each links
+        jointparentmap = {}
+        for j in m.joints:
+            jointparentmap[j.child] = j
         template = env.get_template('sdf.xml')
         with open(f, 'w') as ofile:
             ofile.write(template.render({
                 'model': m,
+                'jointparentmap': jointparentmap,
                 'ShapeModel': model.ShapeModel
             }))
 
