@@ -221,7 +221,7 @@ class VRMLWriter(object):
                 if v.shapeType == model.ShapeModel.SP_MESH:
                     m = {}
                     m['children'] = [v.data]
-                    with open(os.path.join(dirname, l.name + ".wrl"), 'w') as ofile:
+                    with open(os.path.join(dirname, v.name + ".wrl"), 'w') as ofile:
                         ofile.write(template.render({
                             'name': l.name,
                             'ShapeModel': model.ShapeModel,
