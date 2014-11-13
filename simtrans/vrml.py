@@ -183,21 +183,24 @@ class VRMLWriter(object):
         rootjoint.jointType = "fixed"
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
+        nmodel['jointtype'] = rootjoint.jointType
         nmodel['children'] = self.convertchildren(mdata, root)
         rmodel = {}
         rmodel['children'] = [nmodel]
-
-        # assign jointId
-        jointcount = 1
-        jointmap = {root: 0}
-        for j in mdata.joints:
-            jointmap[j.name] = jointcount
-            jointcount = jointcount + 1
 
         # list non empty link
         links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
         # list joint with parent
         joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
+
+        # assign jointId
+        jointmap = {root: 0}
+        for j in mdata.joints:
+            jointmap[j.name] = 0
+        jointcount = 1
+        for j in joints:
+            jointmap[j] = jointcount
+            jointcount = jointcount + 1
 
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
