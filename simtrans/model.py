@@ -42,38 +42,44 @@ class TransformationModel(object):
     True
     """
     matrix = None     #: Transformation matrix (4x4 numpy matrix)
+    trans = None      #: Translation vector (3-dim numpy array)
+    scale = None      #: Scale vector (3-dim numpy array)
+    rot = None        #: Rotation (4-dim numpy array in quaternion representation)
 
     def __init__(self):
-        self.matrix = numpy.identity(4)
+        self.matrix = None
+        self.trans = numpy.array([0, 0, 0])
+        self.scale = numpy.array([1, 1, 1])
+        self.rot = numpy.array([0, 0, 0, 0])
 
     def gettranslation(self):
-        translation, scale, axis = hrputil.decomposeMatrix(self.matrix)
-        return translation
-
-    def applytranslation(self, v):
-        self.matrix = self.matrix * tf.translation_matrix(v)
+        if self.matrix is not None:
+            translation, scale, axis = hrputil.decomposeMatrix(self.matrix)
+            return translation
+        else:
+            return self.trans
 
     def getscale(self):
-        transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
-        return scale
-
-    def applyscale(self, v):
-        self.matrix = self.matrix * tf.scale_matrix(v)
+        if self.matrix is not None:
+            transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+            return scale
+        else:
+            return self.scale
 
     def getrpy(self):
-        m = self.matrix.copy()
-        return tf.euler_from_matrix(m)
-
-    def applyrpy(self, v):
-        self.matrix = self.matrix * tf.euler_matrix(v[0], v[1], v[2])
+        if self.matrix is not None:
+            return tf.euler_from_matrix(self.matrix)
+        else:
+            return tf.euler_from_quaternion(self.rot)
 
     def getangle(self):
-        transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
-        return axis
-
-    def applyangle(self, v):
-        v2 = v[0] * v[1]
-        self.matrix = self.matrix * tf.rotation_matrix(v2[0], v2[1], v2[2])
+        if self.matrix is not None:
+            transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+            return axis
+        else:
+            m = tf.quaternion_matrix(self.rot)
+            transform, scale, axis = hrputil.decomposeMatrix(m)
+            return axis
 
 
 class BodyModel(TransformationModel):

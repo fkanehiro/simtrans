@@ -77,13 +77,10 @@ class URDFReader(object):
         return bm
 
     def readOrigin(self, m, doc):
-        xyz = None
-        rpy = None
         try:
-            xyz = numpy.array([float(v) for v in doc.attrib['xyz'].split(' ')])
-            m.applytranslation(xyz)
-            rpy = numpy.array([float(v) for v in doc.attrib['rpy'].split(' ')])
-            m.applyrpy(rpy)
+            m.trans = numpy.array([float(v) for v in doc.attrib['xyz'].split(' ')])
+            rpy = [float(v) for v in doc.attrib['rpy'].split(' ')]
+            m.rot = tf.quaternion_from_euler(rpy[0], rpy[1], rpy[2])
         except KeyError:
             pass
 
