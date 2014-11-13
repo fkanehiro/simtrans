@@ -41,7 +41,7 @@ class URDFReader(object):
             inertial = l.find('inertial')
             if inertial is not None:
                 lm.mass = float(inertial.find('mass').attrib['value'])
-                lm.centerofmass = inertial.find('origin').attrib['xyz']
+                lm.centerofmass = [float(v) for v in inertial.find('origin').attrib['xyz'].split(' ')]
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             lm.visuals = []
@@ -61,7 +61,7 @@ class URDFReader(object):
             self.readOrigin(jm, j.find('origin'))
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = axis.attrib['xyz']
+                jm.axis = [float(v) for v in axis.attrib['xyz'].split(' ')]
             jm.parent = j.find('parent').attrib['link']
             jm.child = j.find('child').attrib['link']
             # phisical property
@@ -144,6 +144,9 @@ class URDFWriter(object):
         >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
         >>> w = URDFWriter()
         >>> w.write(m, '/tmp/hrp4c.urdf')
+        >>> import subprocess
+        >>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
+        0
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')

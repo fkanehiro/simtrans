@@ -71,7 +71,7 @@ class SDFReader(object):
                 jm = self.readPose(jm, pose)
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = axis.find('xyz').text
+                jm.axis = [float(v) for v in axis.find('xyz').text.split(' ')]
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
                     jm.damping = dynamics.find('damping').text
@@ -166,6 +166,9 @@ class SDFWriter(object):
         >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
         >>> w = SDFWriter()
         >>> w.write(m, '/tmp/hrp4c.sdf')
+        >>> import subprocess
+        >>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
+        0
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')

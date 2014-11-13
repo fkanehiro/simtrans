@@ -51,7 +51,7 @@
         </geometry>
         {%- endif %}
       </visual>
-      <collision>
+      <collision name="{{v.name}}">
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
@@ -91,7 +91,7 @@
       <parent>{{j.parent}}</parent>
       <child>{{j.child}}</child>
       <axis>
-        <xyz>{{j.axis}}</xyz>
+        <xyz>{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}</xyz>
         <limit>
           <lower>{{j.limit[1]}}</lower>
           <upper>{{j.limit[0]}}</upper>

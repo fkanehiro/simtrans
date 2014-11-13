@@ -123,7 +123,10 @@ class VRMLReader(object):
             jm.jointType = model.JointModel.J_PRISMATIC
         else:
             raise Exception('unsupported joint type: %s' % child.jointType)
-        jm.limit = [child.ulimit, child.llimit]
+        try:
+            jm.limit = [child.ulimit[0], child.llimit[0]]
+        except IndexError:
+            pass
         jm.axis = child.jointAxis
         jm.trans = child.translation
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
