@@ -75,6 +75,8 @@ class VRMLReader(object):
     def readLink(self, m):
         lm = model.LinkModel()
         lm.name = m.name
+        lm.mass = m.mass
+        lm.centerofmass = numpy.array(m.centerOfMass)
         lm.visuals = []
         for s in m.shapeIndices:
             sm = model.ShapeModel()

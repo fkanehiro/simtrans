@@ -24,8 +24,8 @@
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
-            <uri>{{v.name}}.dae</uri>
-        </mesh>
+            <uri>model://{{model.name}}/{{v.name}}.dae</uri>
+          </mesh>
         </geometry>
         {%- endif %}
         {%- if v.shapeType == ShapeModel.SP_BOX %}
@@ -56,7 +56,7 @@
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
-            <uri>{{v.name}}.dae</uri>
+            <uri>model://{{model.name}}/{{v.name}}.stl</uri>
           </mesh>
         </geometry>
         {%- endif %}
@@ -77,9 +77,9 @@
         {%- endif %}
         {%- if v.shapeType == ShapeModel.SP_SPHERE %}
         <geometry>
-        <sphere>
-          <radius>{{v.data.radius}}</radius>
-        </sphere>
+          <sphere>
+            <radius>{{v.data.radius}}</radius>
+          </sphere>
         </geometry>
         {%- endif %}
       </collision>

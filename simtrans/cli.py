@@ -64,6 +64,8 @@ Convert robot simulation model from one another.'''
             writer = urdf.URDFWriter()
         elif ext == '.sdf':
             writer = sdf.SDFWriter()
+        elif ext == '.world':
+            writer = sdf.SDFWriter()
         elif ext == '.dot':
             writer = graphviz.GraphvizWriter()
         else:

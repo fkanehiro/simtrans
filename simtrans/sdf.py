@@ -177,11 +177,25 @@ class SDFWriter(object):
         cwriter = collada.ColladaWriter()
         swriter = stl.STLWriter()
         dirname = os.path.dirname(f)
-        for l in m.links:
-            for v in l.visuals:
-                if v.shapeType == model.ShapeModel.SP_MESH:
-                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
-                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
+        fpath, ext = os.path.splitext(f)
+        if ext == '.world':
+            m.name = os.path.basename(fpath)
+            dirname = fpath
+            try:
+                os.mkdir(fpath)
+            except OSError:
+                pass
+            template = env.get_template('sdf-model-config.xml')
+            with open(os.path.join(dirname, 'model.config'), 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            template = env.get_template('sdf-world.xml')
+            with open(f, 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            f = os.path.join(dirname, 'model.sdf')
 
         # render mesh collada file for each links
         template = env.get_template('sdf.xml')
@@ -190,3 +204,9 @@ class SDFWriter(object):
                 'model': m,
                 'ShapeModel': model.ShapeModel
             }))
+
+        for l in m.links:
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
+                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
