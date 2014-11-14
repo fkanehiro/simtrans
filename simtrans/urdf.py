@@ -104,7 +104,9 @@ class URDFReader(object):
     def readShape(self, d):
         sm = model.ShapeModel()
         sm.name = 'shape-' + str(uuid.uuid1()).replace('-', '')
-        self.readOrigin(sm, d.find('origin'))
+        origin = d.find('origin')
+        if origin is not None:
+            self.readOrigin(sm, origin)
         for g in d.find('geometry').getchildren():
             if g.tag == 'mesh':
                 sm.shapeType = model.ShapeModel.SP_MESH
@@ -165,5 +167,6 @@ class URDFWriter(object):
             ofile.write(template.render({
                 'model': m,
                 'ShapeModel': model.ShapeModel,
+                'JointModel': model.JointModel,
                 'tf': tf
             }))

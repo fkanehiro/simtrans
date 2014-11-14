@@ -287,6 +287,14 @@ class VRMLWriter(object):
         >>> w = VRMLWriter()
         >>> w.findroot(m)[0]
         'pelvis'
+
+        >>> from . import urdf
+        >>> r = urdf.URDFReader()
+        >>> m = r.read('package://ur_description/urdf/ur5_robot.urdf')
+        >>> w = VRMLWriter()
+        >>> w.findroot(m)[0]
+        'world'
+
         >>> from . import sdf
         >>> r = sdf.SDFReader()
         >>> m = r.read('model://pr2/model.sdf')

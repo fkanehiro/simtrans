@@ -59,10 +59,15 @@
   </link>
   {%- endfor %}
   {%- for j in model.joints %}
-  <joint name="{{j.name}}" type="fixed">
-    <origin xyz="0 0 0" rpy="-1.5708 0.0 -1.5708" />
+  <joint name="{{j.name}}" type="{{j.jointType}}">
+    {%- set trans = j.gettranslation() %}
+    {%- set rpy = j.getrpy() %}
+    <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
     <parent link="{{j.parent}}" />
-    <child link="{{j.child}}"/>
+    <child link="{{j.child}}" />
+    {%- if j.jointType == JointModel.J_REVOLUTE or j.jointType == JointModel.J_PRISMATIC %}
+    <limit lower="{{j.limit[1]}}" upper="{{j.limit[0]}}" effort="100" velocity="100" />
+    {%- endif %}
   </joint>
   {%- endfor %}
 </robot>

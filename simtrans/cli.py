@@ -72,6 +72,9 @@ Convert robot simulation model from one another.'''
             print >> sys.stderr, 'unable to detect output format (may be not supported?)'
             return 1
 
+    print "converting from: %s" % options.fromfile
+    print "             to: %s" % options.tofile
+
     model = reader.read(options.fromfile)
     writer.write(model, options.tofile)
 

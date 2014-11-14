@@ -8,6 +8,8 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 import os
+import subprocess
+import tempfile
 import lxml.etree
 import numpy
 import warnings
@@ -16,9 +18,11 @@ with warnings.catch_warnings():
     from .thirdparty import transformations as tf
 import jinja2
 from . import model
+from . import urdf
 from . import collada
 from . import stl
 from . import utils
+
 
 class SDFReader(object):
     '''
@@ -157,6 +161,52 @@ class SDFWriter(object):
     SDF writer class
     '''
     def write(self, m, f):
+        '''
+        Write simulation model in SDF format
+
+        >>> from . import vrml
+        >>> r = vrml.VRMLReader()
+        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+        >>> w = SDFWriter()
+        >>> w.write(m, '/tmp/hrp4c.sdf')
+        >>> import subprocess
+        >>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
+        0
+        '''
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader)
+
+        # render mesh data to each separate collada file
+        dirname = os.path.dirname(f)
+        fpath, ext = os.path.splitext(f)
+        if ext == '.world':
+            m.name = os.path.basename(fpath)
+            dirname = fpath
+            try:
+                os.mkdir(fpath)
+            except OSError:
+                pass
+            template = env.get_template('sdf-model-config.xml')
+            with open(os.path.join(dirname, 'model.config'), 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            template = env.get_template('sdf-world.xml')
+            with open(f, 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            f = os.path.join(dirname, 'model.sdf')
+
+        uwriter = urdf.URDFWriter()
+        urdffile = f.replace('.sdf', '.urdf')
+        uwriter.write(m, urdffile)
+        d = subprocess.check_output(['gz', 'sdf', '-p', urdffile])
+        with open(f, 'w') as of:
+            of.write(d)
+
+    def write2(self, m, f):
         '''
         Write simulation model in SDF format
 
