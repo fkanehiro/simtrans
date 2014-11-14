@@ -1,4 +1,3 @@
-pr2
 drc_practice_2x4
 drc_practice_2x6
 drc_practice_4x4x20
