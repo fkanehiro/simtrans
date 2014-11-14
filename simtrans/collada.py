@@ -95,7 +95,16 @@ class ColladaWriter(object):
         self._mesh = collada.Collada()
 
         # create effect and material
-        effect = collada.material.Effect("effect0", [], "phong", diffuse=(1,0,0), specular=(0,1,0))
+        if m.data.material:
+            effect = collada.material.Effect("effect0", [], "phong",
+                                             double_sided=True,
+                                             diffuse=m.data.material.diffuse,
+                                             specular=m.data.material.specular)
+        else:
+            effect = collada.material.Effect("effect0", [], "phong",
+                                             double_sided=True,
+                                             diffuse=(0.8,0.8,0.8),
+                                             specular=(1,1,1))
         mat = collada.material.Material("material0", "mymaterial", effect)
         self._mesh.effects.append(effect)
         self._mesh.materials.append(mat)
@@ -133,7 +142,7 @@ class ColladaWriter(object):
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
-            geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources)
+            geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources, double_sided=True)
             # create triangles
             triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
             geom.primitives.append(triset)

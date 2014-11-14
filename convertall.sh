@@ -12,7 +12,7 @@ $CMD -i package://pr2_description/robots/pr2.urdf -o /tmp/pr2.wrl
 
 # convert from sdf to wrl
 for i in `cat tests/models.txt`; do
-$CMD -i model://$i -o /tmp/$i.wrl
+$CMD -i model://$i/model.sdf -o /tmp/$i.wrl
 done
 
 # convert from wrl to sdf

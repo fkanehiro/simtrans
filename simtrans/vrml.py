@@ -51,10 +51,24 @@ class VRMLReader(object):
         bm = model.BodyModel()
         self._joints = []
         self._links = []
+        self._materials = []
         self._hrplinks = b._get_links()
         self._hrpshapes = b._get_shapes()
+        self._hrpapperances = b._get_appearances()
         self._hrpmaterials = b._get_materials()
         self._hrpextrajoints = b._get_extraJoints()
+        mid = 0
+        for a in self._hrpmaterials:
+            m = model.MaterialModel()
+            m.name = "material-%i" % mid
+            mid = mid + 1
+            m.ambient = a.ambientIntensity
+            m.diffuse = a.diffuseColor + [1.0]
+            m.specular = a.specularColor + [1.0]
+            m.emission = a.emissiveColor + [1.0]
+            m.shininess = a.shininess
+            m.transparency = a.transparency
+            self._materials.append(m)
         root = self._hrplinks[0]
         lm = self.readLink(root)
         self._links.append(lm)
@@ -88,21 +102,32 @@ class VRMLReader(object):
                 sm.data = model.MeshData()
                 sm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
                 sm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+                adata = self._hrpapperances[sdata.appearanceIndex]
+                if adata.normalPerVertex == True:
+                    #sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+                    #sm.data.normal_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+                else:
+                    #sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+                    #sm.data.normal_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+                sm.data.material = self._materials[adata.materialIndex]
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 sm.shapeType = model.ShapeModel.SP_SPHERE
                 sm.data = model.SphereData()
                 sm.data.radius = sdata.primitiveParameters[0]
+                sm.data.material = self._materials[sdata.appearanceIndex]
             elif sdata.primitiveType == OpenHRP.SP_CYLINDER:
                 sm.shapeType = model.ShapeModel.SP_CYLINDER
                 sm.data = model.CylinderData()
                 sm.data.radius = sdata.primitiveParameters[0]
                 sm.data.height = sdata.primitiveParameters[1]
+                sm.data.material = self._materials[sdata.appearanceIndex]
             elif sdata.primitiveType == OpenHRP.SP_BOX:
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()
                 sm.data.x = sdata.primitiveParameters[0]
                 sm.data.y = sdata.primitiveParameters[1]
                 sm.data.z = sdata.primitiveParameters[2]
+                sm.data.material = self._materials[sdata.appearanceIndex]
             else:
                 raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
             lm.visuals.append(sm)

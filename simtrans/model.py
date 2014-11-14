@@ -237,9 +237,9 @@ class MaterialModel(object):
     Material model
     """
     name = None          #: Name of the material
-    ambient = None       #: [r,g,b,a] array or path string of texture image
-    diffuse = None       #: [r,g,b,a] array or path string of texture image
-    specular = None      #: [r,g,b,a] array or path string of texture image
-    emission = None      #: [r,g,b,a] array or path string of texture image
+    ambient = None       #: [r,g,b] array or path string of texture image
+    diffuse = None       #: [r,g,b] array or path string of texture image
+    specular = None      #: [r,g,b] array or path string of texture image
+    emission = None      #: [r,g,b] array or path string of texture image
     shininess = None     #: float value or path string of texture image
     transparency = None  #: float value or path string of texture image
