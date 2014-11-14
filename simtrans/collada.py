@@ -138,7 +138,7 @@ class ColladaWriter(object):
             sources.append(collada.source.FloatSource(vertexname, m.vertex.reshape(1, m.vertex.size), ('X', 'Y', 'Z')))
             indices = m.vertex_index.reshape(1, m.vertex_index.size)
             input_list.addInput(0, 'VERTEX', '#' + vertexname)
-            if m.normal:
+            if m.normal is not None:
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)

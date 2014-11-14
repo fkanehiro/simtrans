@@ -103,12 +103,17 @@ class VRMLReader(object):
                 sm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
                 sm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
                 adata = self._hrpapperances[sdata.appearanceIndex]
-                if adata.normalPerVertex == True:
-                    #sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    #sm.data.normal_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+                if adata.normalPerVertex is True:
+                    sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+                    sm.data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
                 else:
-                    #sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    #sm.data.normal_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+                    sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+                    idx = []
+                    for i in adata.normalIndices:
+                        idx.append(i)
+                        idx.append(i)
+                        idx.append(i)
+                    sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
                 sm.data.material = self._materials[adata.materialIndex]
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 sm.shapeType = model.ShapeModel.SP_SPHERE
