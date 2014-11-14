@@ -105,15 +105,31 @@ class VRMLReader(object):
                 adata = self._hrpapperances[sdata.appearanceIndex]
                 if adata.normalPerVertex is True:
                     sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    sm.data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
+                    if len(adata.normalIndices) > 0:
+                        sm.data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
+                    else:
+                        idx = []
+                        for i in range(0, len(adata.normals)/3):
+                            idx.append(i)
+                            idx.append(i)
+                            idx.append(i)
+                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
                 else:
                     sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    idx = []
-                    for i in adata.normalIndices:
-                        idx.append(i)
-                        idx.append(i)
-                        idx.append(i)
-                    sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+                    if len(adata.normalIndices) > 0:
+                        idx = []
+                        for i in adata.normalIndices:
+                            idx.append(i)
+                            idx.append(i)
+                            idx.append(i)
+                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+                    else:
+                        idx = []
+                        for i in range(0, len(adata.normals)/3):
+                            idx.append(i)
+                            idx.append(i)
+                            idx.append(i)
+                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
                 sm.data.material = self._materials[adata.materialIndex]
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 sm.shapeType = model.ShapeModel.SP_SPHERE
