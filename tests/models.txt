@@ -27,3 +27,4 @@ drc_practice_wheel_valve_wall
 drc_practice_white_jersey_barrier
 drc_practice_wood_slats
 drc_practice_yellow_parking_block
+polaris_ranger_xp900_no_roll_cage
