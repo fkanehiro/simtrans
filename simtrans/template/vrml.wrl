@@ -114,7 +114,7 @@ DEF {{j.name}} ExtraJoint {
 }
 {%- endfor %}
 
-DEF {{model.name}} Humanoid {
+DEF {{body.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
     {%- if l.link and l.link.visuals|length %}
@@ -147,7 +147,7 @@ DEF {{model.name}} Humanoid {
               children [
                 {%- if v.shapeType == ShapeModel.SP_MESH %}
                 Inline {
-                  url "{{v.name}}.wrl"
+                  url "{{body.name}}-{{v.name}}.wrl"
                 }
                 {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
                 Shape {

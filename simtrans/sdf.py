@@ -53,7 +53,7 @@ class SDFReader(object):
                 lm.mass = float(inertial.find('mass').text)
                 pose = inertial.find('pose')
                 if pose is not None:
-                    lm.centerofmass = [float(v) for v in pose.text.split(' ')][0:3]
+                    lm.centerofmass = [float(v) for v in pose.text.strip(' ').split(' ')][0:3]
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             lm.visuals = []
@@ -78,8 +78,12 @@ class SDFReader(object):
                 jm.axis = [float(v) for v in axis.find('xyz').text.split(' ')]
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
-                    jm.damping = dynamics.find('damping').text
-                    jm.friction = dynamics.find('friction').text
+                    damping = dynamics.find('damping')
+                    if damping is not None:
+                        jm.damping = float(damping.text)
+                    friction = dynamics.find('friction')
+                    if friction is not None:
+                        jm.friction = float(friction.text)
                 limit = axis.find('limit')
                 if limit is not None:
                     jm.limit = [limit.find('upper').text, limit.find('lower').text]

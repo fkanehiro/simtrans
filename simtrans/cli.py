@@ -76,6 +76,9 @@ Convert robot simulation model from one another.'''
     print "             to: %s" % options.tofile
 
     model = reader.read(options.fromfile)
+    if len(model.links) == 0:
+        print "cannot read links at all (probably the model refers to another model by <include> tag)"
+        return 1
     writer.write(model, options.tofile)
 
     return 0

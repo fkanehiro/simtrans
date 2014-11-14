@@ -36,7 +36,16 @@ class ColladaReader(object):
         self._assethandler = assethandler
         d = collada.Collada(f)
         for m in d.materials:
-            self._materials[m.id] = m
+            mm = model.MaterialModel()
+            mm.name = m.id
+            for pr in m.effect.params:
+                if type(pr) == collada.material.Surface:
+                    fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
+                    if self._assethandler:
+                        mm.texture = self._assethandler(fname)
+                    else:
+                        mm.texture = fname
+            self._materials[mm.name] = mm
         m = model.MeshTransformData()
         m.children = []
         for n in d.scene.nodes:
@@ -59,22 +68,16 @@ class ColladaReader(object):
                 sm = model.MeshData()
                 sm.vertex = p.vertex
                 sm.vertex_index = p.vertex_index
-                if p.normal.size > 0:
+                if p.normal is not None:
                     sm.normal = p.normal
                     sm.normal_index = p.normal_index
                 if len(p.texcoordset) > 0:
                     sm.uvmap = p.texcoordset[0]
                     sm.uvmap_index = p.texcoord_indexset[0]
                 try:
-                    for pr in self._materials[p.material].effect.params:
-                        if type(pr) == collada.material.Surface:
-                            fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
-                            if self._assethandler:
-                                sm.image = self._assethandler(fname)
-                            else:
-                                sm.image = fname
+                    sm.material = self._materials[p.material]
                 except KeyError:
-                    pass
+                    sm.material = model.MaterialModel()
                 m.children.append(sm)
         return m
 

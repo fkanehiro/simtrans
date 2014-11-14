@@ -217,10 +217,9 @@ class VRMLWriter(object):
         >>> w = VRMLWriter()
         >>> w.write(m, '/tmp/pr2.wrl')
         '''
-        
         fpath, fext = os.path.splitext(fname)
         basename = os.path.basename(fpath)
-        if mdata.name is None:
+        if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
         # first convert data structure (VRML uses tree structure)
@@ -228,22 +227,32 @@ class VRMLWriter(object):
         for m in mdata.links:
             self._linkmap[m.name] = m
         self._roots = self.findroot(mdata)
-        root = self._roots[0]
-        rootlink = self._linkmap[root]
-        rootjoint = model.JointModel()
-        rootjoint.name = root
-        rootjoint.jointType = "fixed"
+        if len(self._roots) > 0:
+            root = self._roots[0]
+            rootlink = self._linkmap[root]
+            rootjoint = model.JointModel()
+            rootjoint.name = root
+            rootjoint.jointType = "fixed"
+        else:
+            root = 'waist'
+            rootlink = mdata.links[0]
+            rootjoint = model.JointModel()
+            rootjoint.name = root
+            rootjoint.jointType = "fixed"
+
+        # list non empty link
+        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
+        # list joint with parent
+        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
+        if len(joints) == 0:
+            joints = [root]
+
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
         nmodel['jointtype'] = rootjoint.jointType
         nmodel['children'] = self.convertchildren(mdata, root)
         rmodel = {}
         rmodel['children'] = [nmodel]
-
-        # list non empty link
-        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
-        # list joint with parent
-        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
 
         # assign jointId
         jointmap = {root: 0}
@@ -278,7 +287,7 @@ class VRMLWriter(object):
                 if v.shapeType == model.ShapeModel.SP_MESH:
                     m = {}
                     m['children'] = [v.data]
-                    with open(os.path.join(dirname, v.name + ".wrl"), 'w') as ofile:
+                    with open(os.path.join(dirname, mdata.name + "-" + v.name + ".wrl"), 'w') as ofile:
                         ofile.write(template.render({
                             'name': l.name,
                             'ShapeModel': model.ShapeModel,
@@ -350,6 +359,8 @@ class VRMLWriter(object):
         '''
         joints = {}
         for j in mdata.joints:
+            if j.parent == 'world':
+                continue
             try:
                 joints[j.parent] = joints[j.parent] + 1
             except KeyError:
