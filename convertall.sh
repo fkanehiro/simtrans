@@ -7,7 +7,9 @@ OPENHRP_MODEL="/usr/local/share/OpenHRP-3.1/sample/model"
 #python -m simtrans.gzfetch -f tests/models.txt
 
 # convert from urdf to wrl
-$CMD -i package://atlas_description/urdf/atlas_v3.urdf -o /tmp/atlas.wrl
+python -m simtrans.catxml package://atlas_description/urdf/atlas_v3.urdf package://multisense_sl_description/urdf/multisense_sl_v3.urdf > /tmp/atlas.urdf
+
+$CMD -i /tmp/atlas.urdf -o /tmp/atlas.wrl
 $CMD -i package://pr2_description/robots/pr2.urdf -o /tmp/pr2.wrl
 
 # convert from sdf to wrl

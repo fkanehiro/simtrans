@@ -331,6 +331,8 @@ class VRMLWriter(object):
             return "slide"
         elif t == model.JointModel.J_SCREW:
             return "rotate"
+        elif t == model.JointModel.J_CONTINUOUS:
+            return "rotate"
         else:
             raise Exception('unsupported joint type: %s' % t)
 

@@ -89,6 +89,12 @@ class URDFReader(object):
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
+        elif d == 'prismatic':
+            return model.JointModel.J_PRISMATIC
+        elif d == 'screw':
+            return model.JointModel.J_SCREW
+        elif d == 'continuous':
+            return model.JointModel.J_CONTINUOUS
         raise Exception('unsupported joint type %s' % d)
 
     def readInertia(self, d):

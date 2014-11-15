@@ -2,6 +2,7 @@ import os
 import sys
 from optparse import OptionParser, OptionError
 import lxml.etree
+from . import utils
 
 
 def main():
@@ -20,10 +21,10 @@ Concatinate multiple xml files.'''
         print >> sys.stderr, parser.print_help()
         return 1
 
-    d = lxml.etree.parse(args[0])
+    d = lxml.etree.parse(utils.resolveFile(args[0]))
     r = d.getroot()
     for f in args[1:]:
-        d2 = lxml.etree.parse(f)
+        d2 = lxml.etree.parse(utils.resolveFile(f))
         r.extend(d2.getroot())
 
     print(lxml.etree.tostring(r, pretty_print=True))

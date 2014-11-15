@@ -121,10 +121,11 @@ class JointModel(TransformationModel):
     """
     Joint model
     """
-    J_FIXED = 'fixed'          #: Fixed type
-    J_REVOLUTE = 'revolute'    #: Revolute type
-    J_PRISMATIC = 'prismatic'  #: Prismatic type
-    J_SCREW = 'screw'          #: Screw type
+    J_FIXED = 'fixed'            #: Fixed type
+    J_REVOLUTE = 'revolute'      #: Revolute type
+    J_PRISMATIC = 'prismatic'    #: Prismatic type
+    J_SCREW = 'screw'            #: Screw type
+    J_CONTINUOUS = 'continuous'  #: Continuous type
 
     name = None        #: Joint name
     jointType = None   #: Joint type
