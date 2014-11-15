@@ -47,6 +47,8 @@ class ColladaReader(object):
                         mm.texture = fname
             self._materials[mm.name] = mm
         m = model.MeshTransformData()
+        unitmeter = d.assetInfo.unitmeter
+        m.matrix = tf.scale_matrix(unitmeter)
         m.children = []
         for n in d.scene.nodes:
             cm = self.convertchild(n)
@@ -64,6 +66,9 @@ class ColladaReader(object):
                 m.children.append(self.convertchild(c))
         elif type(d) == collada.scene.GeometryNode:
             m = model.MeshTransformData()
+            materialmap = {}
+            for mm in d.materials:
+                materialmap[mm.symbol] = self._materials[mm.target.id]
             for p in d.geometry.primitives:
                 sm = model.MeshData()
                 sm.vertex = p.vertex
@@ -75,7 +80,7 @@ class ColladaReader(object):
                     sm.uvmap = p.texcoordset[0]
                     sm.uvmap_index = p.texcoord_indexset[0]
                 try:
-                    sm.material = self._materials[p.material]
+                    sm.material = materialmap[p.material]
                 except KeyError:
                     sm.material = model.MaterialModel()
                 m.children.append(sm)
