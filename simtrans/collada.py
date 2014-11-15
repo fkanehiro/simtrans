@@ -14,6 +14,8 @@ import os
 import collada
 import numpy
 import uuid
+import lxml
+from StringIO import StringIO
 
 
 class ColladaReader(object):
@@ -37,8 +39,16 @@ class ColladaReader(object):
         try:
             d = collada.Collada(f)
         except:
-            print "error while processing %s" % f
-            raise
+            # workaround for pycollada's handling of xml comments
+            xdoc = lxml.etree.parse(f)
+            for c in xdoc.xpath('//comment()'):
+                p = c.getparent()
+                p.remove(c)
+            try:
+                d = collada.Collada(StringIO(lxml.etree.tostring(xdoc)))
+            except:
+                print "error while processing %s" % f
+                raise
         for m in d.materials:
             mm = model.MaterialModel()
             mm.name = m.id
