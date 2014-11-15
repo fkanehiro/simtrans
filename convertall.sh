@@ -4,7 +4,7 @@ CMD="python -m simtrans.cli"
 OPENHRP_MODEL="/usr/local/share/OpenHRP-3.1/sample/model"
 
 # fetch the drc_practice_* models from gazebo model database
-python -m simtrans.gzfetch -f tests/models.txt
+#python -m simtrans.gzfetch -f tests/models.txt
 
 # convert from urdf to wrl
 $CMD -i package://atlas_description/urdf/atlas_v3.urdf -o /tmp/atlas.wrl

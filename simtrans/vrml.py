@@ -222,6 +222,11 @@ class VRMLWriter(object):
         if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
+        # list non empty link
+        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
+        # list joint with parent
+        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
+
         # first convert data structure (VRML uses tree structure)
         nmodel = {}
         for m in mdata.links:
@@ -234,16 +239,15 @@ class VRMLWriter(object):
             rootjoint.name = root
             rootjoint.jointType = "fixed"
         else:
-            root = 'waist'
+            if len(joints) > 0:
+                root = joints[0]
+            else:
+                root = 'waist'
             rootlink = mdata.links[0]
             rootjoint = model.JointModel()
             rootjoint.name = root
             rootjoint.jointType = "fixed"
 
-        # list non empty link
-        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
-        # list joint with parent
-        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
         if len(joints) == 0:
             joints = [root]
 

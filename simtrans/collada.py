@@ -30,7 +30,7 @@ class ColladaReader(object):
         Read collada model data given the file path
 
         >>> r = ColladaReader()
-        >>> m = r.read('/opt/ros/indigo/share/atlas_description/meshes/head.dae')
+        >>> m = r.read('package://atlas_description/meshes/head.dae')
         '''
         self._basepath = os.path.dirname(f)
         self._assethandler = assethandler
@@ -58,7 +58,7 @@ class ColladaReader(object):
 
     def convertchild(self, d):
         m = None
-        if type(d) == collada.scene.Node:
+        if type(d) in [collada.scene.Node, collada.scene.NodeNode]:
             m = model.MeshTransformData()
             m.matrix = d.matrix
             m.children = []
