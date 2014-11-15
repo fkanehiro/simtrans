@@ -34,13 +34,20 @@ class ColladaReader(object):
         '''
         self._basepath = os.path.dirname(f)
         self._assethandler = assethandler
-        d = collada.Collada(f)
+        try:
+            d = collada.Collada(f)
+        except:
+            print "error while processing %s" % f
+            raise
         for m in d.materials:
             mm = model.MaterialModel()
             mm.name = m.id
             for pr in m.effect.params:
                 if type(pr) == collada.material.Surface:
                     fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
+                    if not os.path.exists(fname):
+                        if fname.count('/meshes/') > 0:
+                            fname = fname.replace('/meshes/', '/materials/textures/')
                     if self._assethandler:
                         mm.texture = self._assethandler(fname)
                     else:

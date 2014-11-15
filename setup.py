@@ -34,6 +34,7 @@ setup(name='simtrans',
       entry_points={
           'console_scripts': [
               'simtrans = simtrans.cli:main',
+              'catxml = simtrans.catxml:main',
               'gzfetch = simtrans.gzfetch:main'
           ]
       },

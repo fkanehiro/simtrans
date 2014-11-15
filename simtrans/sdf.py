@@ -139,6 +139,15 @@ class SDFReader(object):
                 else:
                     raise Exception('unsupported mesh format: %s' % fileext)
                 m.data = reader.read(filename)
+                submesh = g.find('submesh')
+                if submesh is not None:
+                    submeshname = submesh.find('name').text
+                    submeshcenter = False
+                    try:
+                        submeshcenter = (submesh.find('center').text.count('true') > 0)
+                    except KeyError:
+                        pass
+                    # TODO: need to implement <submesh> handler here
             elif g.tag == 'box':
                 m.shapeType = model.ShapeModel.SP_BOX
                 boxsize = [float(v) for v in g.find('size').text.split(' ')]
