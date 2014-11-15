@@ -18,6 +18,7 @@ Transform {
 {%- else %}
 {%- if c.vertex is defined %}
 Shape {
+  {%- if c.material is not none %}
   appearance Appearance {
     material Material {
       diffuseColor {{c.material.diffuse[0]}} {{c.material.diffuse[1]}} {{c.material.diffuse[2]}}
@@ -30,6 +31,7 @@ Shape {
     }
     {%- endif %}
   }
+  {%- endif %}
   geometry IndexedFaceSet {
     coord Coordinate {
       point [

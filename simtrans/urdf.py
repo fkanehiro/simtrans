@@ -7,6 +7,7 @@ Reader and writer for URDF format
 import os
 import lxml.etree
 import numpy
+import re
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -58,7 +59,9 @@ class URDFReader(object):
             # general property
             jm.name = j.attrib['name']
             jm.jointType = self.readJointType(j.attrib['type'])
-            self.readOrigin(jm, j.find('origin'))
+            origin = j.find('origin')
+            if origin is not None:
+                self.readOrigin(jm, origin)
             axis = j.find('axis')
             if axis is not None:
                 jm.axis = [float(v) for v in axis.attrib['xyz'].split(' ')]
@@ -67,19 +70,25 @@ class URDFReader(object):
             # phisical property
             dynamics = j.find('dynamics')
             if dynamics is not None:
-                jm.damping = dynamics.attrib['damping']
-                jm.friction = dynamics.attrib['friction']
+                try:
+                    jm.damping = dynamics.attrib['damping']
+                    jm.friction = dynamics.attrib['friction']
+                except KeyError:
+                    pass
             limit = j.find('limit')
             if limit is not None:
-                jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
+                try:
+                    jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
+                except KeyError:
+                    pass
             bm.joints.append(jm)
 
         return bm
 
     def readOrigin(self, m, doc):
         try:
-            m.trans = numpy.array([float(v) for v in doc.attrib['xyz'].split(' ')])
-            rpy = [float(v) for v in doc.attrib['rpy'].split(' ')]
+            m.trans = numpy.array([float(v) for v in re.split(' +', doc.attrib['xyz'].strip(' '))])
+            rpy = [float(v) for v in re.split(' +', doc.attrib['rpy'].strip(' '))]
             m.rot = tf.quaternion_from_euler(rpy[0], rpy[1], rpy[2])
         except KeyError:
             pass
@@ -136,6 +145,10 @@ class URDFReader(object):
                 sm.data = model.CylinderData()
                 sm.data.radius = float(g.attrib['radius'])
                 sm.data.height = float(g.attrib['length'])
+            elif g.tag == 'sphere':
+                sm.shapeType = model.ShapeModel.SP_SPHERE
+                sm.data = model.SphereData()
+                sm.data.radius = float(g.attrib['radius'])
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
         return sm
