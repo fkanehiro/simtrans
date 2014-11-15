@@ -89,7 +89,7 @@ class URDFReader(object):
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
-        raise Exception('unsupported joint type')
+        raise Exception('unsupported joint type %s' % d)
 
     def readInertia(self, d):
         inertia = numpy.zeros((3, 3))
@@ -125,6 +125,11 @@ class URDFReader(object):
                 sm.data.x = boxsize[0]
                 sm.data.y = boxsize[1]
                 sm.data.z = boxsize[2]
+            elif g.tag == 'cylinder':
+                sm.shapeType = model.ShapeModel.SP_CYLINDER
+                sm.data = model.CylinderData()
+                sm.data.radius = float(g.attrib['radius'])
+                sm.data.height = float(g.attrib['length'])
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
         return sm
