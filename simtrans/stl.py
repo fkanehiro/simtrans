@@ -18,7 +18,7 @@ class STLReader(object):
     '''
     STL reader class
     '''
-    def read(self, f):
+    def read(self, f, assethandler=None):
         '''
         Read mesh model in STL format
         '''

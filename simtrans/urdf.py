@@ -24,13 +24,19 @@ class URDFReader(object):
     '''
     URDF reader class
     '''
-    def read(self, fname):
+    def __init__(self):
+        self._assethandler = None
+
+    def read(self, fname, assethandler=None):
         '''
         Read URDF model data given the model file
 
         >>> r = URDFReader()
         >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         '''
+        if assethandler is not None:
+            self._assethandler = assethandler
+
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
 
@@ -132,7 +138,7 @@ class URDFReader(object):
                     reader = collada.ColladaReader()
                 else:
                     reader = stl.STLReader()
-                sm.data = reader.read(filename)
+                sm.data = reader.read(filename, assethandler=self._assethandler)
             elif g.tag == 'box':
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()

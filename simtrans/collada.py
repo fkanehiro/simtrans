@@ -52,16 +52,15 @@ class ColladaReader(object):
         for m in d.materials:
             mm = model.MaterialModel()
             mm.name = m.id
-            for pr in m.effect.params:
-                if type(pr) == collada.material.Surface:
-                    fname = os.path.abspath(os.path.join(self._basepath, pr.image.path))
-                    if not os.path.exists(fname):
-                        if fname.count('/meshes/') > 0:
-                            fname = fname.replace('/meshes/', '/materials/textures/')
-                    if self._assethandler:
-                        mm.texture = self._assethandler(fname)
-                    else:
-                        mm.texture = fname
+            if type(m.effect.diffuse) == collada.material.Map:
+                fname = os.path.abspath(os.path.join(self._basepath, m.effect.diffuse.sampler.surface.image.path))
+                if not os.path.exists(fname):
+                    if fname.count('/meshes/') > 0:
+                        fname = fname.replace('/meshes/', '/materials/textures/')
+                if self._assethandler:
+                    mm.texture = self._assethandler(fname)
+                else:
+                    mm.texture = fname
             self._materials[mm.name] = mm
         m = model.MeshTransformData()
         unitmeter = d.assetInfo.unitmeter

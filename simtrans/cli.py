@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 from optparse import OptionParser, OptionError
 
 from . import vrml
@@ -48,6 +49,7 @@ Convert robot simulation model from one another.'''
             return 1
 
     writer = None
+    handler = None
     if options.toformat == "vrml":
         writer = vrml.VRMLWriter()
     if options.toformat == "urdf":
@@ -60,6 +62,12 @@ Convert robot simulation model from one another.'''
         ext = os.path.splitext(options.tofile)[1]
         if ext == '.wrl':
             writer = vrml.VRMLWriter()
+            dirname = os.path.dirname(options.tofile)
+            def jpegconvert(f):
+                fname = os.path.join(dirname, os.path.splitext(os.path.basename(f))[0] + '.jpg')
+                subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                return fname
+            handler = jpegconvert
         elif ext == '.urdf':
             writer = urdf.URDFWriter()
         elif ext == '.sdf':
@@ -75,7 +83,7 @@ Convert robot simulation model from one another.'''
     print "converting from: %s" % options.fromfile
     print "             to: %s" % options.tofile
 
-    model = reader.read(options.fromfile)
+    model = reader.read(options.fromfile, assethandler=handler)
     if len(model.links) == 0:
         print "cannot read links at all (probably the model refers to another model by <include> tag)"
         return 1
