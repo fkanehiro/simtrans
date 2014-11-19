@@ -5,3 +5,5 @@
 MANIFEST
 dist
 nose2-junit.xml
+_build
+*.mo
