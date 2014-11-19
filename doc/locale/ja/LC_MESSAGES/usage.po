@@ -1,0 +1,63 @@
+# Japanese translations for simtrans package.
+# Copyright (C) 2014, AIST
+# This file is distributed under the same license as the simtrans package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: simtrans 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-19 14:19+0900\n"
+"PO-Revision-Date: 2014-11-19 14:16+0900\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# 7271715fc335479fa85d8157983cba7f
+#: ../../usage.rst:3
+msgid "Usage"
+msgstr ""
+
+# 9dae5675d35c4a5eaabec8f2ce8301ed
+#: ../../<autoprogram>:1
+msgid "simtrans"
+msgstr ""
+
+# 7aa1aadae2b6487abd35ca3b68eb3104
+#: ../../<autoprogram>:1
+msgid "Convert robot simulation model from one another."
+msgstr ""
+
+# b3e565b58b28422b9e5499089adc11e2
+#: ../../<autoprogram>:1
+msgid "show this help message and exit"
+msgstr ""
+
+# 74847be1483a44998f47790564b361c6
+#: ../../<autoprogram>:1
+msgid "convert from FILE"
+msgstr ""
+
+# 8ad20e0d058b45a29ab791a6cee7dd3d
+#: ../../<autoprogram>:1
+msgid "convert to FILE"
+msgstr ""
+
+# 4b81b64e789d43c19380b13d392e6e1e
+#: ../../<autoprogram>:1
+msgid "convert from FORMAT (optional)"
+msgstr ""
+
+# 39ce692b13ba47779007e6a87fbcc967
+#: ../../<autoprogram>:1
+msgid "convert to FORMAT (optional)"
+msgstr ""
+
+# 282d7ef68db645c89c88bfc080001417
+#: ../../<autoprogram>:1
+msgid "verbose output"
+msgstr ""

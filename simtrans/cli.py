@@ -1,26 +1,25 @@
 import os
 import sys
 import subprocess
-from optparse import OptionParser, OptionError
+from argparse import ArgumentParser, ArgumentError
 
 from . import vrml
 from . import urdf
 from . import sdf
 from . import graphviz
 
+parser = ArgumentParser(description='Convert robot simulation model from one another.')
+parser.add_argument('-i', '--input', dest='fromfile', metavar='FILE', help='convert from FILE')
+parser.add_argument('-o', '--output', dest='tofile', metavar='FILE', help='convert to FILE')
+parser.add_argument('-f', '--from', dest='fromformat', metavar='FORMAT', help='convert from FORMAT (optional)')
+parser.add_argument('-t', '--to', dest='toformat', metavar='FORMAT', help='convert to FORMAT (optional)')
+parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
+
 
 def main():
-    usage = '''Usage: %prog [options]
-Convert robot simulation model from one another.'''
-    parser = OptionParser(usage=usage)
-    parser.add_option('-i', '--input', dest='fromfile', metavar='FILE', help='convert from FILE')
-    parser.add_option('-o', '--output', dest='tofile', metavar='FILE', help='convert to FILE')
-    parser.add_option('-f', '--from', dest='fromformat', metavar='FORMAT', help='convert from FORMAT (optional)')
-    parser.add_option('-t', '--to', dest='toformat', metavar='FORMAT', help='convert to FORMAT (optional)')
-    parser.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
     try:
-        options, args = parser.parse_args()
-    except OptionError, e:
+        options = parser.parse_args()
+    except ArgumentError, e:
         print >> sys.stderr, 'OptionError: ', e
         print >> sys.stderr, parser.print_help()
         return 1

@@ -1,7 +1,34 @@
 # -*- coding:utf-8 -*-
 
-"""
-Reader and writer for URDF format
+"""Reader and writer for URDF format
+
+:Organization:
+ AIST
+
+Requirements
+------------
+* numpy
+* lxml xml parser
+* jinja2 template engine
+
+Examples
+--------
+
+Read URDF model data given the model file
+
+>>> r = URDFReader()
+>>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+
+Write simulation model in URDF format
+
+>>> from . import vrml
+>>> r = vrml.VRMLReader()
+>>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+>>> w = URDFWriter()
+>>> w.write(m, '/tmp/hrp4c.urdf')
+>>> import subprocess
+>>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
+0
 """
 
 import os
@@ -30,9 +57,6 @@ class URDFReader(object):
     def read(self, fname, assethandler=None):
         '''
         Read URDF model data given the model file
-
-        >>> r = URDFReader()
-        >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
         '''
         if assethandler is not None:
             self._assethandler = assethandler
@@ -167,15 +191,6 @@ class URDFWriter(object):
     def write(self, m, f):
         '''
         Write simulation model in URDF format
-
-        >>> from . import vrml
-        >>> r = vrml.VRMLReader()
-        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
-        >>> w = URDFWriter()
-        >>> w.write(m, '/tmp/hrp4c.urdf')
-        >>> import subprocess
-        >>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
-        0
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
