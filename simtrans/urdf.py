@@ -118,6 +118,9 @@ class URDFReader(object):
     def readOrigin(self, m, doc):
         try:
             m.trans = numpy.array([float(v) for v in re.split(' +', doc.attrib['xyz'].strip(' '))])
+        except KeyError:
+            pass
+        try:
             rpy = [float(v) for v in re.split(' +', doc.attrib['rpy'].strip(' '))]
             m.rot = tf.quaternion_from_euler(rpy[0], rpy[1], rpy[2])
         except KeyError:
@@ -163,6 +166,15 @@ class URDFReader(object):
                 else:
                     reader = stl.STLReader()
                 sm.data = reader.read(filename, assethandler=self._assethandler)
+                try:
+                    scales = [float(v) for v in g.attrib['scale'].split(' ')]
+                    if scales[0] != 0.0:
+                        d = model.MeshTransformData()
+                        d.matrix = tf.scale_matrix(scales[0])
+                        d.children = [sm.data]
+                        sm.data = d
+                except KeyError:
+                    pass
             elif g.tag == 'box':
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()
