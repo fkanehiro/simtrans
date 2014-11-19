@@ -40,3 +40,15 @@ To open the project using gazebo.
 .. code-block:: bash
 
    $ gazebo ~/.gazebo/models/pa10.world
+
+
+Visualize joint structure using graphviz
+========================================
+
+For example, PR2 robot model can be visualized as follows.
+
+.. code-block:: bash
+
+   $ rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > /tmp/pr2.urdf
+   $ simtrans -i /tmp/pr2.urdf -o /tmp/pr2.dot
+   $ dot -Tx11 /tmp/pr2.dot

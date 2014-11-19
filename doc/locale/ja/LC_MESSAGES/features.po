@@ -1,0 +1,105 @@
+# Japanese translations for simtrans package.
+# Copyright (C) 2014, AIST
+# This file is distributed under the same license as the simtrans package.
+# Automatically generated, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: simtrans 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-19 17:31+0900\n"
+"PO-Revision-Date: 2014-11-19 17:30+0900\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# ad2acf224c624c1e958aab6e04eb78d6
+#: ../../features.rst:3
+msgid "Features"
+msgstr ""
+
+# bf8824806bdd4541a7bda0f55f7b194d
+#: ../../features.rst:5
+msgid ""
+"\"simtrans\" is a model format converter which can read and write formats "
+"used in major robotic simulators."
+msgstr ""
+
+# eca1526974e94ae4867ecc1e0684dd49
+#: ../../features.rst:7
+msgid "Currently, it can read following formats:"
+msgstr ""
+
+# 3cadb81b6118487980492e4678049fc9
+# 09ad83ed7b1e48c89d70f526f332e356
+#: ../../features.rst:9 ../../features.rst:17
+msgid "URDF"
+msgstr ""
+
+# 5add2e479145468cac39fbbec52ce0ed
+# c68bca4947544910890789e9225dc22b
+#: ../../features.rst:10 ../../features.rst:18
+msgid "SDF"
+msgstr ""
+
+# aeccfde2331744a495652c681276a4c8
+# 52bdbed51ff94bf49b560210ee07fd92
+#: ../../features.rst:11 ../../features.rst:19
+msgid "VRML97 (including OpenHRP joint structure extensions)"
+msgstr ""
+
+# 438ff29db9374828aea11eb1d0ebc86e
+# a9557c5ef9cf4148bc1b2ee94165417f
+#: ../../features.rst:12 ../../features.rst:20
+msgid "COLLADA"
+msgstr ""
+
+# 09e0591b097f406b9b993e1cedd6e7be
+# 7c005cf9f95b423aa8d944b6517293d6
+#: ../../features.rst:13 ../../features.rst:21
+msgid "STL"
+msgstr ""
+
+# fb511a017d7641e1b0c79c7172905508
+#: ../../features.rst:15
+msgid "Can write following formats:"
+msgstr ""
+
+# 60a5871284e24cde8942a6ed1aa0a379
+#: ../../features.rst:22
+msgid "Graphviz dot (to visualize joint structure)"
+msgstr ""
+
+# 9aa9077c0bf546659e5685613f3cc9a7
+#: ../../features.rst:24
+msgid "It can convert following properties:"
+msgstr ""
+
+# 7a52c73677414de8ad360722eaf8bcc6
+#: ../../features.rst:26
+msgid "Joints"
+msgstr ""
+
+# db867834dabb4807b474272a924aa887
+#: ../../features.rst:27
+msgid "Links"
+msgstr ""
+
+# a95b807c0276491695ab48127c377b5b
+#: ../../features.rst:28
+msgid "Shape primitives and mesh shapes (including colors and textures)"
+msgstr ""
+
+# 5f44a3cc7284425aa9ea092442c99c5b
+#: ../../features.rst:29
+msgid "Physical properties for links and joints"
+msgstr ""
+
+# 1f24109a32ec435cbdd4009db9e91fe1
+#: ../../features.rst:30
+msgid "Sensors"
+msgstr ""

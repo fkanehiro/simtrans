@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-19 17:07+0900\n"
+"POT-Creation-Date: 2014-11-19 17:30+0900\n"
 "PO-Revision-Date: 2014-11-19 14:16+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -95,4 +95,14 @@ msgstr ""
 # 63738e4c9c6a4d75bd85de968b389653
 #: ../../usage.rst:38
 msgid "To open the project using gazebo."
+msgstr ""
+
+# 82215cfb9eeb4dcb82df041482defaf8
+#: ../../usage.rst:46
+msgid "Visualize joint structure using graphviz"
+msgstr ""
+
+# 4e7784a617bb40758eda2398ad470870
+#: ../../usage.rst:48
+msgid "For example, PR2 robot model can be visualized as follows."
 msgstr ""
