@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-19 12:06+0900\n"
+"POT-Creation-Date: 2014-11-19 16:42+0900\n"
 "PO-Revision-Date: 2014-11-19 12:04+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -22,14 +22,9 @@ msgstr ""
 msgid "simtrans.thirdparty package"
 msgstr ""
 
-# e353a285fab241688c6e25e8de26ad3a
+# 80d6f31474424733bdde693d82612e47
 #: ../../simtrans.thirdparty.rst:5
-msgid "Submodules"
-msgstr ""
-
-# 0334d73007cf4198855087d83c24349d
-#: ../../simtrans.thirdparty.rst:8
-msgid "simtrans.thirdparty.hrputil module"
+msgid "simtrans.thirdparty.hrputil"
 msgstr ""
 
 # 9dd8adc80c384bd099ea517cb5c2baf2
@@ -67,8 +62,8 @@ msgid "calculate omega values from rotation matrix"
 msgstr ""
 
 # cf79e13cc1014f46940308a4a2677626
-#: ../../simtrans.thirdparty.rst:16
-msgid "simtrans.thirdparty.transformations module"
+#: ../../simtrans.thirdparty.rst:13
+msgid "simtrans.thirdparty.transformations"
 msgstr ""
 
 # d32d54799fb94555bb87f243964ed099
@@ -405,9 +400,4 @@ msgstr ""
 #: ../../../simtrans/thirdparty/transformations.py:docstring of
 #: simtrans.thirdparty.transformations:107
 msgid "Examples"
-msgstr ""
-
-# 4d3fd13878a44d379ddd2b3e53e980a8
-#: ../../simtrans.thirdparty.rst:25
-msgid "Module contents"
 msgstr ""

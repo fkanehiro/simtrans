@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-19 14:19+0900\n"
+"POT-Creation-Date: 2014-11-19 17:07+0900\n"
 "PO-Revision-Date: 2014-11-19 14:16+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -20,6 +20,11 @@ msgstr ""
 # 7271715fc335479fa85d8157983cba7f
 #: ../../usage.rst:3
 msgid "Usage"
+msgstr ""
+
+# e65e609501ba4d9cbecfa9cdd9e2efdc
+#: ../../usage.rst:6
+msgid "Commandline options"
 msgstr ""
 
 # 9dae5675d35c4a5eaabec8f2ce8301ed
@@ -60,4 +65,34 @@ msgstr ""
 # 282d7ef68db645c89c88bfc080001417
 #: ../../<autoprogram>:1
 msgid "verbose output"
+msgstr ""
+
+# 07fa8846a7df4c5f962e4fc79f941397
+#: ../../usage.rst:12
+msgid "Convert URDF model to VRML(OpenHRP) format"
+msgstr ""
+
+# c39f058da0444fefaff47e0284826cc1
+#: ../../usage.rst:14
+msgid "For example, PR2 robot model can be converted as follows."
+msgstr ""
+
+# aff971dadfd04c09b2427109f5c7bc5f
+#: ../../usage.rst:21
+msgid "To open the project using hrpsys-simulator."
+msgstr ""
+
+# 947b7e5db74f4eea9ee8e162f7ddc4b5
+#: ../../usage.rst:30
+msgid "Convert VRML(OpenHRP) model to SDF format"
+msgstr ""
+
+# 81009c066848421bab29e0e59865656d
+#: ../../usage.rst:32
+msgid "For example, PA10 robot model can be converted as follows."
+msgstr ""
+
+# 63738e4c9c6a4d75bd85de968b389653
+#: ../../usage.rst:38
+msgid "To open the project using gazebo."
 msgstr ""

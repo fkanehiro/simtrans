@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-19 13:52+0900\n"
+"POT-Creation-Date: 2014-11-19 16:49+0900\n"
 "PO-Revision-Date: 2014-11-19 12:04+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,115 +17,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-# f382406831bf462b9b428f7af88acd3c
+# 113c3285e58d4bbaa00488492f22f9c2
 #: ../../simtrans.rst:2
-msgid "simtrans package"
+msgid "Architecture"
 msgstr ""
 
-# 27bb3fd631494a43bb8e2ab842a77b07
-#: ../../simtrans.rst:5
-msgid "Subpackages"
+# 71fca181306145f1a1fc61a153994ce0
+#: ../../simtrans.rst:4
+msgid ""
+"Software architecture of simtrans is shown below. Reader and writer for each "
+"formats will read and write the common data structure."
 msgstr ""
 
-# 4a47041e277e4d0b94c983fa2464a5f7
-#: ../../simtrans.rst:12
-msgid "Submodules"
+# 444ef4638d464188b2e5ddddc0cfcd6f
+#: ../../simtrans.rst:24
+msgid "Common data structure"
 msgstr ""
 
-# 541addd946374edd856e62a12b780f2b
-#: ../../simtrans.rst:15
-msgid "simtrans.catxml module"
-msgstr ""
-
-# 15c16d41bca94c729e89d41b3d3311e8
-#: ../../simtrans.rst:23
-msgid "simtrans.cli module"
-msgstr ""
-
-# f7801087e3bf477c8bb5cd72df169d95
-#: ../../simtrans.rst:31
-msgid "simtrans.collada module"
-msgstr ""
-
-# cd328a2e978f4678a7d92f0e13a9a11a
-#: ../../../simtrans/collada.py:docstring of simtrans.collada:1
-msgid "Reader and writer for collada format"
-msgstr ""
-
-# 6c975a0ffeae4cf990c96db79bfb1d4d
-# 5a19603e5a7d40868147fb84743c2759
-# 07455cad08664147b2dcdfeb02a11157
-# 8561680d096f4722aac00d5864eeb66b
-# fd64a01c8e7740289dd60dd32d2d53c0
-# 93356bbfbc694eeb91ce44dd20b5f0bf
-# 6164d08b834046c39cefd38b715c6937
-# 5b81e1411f1949509154e4159d157be6
-# d31deb79d507464599054505706f617d
-# 9760de70bc6a4bbd9b36c13b4e3be9c3
-# 59f7dc50f1de4adeb4dd1865d10113fd
-# f796f9ff6c7c4ab3bb656d8a388bd24f
-# 91bd4c65582d48b3b696ff89accf53a5
-# 0eca35c56f3f48769f057e2632bd2322
-# 2c5916b78161484a8322d3c491619727
-# 66d4806a4ebe4896b686077df22e21ee
-# 7a735a922bae40b2bfb3127d0c929283
-# 374817a76ac84854b1577be4ad3353a8
-#: ../../<autodoc>:1
-msgid "ベースクラス: :class:`object`"
-msgstr ""
-
-# 8acb8155bef74744a60d5434b8756878
-#: ../../../simtrans/collada.py:docstring of simtrans.collada.ColladaReader:1
-msgid "Collada reader class"
-msgstr ""
-
-# 3a24533d672e4aa9a8a4d0ff29dba78a
-#: ../../../simtrans/collada.py:docstring of
-#: simtrans.collada.ColladaReader.read:1
-msgid "Read collada model data given the file path"
-msgstr ""
-
-# 29efb830e98648aab1f785e6daad701d
-#: ../../../simtrans/collada.py:docstring of simtrans.collada.ColladaWriter:1
-msgid "Collada writer class"
-msgstr ""
-
-# 8251e7a72c864cdcbc9c258b9a0aa14e
-#: ../../../simtrans/collada.py:docstring of
-#: simtrans.collada.ColladaWriter.write:1
-msgid "Write simulation model in collada format"
-msgstr ""
-
-# b8383b8b586f474e85b998fd3d6ac27e
-#: ../../simtrans.rst:39
-msgid "simtrans.graphviz module"
-msgstr ""
-
-# 9462f535faa94b2db28d3e3cd01cf683
-#: ../../../simtrans/graphviz.py:docstring of simtrans.graphviz:1
-msgid "Writer for graphviz dot format"
-msgstr ""
-
-# 9668edda638443f3b0b6de61501d1fec
-#: ../../../simtrans/graphviz.py:docstring of
-#: simtrans.graphviz.GraphvizWriter:1
-msgid "Graphviz writer class"
-msgstr ""
-
-# bee1d2ba6f164fb3af93d00ddd91987d
-#: ../../../simtrans/graphviz.py:docstring of
-#: simtrans.graphviz.GraphvizWriter.write:1
-msgid "Write simulation model in graphviz dot format"
-msgstr ""
-
-# c9ff330c535544d38703e9ce2e0dc252
-#: ../../simtrans.rst:47
-msgid "simtrans.gzfetch module"
-msgstr ""
-
-# 65d68a5f53a1457eb86aa43a7034072b
-#: ../../simtrans.rst:55
-msgid "simtrans.model module"
+# 3ce5912deaa54a6fbf34136b1fa297cd
+#: ../../simtrans.rst:27
+msgid "simtrans.model"
 msgstr ""
 
 # 0a06ef6a73ff4d30888e3897bf8d782a
@@ -172,6 +83,28 @@ msgstr ""
 # 99cc8b8dd542454ba77dc2ec3f426e5a
 #: ../../../simtrans/model.py:docstring of simtrans.model.BodyModel.sensors:1
 msgid "List of sensors"
+msgstr ""
+
+# 6c975a0ffeae4cf990c96db79bfb1d4d
+# 5a19603e5a7d40868147fb84743c2759
+# 07455cad08664147b2dcdfeb02a11157
+# 8561680d096f4722aac00d5864eeb66b
+# fd64a01c8e7740289dd60dd32d2d53c0
+# 93356bbfbc694eeb91ce44dd20b5f0bf
+# 6164d08b834046c39cefd38b715c6937
+# 5b81e1411f1949509154e4159d157be6
+# d31deb79d507464599054505706f617d
+# 9760de70bc6a4bbd9b36c13b4e3be9c3
+# 59f7dc50f1de4adeb4dd1865d10113fd
+# f796f9ff6c7c4ab3bb656d8a388bd24f
+# 91bd4c65582d48b3b696ff89accf53a5
+# 0eca35c56f3f48769f057e2632bd2322
+# 2c5916b78161484a8322d3c491619727
+# 66d4806a4ebe4896b686077df22e21ee
+# 7a735a922bae40b2bfb3127d0c929283
+# 374817a76ac84854b1577be4ad3353a8
+#: ../../<autodoc>:1
+msgid "ベースクラス: :class:`object`"
 msgstr ""
 
 # edfef0fe5a80417eaa147db80c61ec9e
@@ -557,14 +490,88 @@ msgstr ""
 msgid "Translation vector (3-dim numpy array)"
 msgstr ""
 
-# 77ebc6ce922544dba13ed4dbc462dff9
-#: ../../simtrans.rst:63
-msgid "simtrans.rotation module"
+# 7809968f884144c3b6f9782265c3b9e8
+#: ../../simtrans.rst:35
+msgid "Command-line interface"
 msgstr ""
 
-# 9a2154b4610b453cb0c6f6114e4659a4
-#: ../../simtrans.rst:71
-msgid "simtrans.sdf module"
+# 10d853d8b9cb4ff6abca622e54081dad
+#: ../../simtrans.rst:38
+msgid "simtrans.cli"
+msgstr ""
+
+# 1415fee96a7d4573b329764761cb1193
+#: ../../simtrans.rst:46
+msgid "simtrans.catxml"
+msgstr ""
+
+# 5f6c07f13a8e47c8af08e68c565018a4
+#: ../../simtrans.rst:54
+msgid "simtrans.gzfetch"
+msgstr ""
+
+# 204522c634834eaea0c50a990321b9ee
+#: ../../simtrans.rst:62
+msgid "Reader and writer"
+msgstr ""
+
+# 22cf6f6cd56843b3a363882aadd8c7b9
+#: ../../simtrans.rst:65
+msgid "simtrans.collada"
+msgstr ""
+
+# cd328a2e978f4678a7d92f0e13a9a11a
+#: ../../../simtrans/collada.py:docstring of simtrans.collada:1
+msgid "Reader and writer for collada format"
+msgstr ""
+
+# 8acb8155bef74744a60d5434b8756878
+#: ../../../simtrans/collada.py:docstring of simtrans.collada.ColladaReader:1
+msgid "Collada reader class"
+msgstr ""
+
+# 3a24533d672e4aa9a8a4d0ff29dba78a
+#: ../../../simtrans/collada.py:docstring of
+#: simtrans.collada.ColladaReader.read:1
+msgid "Read collada model data given the file path"
+msgstr ""
+
+# 29efb830e98648aab1f785e6daad701d
+#: ../../../simtrans/collada.py:docstring of simtrans.collada.ColladaWriter:1
+msgid "Collada writer class"
+msgstr ""
+
+# 8251e7a72c864cdcbc9c258b9a0aa14e
+#: ../../../simtrans/collada.py:docstring of
+#: simtrans.collada.ColladaWriter.write:1
+msgid "Write simulation model in collada format"
+msgstr ""
+
+# 16200a8f1e6e4dd89a2276a7a67aae3b
+#: ../../simtrans.rst:73
+msgid "simtrans.graphviz"
+msgstr ""
+
+# 9462f535faa94b2db28d3e3cd01cf683
+#: ../../../simtrans/graphviz.py:docstring of simtrans.graphviz:1
+msgid "Writer for graphviz dot format"
+msgstr ""
+
+# 9668edda638443f3b0b6de61501d1fec
+#: ../../../simtrans/graphviz.py:docstring of
+#: simtrans.graphviz.GraphvizWriter:1
+msgid "Graphviz writer class"
+msgstr ""
+
+# bee1d2ba6f164fb3af93d00ddd91987d
+#: ../../../simtrans/graphviz.py:docstring of
+#: simtrans.graphviz.GraphvizWriter.write:1
+msgid "Write simulation model in graphviz dot format"
+msgstr ""
+
+# 10d853d8b9cb4ff6abca622e54081dad
+#: ../../simtrans.rst:81
+msgid "simtrans.sdf"
 msgstr ""
 
 # c947ec2bd96046668219ffb116364ccd
@@ -594,9 +601,9 @@ msgstr ""
 msgid "Write simulation model in SDF format"
 msgstr ""
 
-# 0a36932ce03746e5bc85792831594fe3
-#: ../../simtrans.rst:79
-msgid "simtrans.stl module"
+# ebc5a13e442246508c890c3afaae0d47
+#: ../../simtrans.rst:89
+msgid "simtrans.stl"
 msgstr ""
 
 # 204522c634834eaea0c50a990321b9ee
@@ -626,9 +633,9 @@ msgid ""
 "meshlab to output stl"
 msgstr ""
 
-# 621f7efbbfd74f2c813f227c008c690b
-#: ../../simtrans.rst:87
-msgid "simtrans.urdf module"
+# ad35e43860114f658f098dc959c1368c
+#: ../../simtrans.rst:97
+msgid "simtrans.urdf"
 msgstr ""
 
 # 7f8e68f303bb4f5599184cb585969049
@@ -688,25 +695,9 @@ msgstr ""
 msgid "URDF writer class"
 msgstr ""
 
-# b1e248fbf14c437eb3167ec4cc967710
-#: ../../simtrans.rst:95
-msgid "simtrans.utils module"
-msgstr ""
-
-# 6dc5236ca391494aa8e0e49b7e2b8e0d
-#: ../../../simtrans/utils.py:docstring of simtrans.utils:1
-msgid "Miscellaneous utility functions"
-msgstr ""
-
-# e207b0031fb2439cb30b66222934c5e6
-#: ../../../simtrans/utils.py:docstring of simtrans.utils.resolveFile:1
-msgid ""
-"Resolve file by replacing file path heading \"package://\" or \"model://\""
-msgstr ""
-
-# f1e2cf2d946a4f869f42df18de9a03e3
-#: ../../simtrans.rst:103
-msgid "simtrans.vrml module"
+# 17b72cbcfa3b4634af6f5e5132a801d1
+#: ../../simtrans.rst:105
+msgid "simtrans.vrml"
 msgstr ""
 
 # d91bf9e76de6452dae8f8ae4346621ab
@@ -747,7 +738,28 @@ msgstr ""
 msgid "Write simulation model in VRML format"
 msgstr ""
 
-# c2d40630e1be4bb7832c2ef021c3970f
-#: ../../simtrans.rst:112
-msgid "Module contents"
+# 6dc5236ca391494aa8e0e49b7e2b8e0d
+#: ../../simtrans.rst:113
+msgid "Utility functions"
+msgstr ""
+
+# 544663a022b846aa99b95bb66f5eeb3d
+#: ../../simtrans.rst:116
+msgid "simtrans.utils"
+msgstr ""
+
+# 6dc5236ca391494aa8e0e49b7e2b8e0d
+#: ../../../simtrans/utils.py:docstring of simtrans.utils:1
+msgid "Miscellaneous utility functions"
+msgstr ""
+
+# e207b0031fb2439cb30b66222934c5e6
+#: ../../../simtrans/utils.py:docstring of simtrans.utils.resolveFile:1
+msgid ""
+"Resolve file by replacing file path heading \"package://\" or \"model://\""
+msgstr ""
+
+# 07d226aabcde412aa271efb7b57371d4
+#: ../../simtrans.rst:124
+msgid "Thirdparty library"
 msgstr ""

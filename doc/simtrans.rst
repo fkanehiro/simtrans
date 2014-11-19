@@ -1,117 +1,129 @@
-simtrans package
-================
+Architecture
+============
 
-Subpackages
------------
+Software architecture of simtrans is shown below.
+Reader and writer for each formats will read and write the common data structure.
+ 
+.. graphviz::
+ 
+   digraph comp {
+     rankdir=LR;
+     "SDLReader" -> "Model"
+     "URDFReader" -> "Model"
+     "VRMLReader" -> "Model"
+     "STLReader" -> "Model"
+     "ColladaReader" -> "Model"
+     "Model" -> "SDLWriter";
+     "Model" -> "URDFWriter";
+     "Model" -> "VRMLWriter";
+     "Model" -> "STLWriter";
+     "Model" -> "ColladaWriter";
+   }
 
-.. toctree::
+Common data structure
+=====================
 
-    simtrans.thirdparty
-
-Submodules
-----------
-
-simtrans.catxml module
-----------------------
-
-.. automodule:: simtrans.catxml
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.cli module
--------------------
-
-.. automodule:: simtrans.cli
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.collada module
------------------------
-
-.. automodule:: simtrans.collada
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.graphviz module
-------------------------
-
-.. automodule:: simtrans.graphviz
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.gzfetch module
------------------------
-
-.. automodule:: simtrans.gzfetch
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.model module
----------------------
+simtrans.model
+--------------
 
 .. automodule:: simtrans.model
     :members:
     :undoc-members:
     :show-inheritance:
 
-simtrans.rotation module
-------------------------
+Command-line interface
+======================
 
-.. automodule:: simtrans.rotation
+simtrans.cli
+------------
+
+.. automodule:: simtrans.cli
     :members:
     :undoc-members:
     :show-inheritance:
 
-simtrans.sdf module
--------------------
+simtrans.catxml
+---------------
+
+.. automodule:: simtrans.catxml
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+simtrans.gzfetch
+----------------
+
+.. automodule:: simtrans.gzfetch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Reader and writer
+=================
+
+simtrans.collada
+----------------
+
+.. automodule:: simtrans.collada
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+simtrans.graphviz
+-----------------
+
+.. automodule:: simtrans.graphviz
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+simtrans.sdf
+------------
 
 .. automodule:: simtrans.sdf
     :members:
     :undoc-members:
     :show-inheritance:
 
-simtrans.stl module
--------------------
+simtrans.stl
+------------
 
 .. automodule:: simtrans.stl
     :members:
     :undoc-members:
     :show-inheritance:
 
-simtrans.urdf module
---------------------
+simtrans.urdf
+-------------
 
 .. automodule:: simtrans.urdf
     :members:
     :undoc-members:
     :show-inheritance:
 
-simtrans.utils module
----------------------
-
-.. automodule:: simtrans.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-simtrans.vrml module
---------------------
+simtrans.vrml
+-------------
 
 .. automodule:: simtrans.vrml
     :members:
     :undoc-members:
     :show-inheritance:
 
+Utility functions
+=================
 
-Module contents
----------------
+simtrans.utils
+--------------
 
-.. automodule:: simtrans
+.. automodule:: simtrans.utils
     :members:
     :undoc-members:
     :show-inheritance:
+
+Thirdparty library
+==================
+
+.. toctree::
+
+    simtrans.thirdparty
+

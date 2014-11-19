@@ -1,5 +1,6 @@
-simtrans
-========
+=====
+ API
+=====
 
 .. toctree::
    :maxdepth: 4

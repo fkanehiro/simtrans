@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-19 14:42+0900\n"
-"PO-Revision-Date: 2014-11-19 12:04+0900\n"
+"POT-Creation-Date: 2014-11-19 17:04+0900\n"
+"PO-Revision-Date: 2014-11-19 14:47+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: ja\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-# 94106acb0517444cb62f383d52d072d2
-#: ../../modules.rst:3
-msgid "API"
+# b7a2ac37a00043b8bec340d7d964d05d
+#: ../../examples.rst:3
+msgid "Examples"
 msgstr ""
