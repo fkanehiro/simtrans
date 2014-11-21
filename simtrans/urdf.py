@@ -55,9 +55,14 @@ class URDFReader(object):
         self._assethandler = None
 
     def read(self, fname, assethandler=None):
-        '''
-        Read URDF model data given the model file
-        '''
+        """Read URDF model data given the model file
+
+        :param fname: path of the file to read
+        :param assethandler: asset handler (optional)
+        :returns: model data
+        :rtype: model.Model
+
+        """
         if assethandler is not None:
             self._assethandler = assethandler
 
@@ -201,9 +206,14 @@ class URDFWriter(object):
     URDF writer class
     '''
     def write(self, m, f):
-        '''
-        Write simulation model in URDF format
-        '''
+        """Write simulation model in URDF format
+
+        :param m: model data
+        :param f: path of the file to save
+        :returns: None
+        :rtype: None
+
+        """
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
         env = jinja2.Environment(loader=loader)

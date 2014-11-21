@@ -1,7 +1,48 @@
 # -*- coding:utf-8 -*-
 
-"""
-Reader and writer for VRML format
+"""Reader and writer for VRML format
+
+:Organization:
+ AIST
+
+Requirements
+------------
+* numpy
+* omniorb-python
+* jinja2 template engine
+
+Examples
+--------
+
+Read vrml model data given the file path
+
+>>> r = VRMLReader()
+>>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
+
+Write simulation model in URDF format
+
+>>> from . import vrml
+>>> r = vrml.VRMLReader()
+>>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+>>> w = URDFWriter()
+>>> w.write(m, '/tmp/hrp4c.urdf')
+>>> import subprocess
+>>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
+0
+
+Write simulation model in VRML format
+
+>>> from . import urdf
+>>> r = urdf.URDFReader()
+>>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+>>> w = VRMLWriter()
+>>> w.write(m, '/tmp/atlas.wrl')
+
+>>> from . import sdf
+>>> r = sdf.SDFReader()
+>>> m = r.read('model://pr2/model.sdf')
+>>> w = VRMLWriter()
+>>> w.write(m, '/tmp/pr2.wrl')
 """
 
 from . import model
@@ -16,9 +57,6 @@ import jinja2
 import CORBA
 import CosNaming
 import OpenHRP
-from pygraph.classes.graph import graph
-from pygraph.classes.digraph import digraph
-from pygraph.algorithms.searching import breadth_first_search
 
 
 class VRMLReader(object):
@@ -38,9 +76,6 @@ class VRMLReader(object):
     def read(self, f):
         '''
         Read vrml model data given the file path
-
-        >>> r = VRMLReader()
-        >>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
         '''
         self.resolveModelLoader()
         try:
@@ -204,18 +239,6 @@ class VRMLWriter(object):
     def write(self, mdata, fname):
         '''
         Write simulation model in VRML format
-
-        >>> from . import urdf
-        >>> r = urdf.URDFReader()
-        >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
-        >>> w = VRMLWriter()
-        >>> w.write(m, '/tmp/atlas.wrl')
-
-        >>> from . import sdf
-        >>> r = sdf.SDFReader()
-        >>> m = r.read('model://pr2/model.sdf')
-        >>> w = VRMLWriter()
-        >>> w.write(m, '/tmp/pr2.wrl')
         '''
         fpath, fext = os.path.splitext(fname)
         basename = os.path.basename(fpath)

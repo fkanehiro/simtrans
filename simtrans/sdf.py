@@ -1,7 +1,34 @@
 # -*- coding:utf-8 -*-
 
-"""
-Reader and writer for SDF format
+"""Reader and writer for SDF format
+
+:Organization:
+ AIST
+
+Requirements
+------------
+* numpy
+* lxml xml parser
+* jinja2 template engine
+
+Examples
+--------
+
+Read SDF model data given the model file
+
+>>> r = SDFReader()
+>>> m = r.read('model://pr2/model.sdf')
+ 
+Write simulation model in SDF format
+
+>>> from . import vrml
+>>> r = vrml.VRMLReader()
+>>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+>>> w = SDFWriter()
+>>> w.write(m, '/tmp/hrp4c.sdf')
+>>> import subprocess
+>>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
+0
 """
 
 from logging import getLogger
@@ -31,9 +58,6 @@ class SDFReader(object):
     def read(self, fname):
         '''
         Read SDF model data given the model file
-
-        >>> r = SDFReader()
-        >>> m = r.read('model://pr2/model.sdf')
         '''
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
@@ -178,15 +202,6 @@ class SDFWriter(object):
     def write(self, m, f):
         '''
         Write simulation model in SDF format
-
-        >>> from . import vrml
-        >>> r = vrml.VRMLReader()
-        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
-        >>> w = SDFWriter()
-        >>> w.write(m, '/tmp/hrp4c.sdf')
-        >>> import subprocess
-        >>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
-        0
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
@@ -224,15 +239,6 @@ class SDFWriter(object):
     def write2(self, m, f):
         '''
         Write simulation model in SDF format
-
-        >>> from . import vrml
-        >>> r = vrml.VRMLReader()
-        >>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
-        >>> w = SDFWriter()
-        >>> w.write(m, '/tmp/hrp4c.sdf')
-        >>> import subprocess
-        >>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
-        0
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
