@@ -8,7 +8,7 @@ Commandline options
 .. autoprogram:: simtrans.cli:parser
    :prog: simtrans
 
-Convert URDF model to VRML(OpenHRP) format
+Convert URDF model to VRML format
 ==========================================
 
 For example, PR2 robot model can be converted as follows.
@@ -26,7 +26,7 @@ To open the project using hrpsys-simulator.
    $ hrpsys-simulator /tmp/pr2-project.xml
 
 
-Convert VRML(OpenHRP) model to SDF format
+Convert VRML model to SDF format
 =========================================
 
 For example, PA10 robot model can be converted as follows.

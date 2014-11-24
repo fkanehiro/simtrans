@@ -1,3 +1,8 @@
+# -*- coding:utf-8 -*-
+
+"""simtrans command line interface
+"""
+
 import os
 import sys
 import subprocess

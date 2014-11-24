@@ -1,7 +1,24 @@
 # -*- coding:utf-8 -*-
 
-"""
-Reader and writer for collada format
+"""Reader and writer for collada format
+
+:Organization:
+ AIST
+
+Requirements
+------------
+* numpy
+* lxml xml parser
+* pycollada
+
+Examples
+--------
+
+Read collada model data given the file path
+
+>>> r = ColladaReader()
+>>> m = r.read('package://atlas_description/meshes/head.dae')
+
 """
 
 from __future__ import absolute_import
@@ -30,9 +47,6 @@ class ColladaReader(object):
     def read(self, f, assethandler=None):
         '''
         Read collada model data given the file path
-
-        >>> r = ColladaReader()
-        >>> m = r.read('package://atlas_description/meshes/head.dae')
         '''
         self._basepath = os.path.dirname(f)
         self._assethandler = assethandler

@@ -1,14 +1,6 @@
 lxml
 numpy
-visvis
 numpy-stl
 pycollada
 jinja2
-pyparsing
-simpleparse
-PyDispatcher
-PyVRML97==2.3.0a4
---allow-external python-graph-core
---allow-unverified python-graph-core
--e .
 

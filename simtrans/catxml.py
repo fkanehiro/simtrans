@@ -1,4 +1,8 @@
-import os
+# -*- coding:utf-8 -*-
+
+"""Utility command to concatinate two or more xml files to one
+"""
+
 import sys
 from optparse import OptionParser, OptionError
 import lxml.etree

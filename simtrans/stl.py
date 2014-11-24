@@ -1,7 +1,15 @@
 # -*- coding:utf-8 -*-
 
-"""
-Reader and writer for stl format
+"""Reader and writer for stl format
+
+:Organization:
+ AIST
+
+Requirements
+------------
+* numpy
+* numpy-stl
+* meshlab
 """
 
 from __future__ import absolute_import

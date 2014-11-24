@@ -1,3 +1,8 @@
+# -*- coding:utf-8 -*-
+
+"""Utility command to fetch simulation model from gazebo's model database
+"""
+
 import os
 import sys
 from optparse import OptionParser, OptionError

@@ -2,15 +2,16 @@
  Install
 =========
 
+First, install required binary packages.
+
+.. code-block:: bash
+
+   $ sudo add-apt-repository ppa:hrg/ppa
+   $ sudo apt-get install openhrp3 meshlab imagemagik omniorb-python
+
+Next, install pip and install simtrans package using pip.
 
 .. code-block:: bash
 
    $ sudo easy_install pip
-
-.. code-block:: bash
-
-   $ sudo apt-get install meshlab imagemagik omniorb-python
-
-.. code-block:: bash
-
    $ sudo pip install -U simtrans
