@@ -179,12 +179,7 @@ class VRMLReader(object):
                     if len(adata.normalIndices) > 0:
                         sm.data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
                     else:
-                        idx = []
-                        for i in range(0, len(adata.normals)/3):
-                            idx.append(i)
-                            idx.append(i)
-                            idx.append(i)
-                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+                        sm.data.normal_index = sm.data.vertex_index
                 else:
                     sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
                     if len(adata.normalIndices) > 0:
@@ -201,6 +196,8 @@ class VRMLReader(object):
                             idx.append(i)
                             idx.append(i)
                         sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+                if len(sm.data.vertex_index) != len(sm.data.normal_index):
+                    raise Exception('vertex length and normal length not match in %s' % sm.name)
                 sm.data.material = self._materials[adata.materialIndex]
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 sm.shapeType = model.ShapeModel.SP_SPHERE
