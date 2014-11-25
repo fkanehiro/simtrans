@@ -222,15 +222,43 @@ class SensorModel(TransformationModel):
     Sensor model
     """
     SS_CAMERA = "camera"  #: Camera (color, mono, depth)
-    SS_RANGE = "range"    #: Laser range finder
+    SS_RAY = "ray"        #: Laser range finder
     SS_IMU = "imu"        #: IMU sensor
 
-    sensorType = None  #: Type of sensor
-    parent = None      #: Name of parent link
+    name = None           #: Name
+    sensorType = None     #: Type of sensor
+    parent = None         #: Name of parent link
+    rate = 20             #: Update rate of sensor
     data = None
 
     def __init__(self):
         TransformationModel.__init__(self)
+
+
+class CameraData(object):
+    """
+    Camera sensor data
+    """
+    CS_COLOR = "color"
+    CS_MONO = "mono"
+    CS_DEPTH = "depth"
+
+    cameraType = None    #: Camera type
+    near = 0.01          #: Near clip distance
+    far = 50.0           #: Far clip distance
+    fov = 1.5708         #: Field of view (horizontal)
+    width = 640          #: Width
+    height = 480         #: Height
+
+
+class RayData(object):
+    """
+    Ray sensor data
+    """
+    min_angle = 0
+    max_angle = 0
+    min_range = 0
+    max_range = 0
 
 
 class MaterialModel(object):

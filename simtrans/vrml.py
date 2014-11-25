@@ -89,6 +89,7 @@ class VRMLReader(object):
         self._joints = []
         self._links = []
         self._materials = []
+        self._sensors = []
         self._hrplinks = b._get_links()
         self._hrpshapes = b._get_shapes()
         self._hrpapperances = b._get_appearances()
@@ -121,6 +122,7 @@ class VRMLReader(object):
             self._joints.append(m)
         bm.links = self._links
         bm.joints = self._joints
+        bm.sensors = self._sensors
         return bm
 
     def readLink(self, m):
@@ -129,6 +131,38 @@ class VRMLReader(object):
         lm.mass = m.mass
         lm.centerofmass = numpy.array(m.centerOfMass)
         lm.visuals = []
+        for s in m.sensors:
+            sm = model.SensorModel()
+            sm.name = s.name
+            sm.parent = lm.name
+            sm.trans = s.translation
+            sm.rot = tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3])
+            if s.type == 'Vision':
+                sm.sensorType = model.SensorModel.SS_CAMERA
+                sm.data = model.CameraData()
+                sm.data.near = s.specValues[0]
+                sm.data.far = s.specValues[1]
+                sm.data.fov = s.specValues[2]
+                if s.specValues[3] == 1:
+                    sm.data.cameraType = model.CameraData.CS_COLOR
+                elif s.specValues[3] == 2:
+                    sm.data.cameraType = model.CameraData.CS_MONO
+                elif s.specValues[3] == 3:
+                    sm.data.cameraType = model.CameraData.CS_DEPTH
+                else:
+                    raise Exception('unsupported camera type: %i' % s.specValues[3])
+                sm.data.width = s.specValues[4]
+                sm.data.height = s.specValues[5]
+                sm.rate = s.specValues[6]
+            elif s.type == 'Range':
+                sm.data = model.RayData()
+                (scanangle, scanstep, scanrate, maxdistance) = s.specValues
+                sm.data.min_angle = - scanangle / 2
+                sm.data.max_angle = scanangle / 2
+                sm.data.min_range = 0.08
+                sm.data.max_range = maxdistance
+                sm.rate = scanrate
+            self._sensors.append(sm)
         for s in m.shapeIndices:
             sm = model.ShapeModel()
             sm.name = "shape-%i" % s.shapeIndex
