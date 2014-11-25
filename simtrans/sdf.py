@@ -55,10 +55,14 @@ class SDFReader(object):
     '''
     SDF reader class
     '''
-    def read(self, fname):
+    def __init__(self):
+        self.assethandler = None
+
+    def read(self, fname, assethandler=None):
         '''
         Read SDF model data given the model file
         '''
+        self.assethandler = assethandler
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
         dm = d.find('model')
@@ -164,7 +168,7 @@ class SDFReader(object):
                     reader = stl.STLReader()
                 else:
                     raise Exception('unsupported mesh format: %s' % fileext)
-                m.data = reader.read(filename)
+                m.data = reader.read(filename, assethandler=self.assethandler)
                 submesh = g.find('submesh')
                 if submesh is not None:
                     submeshname = submesh.find('name').text

@@ -72,11 +72,13 @@ class VRMLReader(object):
         self._ns = None
         self._joints = []
         self._links = []
+        self._assethandler = None
 
-    def read(self, f):
+    def read(self, f, assethandler=None):
         '''
         Read vrml model data given the file path
         '''
+        self._assethandler = assethandler
         self.resolveModelLoader()
         try:
             b = self._loader.loadBodyInfo(f)
