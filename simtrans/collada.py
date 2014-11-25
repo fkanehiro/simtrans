@@ -44,7 +44,7 @@ class ColladaReader(object):
         self._assethandler = None
         self._materials = {}
 
-    def read(self, f, assethandler=None):
+    def read(self, f, assethandler=None, submesh=None):
         '''
         Read collada model data given the file path
         '''
@@ -80,11 +80,32 @@ class ColladaReader(object):
         unitmeter = d.assetInfo.unitmeter
         m.matrix = tf.scale_matrix(unitmeter)
         m.children = []
-        for n in d.scene.nodes:
+        rootnodes = d.scene.nodes
+        if submesh is not None:
+            for n in d.scene.nodes:
+                f = self.findchild(n, submesh)
+                if f is not None:
+                    rootnodes = [f]
+                    break
+        for n in rootnodes:
             cm = self.convertchild(n)
             if cm is not None:
                 m.children.append(cm)
         return m
+
+    def findchild(self, d, name):
+        if type(d) not in [collada.scene.Node, collada.scene.NodeNode]:
+            return None
+        try:
+            if d.xmlnode.attrib['name'] == name:
+                return d
+        except KeyError:
+            pass
+        for c in d.children:
+            f = self.findchild(c, name)
+            if f is not None:
+                return f
+        return None
 
     def convertchild(self, d):
         m = None

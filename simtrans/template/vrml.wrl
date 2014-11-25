@@ -117,7 +117,7 @@ DEF {{j.name}} ExtraJoint {
 DEF {{body.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
-    {%- if l.link and l.link.visuals|length %}
+    {%- if l.link and (l.link.visuals|length or l.children|length) %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
       {%- if l.joint.axis %}
