@@ -25,8 +25,11 @@ def omegaFromRot(m):
         try:
             th = math.acos(alpha)
         except ValueError:
-            print "value error: %f" % alpha
-            th = 0
+            print "acos value error: %f" % alpha
+            if alpha > 0:
+                th = 0
+            else:
+                th = math.pi
         s = math.sin(th)
         if s < numpy.finfo(float).eps:
             return numpy.array([

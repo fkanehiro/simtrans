@@ -9,11 +9,12 @@
     {%- for v in l.visuals %}
     {%- set trans = v.gettranslation() %}
     {%- set rpy = v.getrpy() %}
+    {%- set scale = v.getscale() %}
     <visual>
       <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
-        <mesh filename="model://{{model.name}}/{{v.name}}.dae" scale="1 1 1" />
+        <mesh filename="model://{{model.name}}/{{v.name}}.dae" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_BOX %}
