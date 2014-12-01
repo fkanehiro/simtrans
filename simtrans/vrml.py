@@ -116,6 +116,7 @@ class VRMLReader(object):
         for j in self._hrpextrajoints:
             # extra joint for closed link models
             m = model.JointModel()
+            m.jointType = model.JointModel.J_REVOLUTE
             m.parent = j.link[0]
             m.child = j.link[1]
             m.name = j.name

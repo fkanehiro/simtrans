@@ -26,12 +26,14 @@
       {%- for v in l.visuals %}
       {%- set trans = v.gettranslation() %}
       {%- set rpy = v.getrpy() %}
+      {%- set scale = v.getscale() %}
       <visual name="{{v.name}}">
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
             <uri>model://{{model.name}}/{{v.name}}.dae</uri>
+            <scale>{{scale[0]}} {{scale[1]}} {{scale[2]}}</scale>
           </mesh>
         </geometry>
         {%- endif %}
@@ -64,6 +66,7 @@
         <geometry>
           <mesh>
             <uri>model://{{model.name}}/{{v.name}}.stl</uri>
+            <scale>{{scale[0]}} {{scale[1]}} {{scale[2]}}</scale>
           </mesh>
         </geometry>
         {%- endif %}

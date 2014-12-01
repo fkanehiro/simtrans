@@ -249,7 +249,11 @@ class SDFWriter(object):
             self._jointparentmap[j.child] = j
         for s in m.sensors:
             self._sensorparentmap[s.parent] = s
-        root = utils.findroot(m)[0]
+        try:
+            root = utils.findroot(m)[0]
+        except IndexError:
+            if len(m.joints) == 0:
+                root = m.links[0].name
         self._absolutepositionmap[root] = model.TransformationModel()
         for cjoint in utils.findchildren(m, root):
             self.convertchildren(m, cjoint)
