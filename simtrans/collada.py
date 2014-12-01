@@ -123,13 +123,22 @@ class ColladaReader(object):
             for p in d.geometry.primitives:
                 sm = model.MeshData()
                 sm.vertex = p.vertex
-                sm.vertex_index = p.vertex_index
+                if len(p.vertex_index.shape) == 2:
+                    sm.vertex_index = p.vertex_index
+                else:
+                    sm.vertex_index = numpy.array(p.vertex_index).reshape(len(p.vertex_index)/3, 3)
                 if p.normal is not None:
                     sm.normal = p.normal
-                    sm.normal_index = p.normal_index
+                    if len(p.normal_index.shape) == 2:
+                        sm.normal_index = p.normal_index
+                    else:
+                        sm.normal_index = numpy.array(p.normal_index).reshape(len(p.normal_index)/3, 3)
                 if len(p.texcoordset) > 0:
                     sm.uvmap = p.texcoordset[0]
-                    sm.uvmap_index = p.texcoord_indexset[0]
+                    if len(p.texcoord_indexset[0].shape) == 2:
+                        sm.uvmap_index = p.texcoord_indexset[0]
+                    else:
+                        sm.uvmap_index = numpy.array(p.texcoord_indexset[0]).reshape(len(p.texcoord_indexset[0])/3, 3)
                 try:
                     sm.material = materialmap[p.material]
                 except KeyError:
