@@ -6,8 +6,9 @@
     <link name="{{l.name}}">
       {%- if jointparentmap[l.name] %}
       {%- set j = jointparentmap[l.name] %}
-      {%- set trans = j.gettranslation() %}
-      {%- set rpy = j.getrpy() %}
+      {%- set jabs = absolutepositionmap[l.name] %}
+      {%- set trans = jabs.gettranslation() %}
+      {%- set rpy = jabs.getrpy() %}
       <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
       {%- endif %}
       <inertial>
@@ -90,6 +91,50 @@
         {%- endif %}
       </collision>
       {%- endfor %}
+      {%- if sensorparentmap[l.name] %}
+      {%- set s = sensorparentmap[l.name] %}
+      <sensor name="{{s.name}}" type="{{s.sensorType}}">
+        {%- set trans = s.gettranslation() %}
+        {%- set rpy = s.getrpy() %}
+        <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
+        {%- if s.sensorType == "ray" %}
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>640</samples>
+              <resolution>1</resolution>
+              <min_angle>{{s.data.min_angle}}</min_angle>
+              <max_angle>{{s.data.max_angle}}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>{{s.data.min_range}}</min>
+            <max>{{s.data.max_range}}</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+        <plugin name="laser" filename="libRayPlugin.so" />
+        {%- elif s.sensorType == "camera" %}
+        <camera>
+          <horizontal_fov>{{s.data.fov}}</horizontal_fov>
+          <image>
+            <width>{{s.data.width}}</width>
+            <height>{{s.data.height}}</height>
+          </image>
+          <clip>
+            <near>{{s.data.near}}</near>
+            <far>{{s.data.far}}</far>
+          </clip>
+        </camera>
+        {%- elif s.sensorType == "imu" %}
+        <imu>
+        </imu>
+        {%- endif %}
+        <always_on>1</always_on>
+        <update_rate>{{s.rate}}</update_rate>
+        <visualize>true</visualize>
+      </sensor>
+      {%- endif %}
     </link>
     {%- endfor %}
     {%- for j in model.joints %}
@@ -105,50 +150,6 @@
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
     </joint>
-    {%- endfor %}
-    {%- for s in model.sensors %}
-    <sensor name="{{s.name}}" type="{{s.sensorType}}">
-      {%- set trans = s.gettranslation() %}
-      {%- set rpy = s.getrpy() %}
-      <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
-      <parent>{{s.parent}}</parent>
-      {%- if s.sensorType == "ray" %}
-      <ray>
-        <scan>
-          <horizontal>
-            <samples>640</samples>
-            <resolution>1</resolution>
-            <min_angle>{{s.min_angle}}</min_angle>
-            <max_angle>{{s.max_angle}}</max_angle>
-          </horizontal>
-        </scan>
-        <range>
-          <min>{{s.min_range}}</min>
-          <max>{{s.max_range}}</max>
-          <resolution>0.01</resolution>
-        </range>
-      </ray>
-      <plugin name="laser" filename="libRayPlugin.so" />
-      {%- elif s.sensorType == "camera" %}
-      <camera>
-        <horizontal_fov>{{s.data.fov}}</horizontal_fov>
-        <image>
-          <width>{{s.data.width}}</width>
-          <height>{{s.data.height}}</height>
-        </image>
-        <clip>
-          <near>{{s.data.near}}</near>
-          <far>{{s.data.far}}</far>
-        </clip>
-      </camera>
-      {%- elif s.sensorType == "imu" %}
-      <imu>
-      </imu>
-      {%- endif %}
-      <always_on>1</always_on>
-      <update_rate>{{s.rate}}</update_rate>
-      <visualize>true</visualize>
-    </sensor>
     {%- endfor %}
   </model>
 </sdf>

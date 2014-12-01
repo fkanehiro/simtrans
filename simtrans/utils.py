@@ -40,3 +40,61 @@ def resolveFile(f):
     except Exception, e:
         logger.warn(str(e))
     return f
+
+
+def findroot(mdata):
+    '''
+    Find root link from parent to child relationships.
+    Currently based on following simple principle:
+    - Link with no parent will be the root.
+
+    >>> from . import urdf
+    >>> r = urdf.URDFReader()
+    >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+    >>> findroot(m)[0]
+    'pelvis'
+
+    >>> from . import urdf
+    >>> r = urdf.URDFReader()
+    >>> m = r.read('package://ur_description/urdf/ur5_robot.urdf')
+    >>> findroot(m)[0]
+    'world'
+
+    >>> from . import sdf
+    >>> r = sdf.SDFReader()
+    >>> m = r.read('model://pr2/model.sdf')
+    >>> findroot(m)[0]
+    'base_footprint'
+    '''
+    joints = {}
+    for j in mdata.joints:
+        if j.parent == 'world':
+            continue
+        try:
+            joints[j.parent] = joints[j.parent] + 1
+        except KeyError:
+            joints[j.parent] = 1
+    for j in mdata.joints:
+        try:
+            del joints[j.child]
+        except KeyError:
+            pass
+    return [j[0] for j in sorted(joints.items(), key=lambda x: x[1], reverse=True)]
+
+
+def findchildren(mdata, linkname):
+    '''
+    Find child joints connected to specified link
+
+    >>> from . import urdf
+    >>> r = urdf.URDFReader()
+    >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+    >>> w = VRMLWriter()
+    >>> [c.child for c in w.findchildren(m, 'pelvis')]
+    ['ltorso', 'l_uglut', 'r_uglut']
+    '''
+    children = []
+    for j in mdata.joints:
+        if j.parent == linkname:
+            children.append(j)
+    return children

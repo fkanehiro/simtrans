@@ -37,6 +37,7 @@ logger = getLogger(__name__)
 import os
 import subprocess
 import tempfile
+from copy import deepcopy
 import lxml.etree
 import numpy
 import warnings
@@ -205,9 +206,82 @@ class SDFWriter(object):
     '''
     SDF writer class
     '''
+    def __init__(self):
+        self._jointparentmap = {}
+        self._sensorparentmap = {}
+        self._absolutepositionmap = {}
+
+
     def write(self, m, f):
         '''
         Write simulation model in SDF format
+        '''
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader)
+
+        # render mesh data to each separate collada file
+        cwriter = collada.ColladaWriter()
+        swriter = stl.STLWriter()
+        dirname = os.path.dirname(f)
+        fpath, ext = os.path.splitext(f)
+        if ext == '.world':
+            m.name = os.path.basename(fpath)
+            dirname = fpath
+            try:
+                os.mkdir(fpath)
+            except OSError:
+                pass
+            template = env.get_template('sdf-model-config.xml')
+            with open(os.path.join(dirname, 'model.config'), 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            template = env.get_template('sdf-world.xml')
+            with open(f, 'w') as ofile:
+                ofile.write(template.render({
+                    'model': m
+                }))
+            f = os.path.join(dirname, 'model.sdf')
+
+        # render mesh collada file for each links
+        for j in m.joints:
+            self._jointparentmap[j.child] = j
+        for s in m.sensors:
+            self._sensorparentmap[s.parent] = s
+        root = utils.findroot(m)[0]
+        self._absolutepositionmap[root] = model.TransformationModel()
+        for cjoint in utils.findchildren(m, root):
+            self.convertchildren(m, cjoint)
+        template = env.get_template('sdf.xml')
+        with open(f, 'w') as ofile:
+            ofile.write(template.render({
+                'model': m,
+                'jointparentmap': self._jointparentmap,
+                'sensorparentmap': self._sensorparentmap,
+                'absolutepositionmap': self._absolutepositionmap,
+                'ShapeModel': model.ShapeModel
+            }))
+
+        for l in m.links:
+            for v in l.visuals:
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
+                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
+
+    def convertchildren(self, mdata, joint):
+        absparent = self._absolutepositionmap[joint.parent]
+        abschild = model.TransformationModel()
+        abschild.trans = absparent.trans + joint.trans
+        # abschild.rot = tf.quaternion_multiply(absparent.rot, joint.rot)
+        self._absolutepositionmap[joint.child] = abschild
+        for cjoint in utils.findchildren(mdata, joint.child):
+            self.convertchildren(mdata, cjoint)
+
+    def write2(self, m, f):
+        '''
+        Write simulation model in SDF format
+        (internally use urdf and convert to sdf using gz sdf utility)
         '''
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
@@ -242,52 +316,3 @@ class SDFWriter(object):
         with open(f, 'w') as of:
             of.write(d)
 
-    def write2(self, m, f):
-        '''
-        Write simulation model in SDF format
-        '''
-        # render the data structure using template
-        loader = jinja2.PackageLoader(self.__module__, 'template')
-        env = jinja2.Environment(loader=loader)
-
-        # render mesh data to each separate collada file
-        cwriter = collada.ColladaWriter()
-        swriter = stl.STLWriter()
-        dirname = os.path.dirname(f)
-        fpath, ext = os.path.splitext(f)
-        if ext == '.world':
-            m.name = os.path.basename(fpath)
-            dirname = fpath
-            try:
-                os.mkdir(fpath)
-            except OSError:
-                pass
-            template = env.get_template('sdf-model-config.xml')
-            with open(os.path.join(dirname, 'model.config'), 'w') as ofile:
-                ofile.write(template.render({
-                    'model': m
-                }))
-            template = env.get_template('sdf-world.xml')
-            with open(f, 'w') as ofile:
-                ofile.write(template.render({
-                    'model': m
-                }))
-            f = os.path.join(dirname, 'model.sdf')
-
-        # render mesh collada file for each links
-        jointparentmap = {}
-        for j in m.joints:
-            jointparentmap[j.child] = j
-        template = env.get_template('sdf.xml')
-        with open(f, 'w') as ofile:
-            ofile.write(template.render({
-                'model': m,
-                'jointparentmap': jointparentmap,
-                'ShapeModel': model.ShapeModel
-            }))
-
-        for l in m.links:
-            for v in l.visuals:
-                if v.shapeType == model.ShapeModel.SP_MESH:
-                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
-                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
