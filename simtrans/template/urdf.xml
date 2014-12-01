@@ -37,7 +37,7 @@
       <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
-        <mesh filename="model://{{model.name}}/{{v.name}}.stl" scale="1 1 1" />
+        <mesh filename="model://{{model.name}}/{{v.name}}.stl" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_BOX %}
