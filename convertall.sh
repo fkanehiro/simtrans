@@ -1,7 +1,8 @@
 #!/bin/sh
 
 CMD="python -m simtrans.cli"
-OPENHRP_MODEL="/usr/local/share/OpenHRP-3.1/sample/model"
+
+OPENHRP_MODEL="`pkg-config openhrp3.1 --variable=prefix`/share/OpenHRP-3.1/sample/model"
 
 # fetch the drc_practice_* models from gazebo model database
 #python -m simtrans.gzfetch -f tests/models.txt
@@ -12,6 +13,9 @@ $CMD -i /tmp/atlas.urdf -o /tmp/atlas.wrl
 
 rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > /tmp/pr2.urdf
 $CMD -i /tmp/pr2.urdf -o /tmp/pr2.wrl
+
+#$CMD -i `rospack find ur_description`/urdf/ur10_robot.urdf -o /tmp/ur10.wrl
+#$CMD -i `rospack find nao_description`/urdf/naoV50_generated_urdf/nao.urdf -o /tmp/nao.wrl
 
 # convert from sdf to wrl
 for i in `cat tests/models.txt`; do
