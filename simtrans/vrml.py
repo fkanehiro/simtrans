@@ -53,6 +53,7 @@ import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
+import math
 import numpy
 import jinja2
 import CORBA
@@ -143,7 +144,11 @@ class VRMLReader(object):
             sm.name = s.name
             sm.parent = lm.name
             sm.trans = s.translation
-            sm.rot = tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3])
+            # sensors in OpenHRP is defined based on Z-axis up. so we
+            # will rotate them to X-axis up here.
+            # see http://www.openrtp.jp/openhrp3/jp/create_model.html
+            rot = tf.quaternion_multiply(tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3]), tf.quaternion_about_axis(-math.pi/2, [0, 0, 1]))
+            sm.rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi/2, [0, 1, 0]))
             if s.type == 'Vision':
                 sm.sensorType = model.SensorModel.SS_CAMERA
                 sm.data = model.CameraData()
