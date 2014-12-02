@@ -248,7 +248,10 @@ class SDFWriter(object):
         for j in m.joints:
             self._jointparentmap[j.child] = j
         for s in m.sensors:
-            self._sensorparentmap[s.parent] = s
+            if s.parent in self._sensorparentmap:
+                self._sensorparentmap[s.parent].append(s)
+            else:
+                self._sensorparentmap[s.parent] = [s]
         try:
             root = utils.findroot(m)[0]
         except IndexError:

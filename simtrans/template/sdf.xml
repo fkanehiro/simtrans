@@ -95,7 +95,7 @@
       </collision>
       {%- endfor %}
       {%- if sensorparentmap[l.name] %}
-      {%- set s = sensorparentmap[l.name] %}
+      {%- for s in sensorparentmap[l.name] %}
       <sensor name="{{s.name}}" type="{{s.sensorType}}">
         {%- set trans = s.gettranslation() %}
         {%- set rpy = s.getrpy() %}
@@ -121,8 +121,8 @@
         <camera>
           <horizontal_fov>{{s.data.fov}}</horizontal_fov>
           <image>
-            <width>{{s.data.width}}</width>
-            <height>{{s.data.height}}</height>
+            <width>{{s.data.width|int}}</width>
+            <height>{{s.data.height|int}}</height>
           </image>
           <clip>
             <near>{{s.data.near}}</near>
@@ -137,6 +137,7 @@
         <update_rate>{{s.rate}}</update_rate>
         <visualize>true</visualize>
       </sensor>
+      {%- endfor %}
       {%- endif %}
     </link>
     {%- endfor %}
