@@ -109,10 +109,15 @@ class VRMLReader(object):
             m.transparency = a.transparency
             self._materials.append(m)
         root = self._hrplinks[0]
-        lm = self.readLink(root)
-        self._links.append(lm)
-        for c in root.childIndices:
-            self.readChild(root, self._hrplinks[c])
+        if root.jointType == 'fixed':
+            world = model.JointModel()
+            world.name = 'world'
+            self.readChild(world, root)
+        else:
+            lm = self.readLink(root)
+            self._links.append(lm)
+            for c in root.childIndices:
+                self.readChild(root, self._hrplinks[c])
         for j in self._hrpextrajoints:
             # extra joint for closed link models
             m = model.JointModel()
@@ -288,6 +293,7 @@ class VRMLWriter(object):
 
         # first convert data structure (VRML uses tree structure)
         nmodel = {}
+        self._linkmap['world'] = model.LinkModel()
         for m in mdata.links:
             self._linkmap[m.name] = m
         self._roots = utils.findroot(mdata)

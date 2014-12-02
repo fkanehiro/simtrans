@@ -40,7 +40,7 @@
         {%- if v.shapeType == ShapeModel.SP_BOX %}
         <geometry>
           <box>
-            <size>{{v.data.x}} {{v.data.y}} {{v.data.z}}</size>
+            <size>{{v.data.x * scale[0]}} {{v.data.y * scale[1]}} {{v.data.z * scale[2]}}</size>
           </box>
         </geometry>
         {%- endif %}
@@ -73,7 +73,7 @@
         {%- if v.shapeType == ShapeModel.SP_BOX %}
         <geometry>
           <box>
-            <size>{{v.data.x}} {{v.data.y}} {{v.data.z}}</size>
+            <size>{{v.data.x * scale[0]}} {{v.data.y * scale[1]}} {{v.data.z * scale[2]}}</size>
           </box>
         </geometry>
         {%- endif %}

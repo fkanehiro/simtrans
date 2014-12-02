@@ -254,6 +254,8 @@ class SDFWriter(object):
         except IndexError:
             if len(m.joints) == 0:
                 root = m.links[0].name
+        if m.joints[0].jointType == model.JointModel.J_FIXED:
+            m.joints[0].jointType = model.JointModel.J_REVOLUTE
         self._absolutepositionmap[root] = model.TransformationModel()
         for cjoint in utils.findchildren(m, root):
             self.convertchildren(m, cjoint)

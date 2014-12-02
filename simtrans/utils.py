@@ -68,8 +68,6 @@ def findroot(mdata):
     '''
     joints = {}
     for j in mdata.joints:
-        if j.parent == 'world':
-            continue
         try:
             joints[j.parent] = joints[j.parent] + 1
         except KeyError:
