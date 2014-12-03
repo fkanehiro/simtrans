@@ -31,6 +31,7 @@ class STLReader(object):
         Read mesh model in STL format
         '''
         data = model.MeshData()
+        #stl.MAX_COUNT = 1e10
         p = stl.StlMesh(f)
         npoints = p.v0.shape[0]
         idx = numpy.array(range(0, npoints))

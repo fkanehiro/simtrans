@@ -165,7 +165,7 @@ class URDFReader(object):
                 sm.shapeType = model.ShapeModel.SP_MESH
                 # print "reading mesh " + mesh.attrib['filename']
                 filename = utils.resolveFile(g.attrib['filename'])
-                fileext = os.path.splitext(filename)[1]
+                fileext = os.path.splitext(filename)[1].lower()
                 if fileext == '.dae':
                     reader = collada.ColladaReader()
                 else:
