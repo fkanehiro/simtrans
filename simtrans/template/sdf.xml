@@ -101,7 +101,7 @@
         {%- set rpy = s.getrpy() %}
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
         {%- if s.sensorType == "ray" %}
-        <ray>
+        <ray name="{{s.name}}">
           <scan>
             <horizontal>
               <samples>640</samples>
@@ -116,9 +116,14 @@
             <resolution>0.01</resolution>
           </range>
         </ray>
-        <plugin name="laser" filename="libRayPlugin.so" />
+        <plugin name="{{s.name}}_controller" filename="libgazebo_ros_laser.so">
+          <alwaysOn>true</alwaysOn>
+          <laserName>{{s.name}}</laserName>
+          <topicName>{{s.name}}</topicName>
+          <frameName>{{l.name}}</frameName>
+        </plugin>
         {%- elif s.sensorType == "camera" %}
-        <camera>
+        <camera name="{{s.name}}">
           <horizontal_fov>{{s.data.fov}}</horizontal_fov>
           <image>
             <width>{{s.data.width|int}}</width>
@@ -129,6 +134,11 @@
             <far>{{s.data.far}}</far>
           </clip>
         </camera>
+        <plugin name="{{s.name}}_controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <cameraName>{{s.name}}</cameraName>
+          <frameName>{{l.name}}</frameName>
+        </plugin>
         {%- elif s.sensorType == "imu" %}
         <imu>
         </imu>
