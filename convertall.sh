@@ -16,6 +16,8 @@ $CMD -i /tmp/pr2.urdf -o /tmp/pr2.wrl
 
 $CMD -i `rospack find ur_description`/urdf/ur10_robot.urdf -o /tmp/ur10.wrl
 
+$CMD -i `rospack find baxter_description`/urdf/baxter.urdf -o /tmp/baxter.wrl
+
 #$CMD -i `rospack find nao_description`/urdf/naoV50_generated_urdf/nao.urdf -o /tmp/nao.wrl
 
 # convert from sdf to wrl

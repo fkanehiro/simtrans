@@ -30,7 +30,7 @@
     </include>
     <!-- robot -->
     <include>
-      <uri>model://ground_plane</uri>
+      <uri>model://{{model.name}}</uri>
     </include>
   </world>
 </sdf>

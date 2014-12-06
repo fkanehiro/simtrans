@@ -282,7 +282,7 @@ class SDFWriter(object):
         absparent = self._absolutepositionmap[joint.parent]
         abschild = model.TransformationModel()
         abschild.trans = absparent.trans + joint.trans
-        # abschild.rot = tf.quaternion_multiply(absparent.rot, joint.rot)
+        abschild.rot = tf.quaternion_multiply(absparent.rot, joint.rot)
         self._absolutepositionmap[joint.child] = abschild
         for cjoint in utils.findchildren(mdata, joint.child):
             self.convertchildren(mdata, cjoint)
