@@ -72,8 +72,11 @@ class VRMLReader(object):
                                    CORBA.ORB_ID)
         self._loader = None
         self._ns = None
+        self._model = None
         self._joints = []
         self._links = []
+        self._materials = []
+        self._sensors = []
         self._assethandler = None
 
     def read(self, f, assethandler=None):
@@ -83,7 +86,7 @@ class VRMLReader(object):
         self._assethandler = assethandler
         self.resolveModelLoader()
         try:
-            b = self._loader.loadBodyInfo(f)
+            self._model = self._loader.loadBodyInfo(f)
         except CORBA.TRANSIENT:
             print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
             raise
@@ -92,11 +95,12 @@ class VRMLReader(object):
         self._links = []
         self._materials = []
         self._sensors = []
-        self._hrplinks = b._get_links()
-        self._hrpshapes = b._get_shapes()
-        self._hrpapperances = b._get_appearances()
-        self._hrpmaterials = b._get_materials()
-        self._hrpextrajoints = b._get_extraJoints()
+        self._hrplinks = self._model._get_links()
+        self._hrpshapes = self._model._get_shapes()
+        self._hrpapperances = self._model._get_appearances()
+        self._hrpmaterials = self._model._get_materials()
+        self._hrptextures = self._model._get_textures()
+        self._hrpextrajoints = self._model._get_extraJoints()
         mid = 0
         for a in self._hrpmaterials:
             m = model.MaterialModel()
@@ -212,6 +216,14 @@ class VRMLReader(object):
                 if len(sm.data.vertex_index) != len(sm.data.normal_index):
                     raise Exception('vertex length and normal length not match in %s' % sm.name)
                 sm.data.material = self._materials[adata.materialIndex]
+                if adata.textureIndex >= 0:
+                    fname = self._hrptextures[adata.textureIndex].url
+                    if self._assethandler:
+                        sm.data.material.texture = self._assethandler(fname)
+                    else:
+                        sm.data.material.texture = fname
+                    sm.data.uvmap = numpy.array(adata.textureCoordinate).reshape(len(adata.textureCoordinate)/2, 2)
+                    sm.data.uvmap_index = numpy.array(adata.textureCoordIndices).reshape(len(adata.textureCoordIndices)/3, 3)
             elif sdata.primitiveType == OpenHRP.SP_SPHERE:
                 sm.shapeType = model.ShapeModel.SP_SPHERE
                 sm.data = model.SphereData()

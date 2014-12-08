@@ -166,11 +166,24 @@ class ColladaWriter(object):
 
         # create effect and material
         if m.data.material:
-            effect = collada.material.Effect("effect0", [], "phong",
-                                             double_sided=True,
-                                             diffuse=m.data.material.diffuse,
-                                             specular=m.data.material.specular,
-                                             transparency=m.data.material.transparency)
+            if m.data.material.texture:
+                image = collada.material.CImage("material0-image", m.data.material.texture)
+                surface = collada.material.Surface("material0-image-surface", image)
+                sampler2d = collada.material.Sampler2D("material0-image-sampler", surface)
+                map1 = collada.material.Map(sampler2d, "UVSET0")
+                effect = collada.material.Effect("effect0", [surface, sampler2d], "lambert",
+                                                 emission=(0.0, 0.0, 0.0, 1),
+                                                 ambient=(0.0, 0.0, 0.0, 1),
+                                                 diffuse=map1,
+                                                 transparency=0.0,
+                                                 double_sided=True)
+                self._mesh.images.append(image)
+            else:
+                effect = collada.material.Effect("effect0", [], "phong",
+                                                 double_sided=True,
+                                                 diffuse=m.data.material.diffuse,
+                                                 specular=m.data.material.specular,
+                                                 transparency=m.data.material.transparency)
         else:
             effect = collada.material.Effect("effect0", [], "phong",
                                              double_sided=True,
@@ -204,6 +217,7 @@ class ColladaWriter(object):
             name = 'shape-' + str(uuid.uuid1()).replace('-', '')
             vertexname = name + '-vertex'
             normalname = name + '-normal'
+            uvmapname = name + '-uvmap'
             sources = []
             input_list = collada.source.InputList()
             sources.append(collada.source.FloatSource(vertexname, m.vertex.reshape(1, m.vertex.size), ('X', 'Y', 'Z')))
@@ -213,6 +227,10 @@ class ColladaWriter(object):
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
+            if m.uvmap is not None:
+                sources.append(collada.source.FloatSource(uvmapname, m.uvmap.reshape(1, m.uvmap.size), ('S', 'T')))
+                indices = numpy.vstack([indices, m.uvmap_index.reshape(1, m.uvmap_index.size)])
+                input_list.addInput(2, 'TEXCOORD', '#' + uvmapname, set="0")
             geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources, double_sided=True)
             # create triangles
             triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
