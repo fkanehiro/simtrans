@@ -50,7 +50,7 @@ class TransformationModel(object):
         self.matrix = None
         self.trans = numpy.array([0, 0, 0])
         self.scale = numpy.array([1, 1, 1])
-        self.rot = numpy.array([0, 0, 0, 0])
+        self.rot = numpy.array([1, 0, 0, 0])
 
     def gettranslation(self):
         if self.matrix is not None:
@@ -65,6 +65,12 @@ class TransformationModel(object):
             return scale
         else:
             return self.scale
+
+    def getrotation(self):
+        if self.matrix is not None:
+            return tf.quaternion_from_matrix(self.matrix)
+        else:
+            return self.rot
 
     def getrpy(self):
         if self.matrix is not None:
@@ -127,14 +133,15 @@ class JointModel(TransformationModel):
     J_SCREW = 'screw'            #: Screw type
     J_CONTINUOUS = 'continuous'  #: Continuous type
 
-    name = None        #: Joint name
-    jointType = None   #: Joint type
-    axis = None        #: Joint axis (relative to parent link)
-    parent = None      #: Name of parent link
-    child = None       #: Name of child link
-    damping = None     #: Damping factor
-    friction = None    #: Friction factor
-    limit = None       #: Joint limits (upper and lower limits in 2-dim array)
+    name = None             #: Joint name
+    jointType = None        #: Joint type
+    axis = None             #: Joint axis (relative to parent link)
+    parent = None           #: Name of parent link
+    child = None            #: Name of child link
+    damping = None          #: Damping factor
+    friction = None         #: Friction factor
+    limit = None            #: Joint limits (upper and lower limits in 2-dim array)
+    offsetPosition = False  #: Whether offset joint position or not
 
     def __init__(self):
         TransformationModel.__init__(self)
