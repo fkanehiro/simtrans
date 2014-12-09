@@ -259,7 +259,9 @@ class SDFWriter(object):
                 root = m.links[0].name
         if m.joints[0].jointType == model.JointModel.J_FIXED:
             m.joints[0].jointType = model.JointModel.J_REVOLUTE
-        self._absolutepositionmap[root] = model.TransformationModel()
+        rootposition = model.TransformationModel()
+        # rootposition.trans = rootposition.trans + numpy.array([0, 0, 0.3])  # add offset to the root joint
+        self._absolutepositionmap[root] = rootposition
         for cjoint in utils.findchildren(m, root):
             self.convertchildren(m, cjoint)
         template = env.get_template('sdf.xml')
@@ -281,8 +283,10 @@ class SDFWriter(object):
     def convertchildren(self, mdata, joint):
         absparent = self._absolutepositionmap[joint.parent]
         abschild = model.TransformationModel()
-        abschild.trans = absparent.trans + joint.gettranslation()
+        trans = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.gettranslation(), [1])))
+        abschild.trans = absparent.trans + trans[0:3]
         abschild.rot = tf.quaternion_multiply(absparent.rot, joint.getrotation())
+        joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3]
         self._absolutepositionmap[joint.child] = abschild
         for cjoint in utils.findchildren(mdata, joint.child):
             self.convertchildren(mdata, cjoint)

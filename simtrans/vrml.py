@@ -130,7 +130,9 @@ class VRMLReader(object):
             m.parent = j.link[0]
             m.child = j.link[1]
             m.name = j.name
-            m.axis = j.axis
+            m.axis = numpy.array(j.axis)
+            m.trans = numpy.array(j.point[1])
+            m.offsetPosition = True
             self._joints.append(m)
         bm.links = self._links
         bm.joints = self._joints
@@ -147,7 +149,7 @@ class VRMLReader(object):
             sm = model.SensorModel()
             sm.name = s.name
             sm.parent = lm.name
-            sm.trans = s.translation
+            sm.trans = numpy.array(s.translation)
             # sensors in OpenHRP is defined based on Z-axis up. so we
             # will rotate them to X-axis up here.
             # see http://www.openrtp.jp/openhrp3/jp/create_model.html
@@ -269,7 +271,7 @@ class VRMLReader(object):
         except IndexError:
             pass
         jm.axis = child.jointAxis
-        jm.trans = child.translation
+        jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
         self._joints.append(jm)
         for c in child.childIndices:

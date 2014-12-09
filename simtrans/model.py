@@ -145,7 +145,6 @@ class JointModel(TransformationModel):
 
     def __init__(self):
         TransformationModel.__init__(self)
-        self.limit = [1, 1]
 
 
 class ShapeModel(TransformationModel):

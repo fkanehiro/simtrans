@@ -155,12 +155,17 @@
     <joint name="{{j.name}}" type="{{j.jointType}}">
       <parent>{{j.parent}}</parent>
       <child>{{j.child}}</child>
+      {%- if j.offsetPosition %}
+      <pose>{{j.trans[0]}} {{j.trans[1]}} {{j.trans[2]}} 0 0 0</pose>
+      {%- endif %}
       <axis>
         <xyz>{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}</xyz>
+        {%- if j.limit %}
         <limit>
           <lower>{{j.limit[1]}}</lower>
           <upper>{{j.limit[0]}}</upper>
         </limit>
+        {%- endif %}
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
     </joint>
