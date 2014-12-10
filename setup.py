@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
 
 
@@ -28,9 +28,9 @@ setup(name='simtrans',
           'Programming Language :: Python :: 2.7',
           'Topic :: Software Development',
       ],
-      packages=['simtrans',
-                'OpenHRP',
-                'OpenHRP__POA'],
+      packages=find_packages(),
+      scripts=['ModelLoader_idl.py', 'OpenHRPCommon_idl.py'],
+      package_data={'simtrans': ['template/*']},
       entry_points={
           'console_scripts': [
               'simtrans = simtrans.cli:main',
