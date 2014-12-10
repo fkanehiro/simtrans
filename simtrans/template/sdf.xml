@@ -96,7 +96,35 @@
       {%- endfor %}
       {%- if sensorparentmap[l.name] %}
       {%- for s in sensorparentmap[l.name] %}
-      <sensor name="{{s.name}}" type="{{s.sensorType}}">
+      {%- if s.sensorType == "camera" %}
+      <sensor name="{{s.name}}_sensor" type="multicamera">
+        <camera name="left">
+          <pose>0 0 0 0 0 0</pose>
+          <horizontal_fov>{{s.data.fov}}</horizontal_fov>
+          <image>
+            <width>{{s.data.width|int}}</width>
+            <height>{{s.data.height|int}}</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>{{s.data.near}}</near>
+            <far>{{s.data.far}}</far>
+          </clip>
+        </camera>
+        <plugin name="{{s.name}}_controller" filename="libgazebo_ros_multicamera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>{{model.name}}/{{s.name}}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>{{s.name}}_optical_frame</frameName>
+        </plugin>
+        <always_on>1</always_on>
+        <update_rate>{{s.rate}}</update_rate>
+        <visualize>true</visualize>
+      </sensor>
+      {%- else %}
+      <sensor name="{{s.name}}_sensor" type="{{s.sensorType}}">
         {%- set trans = s.gettranslation() %}
         {%- set rpy = s.getrpy() %}
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
@@ -124,10 +152,12 @@
         </plugin>
         {%- elif s.sensorType == "camera" %}
         <camera name="{{s.name}}">
+          <pose>0 0 0 0 0 0</pose>
           <horizontal_fov>{{s.data.fov}}</horizontal_fov>
           <image>
             <width>{{s.data.width|int}}</width>
             <height>{{s.data.height|int}}</height>
+            <format>R8G8B8</format>
           </image>
           <clip>
             <near>{{s.data.near}}</near>
@@ -136,8 +166,11 @@
         </camera>
         <plugin name="{{s.name}}_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
-          <cameraName>{{s.name}}</cameraName>
-          <frameName>{{l.name}}</frameName>
+          <updateRate>0.0</updateRate>
+          <cameraName>{{model.name}}/{{s.name}}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>{{s.name}}_optical_frame</frameName>
         </plugin>
         {%- elif s.sensorType == "imu" %}
         <imu>
@@ -147,6 +180,7 @@
         <update_rate>{{s.rate}}</update_rate>
         <visualize>true</visualize>
       </sensor>
+      {%- endif %}
       {%- endfor %}
       {%- endif %}
     </link>
@@ -170,5 +204,9 @@
       </axis>
     </joint>
     {%- endfor %}
+    <plugin name='joint_trajectory_plugin' filename='libgazebo_ros_joint_pose_trajectory.so'>
+      <topicName>joint_trajectory</topicName>
+      <updateRate>1000.0</updateRate>
+    </plugin>
   </model>
 </sdf>

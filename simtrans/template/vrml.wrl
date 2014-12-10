@@ -128,8 +128,10 @@ DEF {{body.name}} Humanoid {
       translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
       {%- set angle = l.joint.getangle() %}
       rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
+      {%- if l.joint.limit %}
       ulimit {{l.joint.limit[0]}}
       llimit {{l.joint.limit[1]}}
+      {%- endif %}
       children [
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}

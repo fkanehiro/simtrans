@@ -58,6 +58,7 @@ class SDFReader(object):
     '''
     def __init__(self):
         self._assethandler = None
+        self._linkmap = {}
 
     def read(self, fname, assethandler=None):
         '''
@@ -93,15 +94,24 @@ class SDFReader(object):
             #if collision is not None:
             #    lm.collision = self.readShape(collision)
             bm.links.append(lm)
+            self._linkmap[lm.name] = lm
 
         for j in dm.findall('joint'):
             jm = model.JointModel()
             # general property
             jm.name = j.attrib['name']
+            jm.parent = j.find('parent').text
+            jm.child = j.find('child').text
             jm.jointType = self.readJointType(j.attrib['type'])
             pose = j.find('pose')
             if pose is not None:
                 self.readPose(jm, pose)
+            else:
+                try:
+                    jm.trans = self._linkmap[jm.parent].trans
+                    jm.rot = self._linkmap[jm.parent].rot
+                except KeyError:
+                    pass
             axis = j.find('axis')
             if axis is not None:
                 jm.axis = [float(v) for v in axis.find('xyz').text.split(' ')]
@@ -116,8 +126,6 @@ class SDFReader(object):
                 limit = axis.find('limit')
                 if limit is not None:
                     jm.limit = [limit.find('upper').text, limit.find('lower').text]
-            jm.parent = j.find('parent').text
-            jm.child = j.find('child').text
             # phisical property
             bm.joints.append(jm)
 
@@ -169,6 +177,9 @@ class SDFReader(object):
                     reader = stl.STLReader()
                 else:
                     raise Exception('unsupported mesh format: %s' % fileext)
+                scale = g.find('scale')
+                if scale is not None:
+                    m.scale = numpy.array([float(v) for v in scale.text.split(' ')])
                 submesh = g.find('submesh')
                 if submesh is not None:
                     submeshname = submesh.find('name').text

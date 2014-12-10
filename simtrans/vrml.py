@@ -347,8 +347,8 @@ class VRMLWriter(object):
         for j in mdata.joints:
             jointmap[j.name] = 0
         jointcount = 1
-        for j in joints:
-            jointmap[j] = jointcount
+        for j in mdata.joints:
+            jointmap[j.name] = jointcount
             jointcount = jointcount + 1
 
         # render the data structure using template
