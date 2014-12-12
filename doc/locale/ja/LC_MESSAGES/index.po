@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 17:31+0900\n"
-"PO-Revision-Date: 2014-11-19 10:03+0900\n"
+"PO-Revision-Date: 2014-12-12 17:27+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -31,7 +31,7 @@ msgstr "目次:"
 # cf92b427551b4422a1c2fef02b5d1113
 #: ../../index.rst:22
 msgid "Indices and tables"
-msgstr ""
+msgstr "索引"
 
 # d9d7f580d57b4169ac2a6b8b5c7ad6af
 #: ../../index.rst:24
