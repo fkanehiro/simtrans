@@ -103,40 +103,12 @@
       {%- endfor %}
       {%- if sensorparentmap[l.name] %}
       {%- for s in sensorparentmap[l.name] %}
-      {%- if s.sensorType == "camera" %}
-      <sensor name="{{s.name}}_sensor" type="multicamera">
-        <camera name="left">
-          <pose>0 0 0 0 0 0</pose>
-          <horizontal_fov>{{s.data.fov}}</horizontal_fov>
-          <image>
-            <width>{{s.data.width|int}}</width>
-            <height>{{s.data.height|int}}</height>
-            <format>R8G8B8</format>
-          </image>
-          <clip>
-            <near>{{s.data.near}}</near>
-            <far>{{s.data.far}}</far>
-          </clip>
-        </camera>
-        <plugin name="{{s.name}}_controller" filename="libgazebo_ros_multicamera.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>{{model.name}}/{{s.name}}</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>{{s.name}}_optical_frame</frameName>
-        </plugin>
-        <always_on>1</always_on>
-        <update_rate>{{s.rate}}</update_rate>
-        <visualize>true</visualize>
-      </sensor>
-      {%- else %}
       <sensor name="{{s.name}}_sensor" type="{{s.sensorType}}">
         {%- set trans = s.gettranslation() %}
         {%- set rpy = s.getrpy() %}
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
         {%- if s.sensorType == "ray" %}
-        <ray name="{{s.name}}">
+        <ray>
           <scan>
             <horizontal>
               <samples>640</samples>
@@ -153,9 +125,9 @@
         </ray>
         <plugin name="{{s.name}}_controller" filename="libgazebo_ros_laser.so">
           <alwaysOn>true</alwaysOn>
-          <laserName>{{s.name}}</laserName>
-          <topicName>{{s.name}}</topicName>
-          <frameName>{{l.name}}</frameName>
+          <robotNamespace>{{model.name}}</robotNamespace>
+          <topicName>{{s.name}}/scan</topicName>
+          <frameName>{{s.name}}_laser_frame</frameName>
         </plugin>
         {%- elif s.sensorType == "camera" %}
         <camera name="{{s.name}}">
@@ -174,7 +146,8 @@
         <plugin name="{{s.name}}_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <cameraName>{{model.name}}/{{s.name}}</cameraName>
+          <robotNamespace>{{model.name}}</robotNamespace>
+          <cameraName>{{s.name}}</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>{{s.name}}_optical_frame</frameName>
@@ -187,7 +160,6 @@
         <update_rate>{{s.rate}}</update_rate>
         <visualize>true</visualize>
       </sensor>
-      {%- endif %}
       {%- endfor %}
       {%- endif %}
     </link>
