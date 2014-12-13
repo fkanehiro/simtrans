@@ -299,6 +299,7 @@ class VRMLWriter(object):
     def __init__(self):
         self._linkmap = {}
         self._roots = []
+        self._ignore = []
 
     def write(self, mdata, fname):
         '''
@@ -309,23 +310,35 @@ class VRMLWriter(object):
         if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
+        # find root joint (including local peaks)
+        self._roots = utils.findroot(mdata)
+        self._ignore = self._roots[1:]
+        self._ignore.append('world')
+
         # list non empty link
-        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._roots[1:]]
+        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._ignore]
         # list joint with parent
-        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._roots[1:]]
+        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._ignore]
 
         # first convert data structure (VRML uses tree structure)
         nmodel = {}
         self._linkmap['world'] = model.LinkModel()
         for m in mdata.links:
             self._linkmap[m.name] = m
-        self._roots = utils.findroot(mdata)
         if len(self._roots) > 0:
             root = self._roots[0]
-            rootlink = self._linkmap[root]
-            rootjoint = model.JointModel()
-            rootjoint.name = root
-            rootjoint.jointType = "fixed"
+            if root == 'world':
+                root = utils.findchildren(mdata, root)[0].child
+                rootlink = self._linkmap[root]
+                # print("root joint is world. using %s as root" % root)
+                rootjoint = model.JointModel()
+                rootjoint.name = root
+                rootjoint.jointType = "fixed"
+            else:
+                rootlink = self._linkmap[root]
+                rootjoint = model.JointModel()
+                rootjoint.name = root
+                rootjoint.jointType = "free"
         else:
             if len(joints) > 0:
                 root = joints[0]
@@ -334,7 +347,7 @@ class VRMLWriter(object):
             rootlink = mdata.links[0]
             rootjoint = model.JointModel()
             rootjoint.name = root
-            rootjoint.jointType = "fixed"
+            rootjoint.jointType = "free"
 
         if len(joints) == 0:
             joints = [root]
