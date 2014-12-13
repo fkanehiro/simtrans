@@ -59,6 +59,13 @@
           </sphere>
         </geometry>
         {%- endif %}
+        {%- if v.shapeType != ShapeModel.SP_MESH and v.data.material %}
+        <material>
+          <diffuse>{{v.data.material.diffuse[0]}} {{v.data.material.diffuse[1]}} {{v.data.material.diffuse[2]}} {{v.data.material.diffuse[3]}}</diffuse>
+          <specular>{{v.data.material.specular[0]}} {{v.data.material.specular[1]}} {{v.data.material.specular[2]}} {{v.data.material.specular[3]}}</specular>
+          <emissive>{{v.data.material.emission[0]}} {{v.data.material.emission[1]}} {{v.data.material.emission[2]}} {{v.data.material.emission[3]}}</emissive>
+        </material>
+        {%- endif %}
       </visual>
       <collision name="{{v.name}}">
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
