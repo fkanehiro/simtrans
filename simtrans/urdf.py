@@ -106,14 +106,16 @@ class URDFReader(object):
             dynamics = j.find('dynamics')
             if dynamics is not None:
                 try:
-                    jm.damping = dynamics.attrib['damping']
-                    jm.friction = dynamics.attrib['friction']
+                    jm.damping = float(dynamics.attrib['damping'])
+                    jm.friction = float(dynamics.attrib['friction'])
                 except KeyError:
                     pass
             limit = j.find('limit')
             if limit is not None:
                 try:
-                    jm.limit = [limit.attrib['upper'], limit.attrib['lower']]
+                    jm.limit = [float(limit.attrib['upper']), float(limit.attrib['lower'])]
+                    velocity = float(limit.attrib['velocity'])
+                    jm.velocitylimit = [velocity, -velocity]
                 except KeyError:
                     pass
             bm.joints.append(jm)

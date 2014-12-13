@@ -194,12 +194,15 @@
       {%- endif %}
       <axis>
         <xyz>{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}</xyz>
-        {%- if j.limit %}
         <limit>
+          {%- if j.limit %}
           <lower>{{j.limit[1]}}</lower>
           <upper>{{j.limit[0]}}</upper>
+          {%- endif %}
+          {%- if j.velocitylimit %}
+          <velocity>{{j.velocitylimit[1]}}</velocity>
+          {%- endif %}
         </limit>
-        {%- endif %}
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
     </joint>

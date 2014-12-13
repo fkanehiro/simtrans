@@ -141,6 +141,7 @@ class JointModel(TransformationModel):
     damping = None          #: Damping factor
     friction = None         #: Friction factor
     limit = None            #: Joint limits (upper and lower limits in 2-dim array)
+    velocitylimit = None    #: Velocity limits (upper and lower limits in 2-dim array)
     offsetPosition = False  #: Whether offset joint position or not
 
     def __init__(self):

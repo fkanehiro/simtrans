@@ -132,6 +132,10 @@ DEF {{body.name}} Humanoid {
       ulimit {{l.joint.limit[0]}}
       llimit {{l.joint.limit[1]}}
       {%- endif %}
+      {%- if l.joint.velocitylimit %}
+      uvlimit {{l.joint.velocitylimit[0]}}
+      lvlimit {{l.joint.velocitylimit[1]}}
+      {%- endif %}
       children [
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}

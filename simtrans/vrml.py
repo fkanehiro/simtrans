@@ -270,6 +270,10 @@ class VRMLReader(object):
             jm.limit = [child.ulimit[0], child.llimit[0]]
         except IndexError:
             pass
+        try:
+            jm.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
+        except IndexError:
+            pass
         jm.axis = child.jointAxis
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])

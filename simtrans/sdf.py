@@ -125,7 +125,12 @@ class SDFReader(object):
                         jm.friction = float(friction.text)
                 limit = axis.find('limit')
                 if limit is not None:
-                    jm.limit = [limit.find('upper').text, limit.find('lower').text]
+                    try:
+                        jm.limit = [float(limit.find('upper').text), float(limit.find('lower').text)]
+                        velocity = float(limit.find('velocity').text)
+                        jm.velocitylimit = [velocity, -velocity]
+                    except AttributeError:
+                        pass
             # phisical property
             bm.joints.append(jm)
 
