@@ -74,7 +74,9 @@ class TransformationModel(object):
 
     def getrpy(self):
         if self.matrix is not None:
-            return tf.euler_from_matrix(self.matrix)
+            transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+            m = tf.quaternion_matrix(tf.quaternion_about_axis(axis[1], axis[0]))
+            return tf.euler_from_matrix(m)
         else:
             return tf.euler_from_quaternion(self.rot)
 
