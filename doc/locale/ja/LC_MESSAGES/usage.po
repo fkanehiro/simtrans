@@ -2,7 +2,7 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2014-12-12 17:26+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.5.4\n"
 
@@ -68,11 +68,6 @@ msgstr "FORMATへ変換する（任意）"
 msgid "verbose output"
 msgstr "デバッグ情報の出力"
 
-# 07fa8846a7df4c5f962e4fc79f941397
-#: ../../usage.rst:12
-msgid "Convert URDF model to VRML(OpenHRP) format"
-msgstr "URDF形式のモデルのVRML（OpenHRP）形式への変換"
-
 # c39f058da0444fefaff47e0284826cc1
 #: ../../usage.rst:14
 msgid "For example, PR2 robot model can be converted as follows."
@@ -82,11 +77,6 @@ msgstr "例えば、PR2ロボットモデルは以下のコマンドで変換で
 #: ../../usage.rst:21
 msgid "To open the project using hrpsys-simulator."
 msgstr "hrpsys-simulatorを使ってプロジェクトを開く。"
-
-# 947b7e5db74f4eea9ee8e162f7ddc4b5
-#: ../../usage.rst:30
-msgid "Convert VRML(OpenHRP) model to SDF format"
-msgstr "VRML(OpenHRP)形式のモデルのSDF形式への変換"
 
 # 81009c066848421bab29e0e59865656d
 #: ../../usage.rst:32
@@ -107,3 +97,17 @@ msgstr "graphvizを使った関節構造の視覚化。"
 #: ../../usage.rst:48
 msgid "For example, PR2 robot model can be visualized as follows."
 msgstr "例えば、PR2ロボットは以下のようにして視覚化できます。"
+
+#: ../../usage.rst:12
+msgid "Convert URDF model to VRML format"
+msgstr ""
+
+#: ../../usage.rst:30
+msgid "Convert VRML model to SDF format"
+msgstr ""
+
+#~ msgid "Convert URDF model to VRML(OpenHRP) format"
+#~ msgstr "URDF形式のモデルのVRML（OpenHRP）形式への変換"
+
+#~ msgid "Convert VRML(OpenHRP) model to SDF format"
+#~ msgstr "VRML(OpenHRP)形式のモデルのSDF形式への変換"

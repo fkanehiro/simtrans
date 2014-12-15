@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 17:31+0900\n"
-"PO-Revision-Date: 2014-12-12 17:22+0900\n"
+"PO-Revision-Date: 2014-12-15 14:42+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.5.4\n"
 
@@ -92,11 +92,6 @@ msgstr "関節"
 msgid "Links"
 msgstr "リンク"
 
-# a95b807c0276491695ab48127c377b5b
-#: ../../features.rst:28
-msgid "Shape primitives and mesh shapes (including colors and textures)"
-msgstr "基本図形とメッシュ（色やテクスチャを含む）"
-
 # 5f44a3cc7284425aa9ea092442c99c5b
 #: ../../features.rst:29
 msgid "Physical properties for links and joints"
@@ -106,3 +101,10 @@ msgstr "リンクと関節の物理パラメータ"
 #: ../../features.rst:30
 msgid "Sensors"
 msgstr "センサ"
+
+#: ../../features.rst:28
+msgid "Shape primitives and meshes (including colors and textures)"
+msgstr "プリミティブ形状とメッシュ形状（色とテクスチャを含む）"
+
+#~ msgid "Shape primitives and mesh shapes (including colors and textures)"
+#~ msgstr "基本図形とメッシュ（色やテクスチャを含む）"

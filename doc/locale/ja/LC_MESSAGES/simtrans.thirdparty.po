@@ -2,7 +2,7 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2014-11-19 12:04+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 # 1b73c3a070ad465192a32cd4d7590234
@@ -28,36 +28,36 @@ msgid "simtrans.thirdparty.hrputil"
 msgstr ""
 
 # 9dd8adc80c384bd099ea517cb5c2baf2
-#: ../../../simtrans/thirdparty/hrputil.py:docstring of
-#: simtrans.thirdparty.hrputil:1
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/hrputil.pydocstring
+#: of simtrans.thirdparty.hrputil:1
 msgid "Numpy port of"
 msgstr ""
 
 # 4e130f597cb3480db0a3d2973d0b4dc9
-#: ../../../simtrans/thirdparty/hrputil.py:docstring of
-#: simtrans.thirdparty.hrputil:3
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/hrputil.pydocstring
+#: of simtrans.thirdparty.hrputil:3
 msgid ""
-"omegaFromRot function from https://github.com/fkanehiro/openhrp3/blob/master/"
-"hrplib/hrpUtil/Eigen3d.cpp"
+"omegaFromRot function from "
+"https://github.com/fkanehiro/openhrp3/blob/master/hrplib/hrpUtil/Eigen3d.cpp"
 msgstr ""
 
 # 1b18c398c09747c5af855ddab86a2ef9
-#: ../../../simtrans/thirdparty/hrputil.py:docstring of
-#: simtrans.thirdparty.hrputil:6
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/hrputil.pydocstring
+#: of simtrans.thirdparty.hrputil:6
 msgid ""
-"matrix decomposition from writeShape function https://github.com/fkanehiro/"
-"openhrp3/blob/master/server/ModelLoader/VrmlWriter.cpp"
+"matrix decomposition from writeShape function "
+"https://github.com/fkanehiro/openhrp3/blob/master/server/ModelLoader/VrmlWriter.cpp"
 msgstr ""
 
 # c3680ec9dc674ef89cf8facde1ae58e5
-#: ../../../simtrans/thirdparty/hrputil.py:docstring of
-#: simtrans.thirdparty.hrputil.decomposeMatrix:1
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/hrputil.pydocstring
+#: of simtrans.thirdparty.hrputil.decomposeMatrix:1
 msgid "decompose transformation matrix to transform, scale, rotation"
 msgstr ""
 
 # af70ab7c24fb4bb0a2baa43923a4636f
-#: ../../../simtrans/thirdparty/hrputil.py:docstring of
-#: simtrans.thirdparty.hrputil.omegaFromRot:1
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/hrputil.pydocstring
+#: of simtrans.thirdparty.hrputil.omegaFromRot:1
 msgid "calculate omega values from rotation matrix"
 msgstr ""
 
@@ -67,105 +67,105 @@ msgid "simtrans.thirdparty.transformations"
 msgstr ""
 
 # d32d54799fb94555bb87f243964ed099
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:1
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:1
 msgid "Homogeneous Transformation Matrices and Quaternions."
 msgstr ""
 
 # 984a05e49af945c8b43c71b248218d17
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:3
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:3
 msgid ""
 "A library for calculating 4x4 matrices for translating, rotating, "
 "reflecting, scaling, shearing, projecting, orthogonalizing, and "
-"superimposing arrays of 3D homogeneous coordinates as well as for converting "
-"between rotation matrices, Euler angles, and quaternions. Also includes an "
+"superimposing arrays of 3D homogeneous coordinates as well as for converting"
+" between rotation matrices, Euler angles, and quaternions. Also includes an "
 "Arcball control object and functions to decompose transformation matrices."
 msgstr ""
 
 # 418611a28190401494b2a901043c006f
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:10
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:10
 msgid "`Christoph Gohlke <http://www.lfd.uci.edu/~gohlke/>`_"
 msgstr ""
 
 # 56dbdebbe2794526ac8ed8a6476efd14
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:13
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:13
 msgid "Laboratory for Fluorescence Dynamics, University of California, Irvine"
 msgstr ""
 
 # 9af99b673120476b9cc404879a1872cc
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:15
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:15
 msgid "2013.06.29"
 msgstr ""
 
 # 4c97ebde0e654be59a1a7ed5ee33bc23
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:18
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:18
 msgid "Requirements"
 msgstr ""
 
 # de105d72478d484892f1220d08cfbd8c
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:19
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:19
 msgid "`CPython 2.7 or 3.3 <http://www.python.org>`_"
 msgstr ""
 
 # f0a37b0f127c44cd9e4976764c2b68b0
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:20
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:20
 msgid "`Numpy 1.7 <http://www.numpy.org>`_"
 msgstr ""
 
 # 1cfd033fb3424053bb22162a9564622c
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:21
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:21
 msgid ""
 "`Transformations.c 2013.01.18 <http://www.lfd.uci.edu/~gohlke/>`_ "
 "(recommended for speedup of some functions)"
 msgstr ""
 
 # e24c50915136444eab610ff82a05afb6
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:25
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:25
 msgid "Notes"
 msgstr ""
 
 # db7685da48244167910e4b74d48bfd58
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:26
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:26
 msgid "The API is not stable yet and is expected to change between revisions."
 msgstr ""
 
 # e1e3823eaf5048db9c0275ccfef66312
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:28
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:28
 msgid ""
 "This Python code is not optimized for speed. Refer to the transformations.c "
 "module for a faster implementation of some functions."
 msgstr ""
 
 # 2a4ba5899fe4466f9c992cd9eccb9a76
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:31
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:31
 msgid "Documentation in HTML format can be generated with epydoc."
 msgstr ""
 
 # be615d1fe6d24d37993419a3163a6e94
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:33
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:33
 msgid ""
 "Matrices (M) can be inverted using numpy.linalg.inv(M), be concatenated "
 "using numpy.dot(M0, M1), or transform homogeneous coordinate arrays (v) "
-"using numpy.dot(M, v) for shape (4, \\*) column vectors, respectively numpy."
-"dot(v, M.T) for shape (\\*, 4) row vectors (\"array of points\")."
+"using numpy.dot(M, v) for shape (4, \\*) column vectors, respectively "
+"numpy.dot(v, M.T) for shape (\\*, 4) row vectors (\"array of points\")."
 msgstr ""
 
 # a62be1760a8e400bb57148c387047494
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:38
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:38
 msgid ""
 "This module follows the \"column vectors on the right\" and \"row major "
 "storage\" (C contiguous) conventions. The translation components are in the "
@@ -175,229 +175,230 @@ msgid ""
 msgstr ""
 
 # b177427bd9bc41a38eb181cd08930528
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:44
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:44
 msgid "Calculations are carried out with numpy.float64 precision."
 msgstr ""
 
 # 1f0846fd6275478598e4eb9de5e0b509
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:46
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:46
 msgid ""
 "Vector, point, quaternion, and matrix function arguments are expected to be "
 "\"array like\", i.e. tuple, list, or numpy arrays."
 msgstr ""
 
 # 5d032bab57754a188d6c1ba289d6e6b6
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:49
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:49
 msgid "Return types are numpy arrays unless specified otherwise."
 msgstr ""
 
 # 196dc6eb29104bffb33c448d95e549f7
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:51
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:51
 msgid "Angles are in radians unless specified otherwise."
 msgstr ""
 
 # ebaeba560ac04552a9d5d1528a875b43
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:53
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:53
 msgid "Quaternions w+ix+jy+kz are represented as [w, x, y, z]."
 msgstr ""
 
 # 05436f51f6d64fb3b753f213f7f7cf78
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:55
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:55
 msgid ""
-"A triple of Euler angles can be applied/interpreted in 24 ways, which can be "
-"specified using a 4 character string or encoded 4-tuple:"
+"A triple of Euler angles can be applied/interpreted in 24 ways, which can be"
+" specified using a 4 character string or encoded 4-tuple:"
 msgstr ""
 
 # d36958bdef5244fdb15980cb86f788d8
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:58
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:58
 msgid "*Axes 4-string*: e.g. 'sxyz' or 'ryxy'"
 msgstr ""
 
 # df5bf6a273cf4c0e8742d50c2e54e7cb
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:60
-msgid "first character : rotations are applied to 's'tatic or 'r'otating frame"
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:60
+msgid ""
+"first character : rotations are applied to 's'tatic or 'r'otating frame"
 msgstr ""
 
 # 8db583fa33ec4054821a5878b3b030fe
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:61
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:61
 msgid "remaining characters : successive rotation axis 'x', 'y', or 'z'"
 msgstr ""
 
 # a2aa6897969845db98912b093d6c6d3f
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:63
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:63
 msgid "*Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)"
 msgstr ""
 
 # e1b9dee2b0454ceb83a6b0bd91143b6c
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:65
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:65
 msgid "inner axis: code of axis ('x':0, 'y':1, 'z':2) of rightmost matrix."
 msgstr ""
 
 # 569ef320b1eb4beaa09d43a38f18596d
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:66
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:66
 msgid ""
 "parity : even (0) if inner axis 'x' is followed by 'y', 'y' is followed by "
 "'z', or 'z' is followed by 'x'. Otherwise odd (1)."
 msgstr ""
 
 # a41ab394f2aa486ea0c62c6b98ebe979
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:68
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:68
 msgid "repetition : first and last axis are same (1) or different (0)."
 msgstr ""
 
 # 9b8551f40e89467f9c01070ba0d88bf5
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:69
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:69
 msgid "frame : rotations are applied to static (0) or rotating (1) frame."
 msgstr ""
 
 # ff80700a3eaf4ff3a69b8ac9bb2d6914
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:72
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:72
 msgid "References"
 msgstr ""
 
 # dc0062007211412186c64f2715a4dac1
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:73
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:73
 msgid ""
 "Matrices and transformations. Ronald Goldman. In \"Graphics Gems I\", pp "
 "472-475. Morgan Kaufmann, 1990."
 msgstr ""
 
 # c424b736658b468a9f0735ea595a7730
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:75
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:75
 msgid ""
 "More matrices and transformations: shear and pseudo-perspective. Ronald "
 "Goldman. In \"Graphics Gems II\", pp 320-323. Morgan Kaufmann, 1991."
 msgstr ""
 
 # 0205ee2384fa444988eda44b4adda930
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:77
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:77
 msgid ""
 "Decomposing a matrix into simple transformations. Spencer Thomas. In "
 "\"Graphics Gems II\", pp 320-323. Morgan Kaufmann, 1991."
 msgstr ""
 
 # f22e1ad516704811a902ddbe8f604355
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:79
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:79
 msgid ""
 "Recovering the data from the transformation matrix. Ronald Goldman. In "
 "\"Graphics Gems II\", pp 324-331. Morgan Kaufmann, 1991."
 msgstr ""
 
 # d829de5426ee464695c631dd4aa0781b
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:81
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:81
 msgid ""
 "Euler angle conversion. Ken Shoemake. In \"Graphics Gems IV\", pp 222-229. "
 "Morgan Kaufmann, 1994."
 msgstr ""
 
 # bd227f7eb6234034873d1263f47a8e02
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:83
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:83
 msgid ""
-"Arcball rotation control. Ken Shoemake. In \"Graphics Gems IV\", pp 175-192. "
-"Morgan Kaufmann, 1994."
+"Arcball rotation control. Ken Shoemake. In \"Graphics Gems IV\", pp 175-192."
+" Morgan Kaufmann, 1994."
 msgstr ""
 
 # 9fa3890e4bd940639c2f74c5279abda9
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:85
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:85
 msgid ""
-"Representing attitude: Euler angles, unit quaternions, and rotation vectors. "
-"James Diebel. 2006."
+"Representing attitude: Euler angles, unit quaternions, and rotation vectors."
+" James Diebel. 2006."
 msgstr ""
 
 # f5f11ef3b61a4866ba195f07fff067b4
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:87
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:87
 msgid ""
 "A discussion of the solution for the best rotation to relate two sets of "
 "vectors. W Kabsch. Acta Cryst. 1978. A34, 827-828."
 msgstr ""
 
 # 2ad25ffdf9fa46f082a02d291684782f
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:89
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:89
 msgid ""
 "Closed-form solution of absolute orientation using unit quaternions. BKP "
 "Horn. J Opt Soc Am A. 1987. 4(4):629-642."
 msgstr ""
 
 # 54aa6e4a8e174ba299db8df2e9b93938
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:91
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:91
 msgid ""
 "Quaternions. Ken Shoemake. http://www.sfu.ca/~jwa3/cmpt461/files/quatut.pdf"
 msgstr ""
 
 # 79e5ae99d9644093a5f7ee7817c4d6ce
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:93
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:93
 msgid ""
-"From quaternion to matrix and back. JMP van Waveren. 2005. http://www.intel."
-"com/cd/ids/developer/asmo-na/eng/293748.htm"
+"From quaternion to matrix and back. JMP van Waveren. 2005. "
+"http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm"
 msgstr ""
 
 # edfbe85a51534c81bdbd3c538e70c728
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:95
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:95
 msgid ""
 "Uniform random rotations. Ken Shoemake. In \"Graphics Gems III\", pp "
 "124-132. Morgan Kaufmann, 1992."
 msgstr ""
 
 # 75495a1d60014bafafe8aee9d2b55082
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:97
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:97
 msgid ""
 "Quaternion in molecular modeling. CFF Karney. J Mol Graph Mod, 25(5):595-604"
 msgstr ""
 
 # c370a7cf2543440f8317ecff85cdc6de
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:99
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:99
 msgid ""
 "New method for extracting the quaternion from a rotation matrix. Itzhack Y "
 "Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087."
 msgstr ""
 
 # fcf82e68b04647e29be1fa38f5fadd29
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:101
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:101
 msgid ""
-"Multiple View Geometry in Computer Vision. Hartley and Zissermann. Cambridge "
-"University Press; 2nd Ed. 2004. Chapter 4, Algorithm 4.7, p 130."
+"Multiple View Geometry in Computer Vision. Hartley and Zissermann. Cambridge"
+" University Press; 2nd Ed. 2004. Chapter 4, Algorithm 4.7, p 130."
 msgstr ""
 
 # 0fae761e2675496e8b8c38bbd1d0d581
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:103
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:103
 msgid ""
-"Column Vectors vs. Row Vectors. http://steve.hollasch.net/cgindex/math/"
-"matrix/column-vec.html"
+"Column Vectors vs. Row Vectors. "
+"http://steve.hollasch.net/cgindex/math/matrix/column-vec.html"
 msgstr ""
 
 # e8138aad5fcd428d9d6d9e97c1ca187f
-#: ../../../simtrans/thirdparty/transformations.py:docstring of
-#: simtrans.thirdparty.transformations:107
+#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/thirdparty/transformations.pydocstring
+#: of simtrans.thirdparty.transformations:107
 msgid "Examples"
 msgstr ""
