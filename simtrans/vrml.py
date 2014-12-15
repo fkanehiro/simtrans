@@ -189,55 +189,19 @@ class VRMLReader(object):
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
                 sm.shapeType = model.ShapeModel.SP_MESH
-                sm.data = model.MeshData()
-                sm.data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
-                sm.data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
-                adata = self._hrpapperances[sdata.appearanceIndex]
-                if adata.normalPerVertex is True:
-                    sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    if len(adata.normalIndices) > 0:
-                        sm.data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
-                    else:
-                        sm.data.normal_index = sm.data.vertex_index
-                else:
-                    sm.data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
-                    if len(adata.normalIndices) > 0:
-                        idx = []
-                        for i in adata.normalIndices:
-                            idx.append(i)
-                            idx.append(i)
-                            idx.append(i)
-                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
-                    else:
-                        idx = []
-                        for i in range(0, len(adata.normals)/3):
-                            idx.append(i)
-                            idx.append(i)
-                            idx.append(i)
-                        sm.data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
-                if len(sm.data.vertex_index) != len(sm.data.normal_index):
-                    raise Exception('vertex length and normal length not match in %s' % sm.name)
-                sm.data.material = self._materials[adata.materialIndex]
-                if adata.textureIndex >= 0:
-                    fname = self._hrptextures[adata.textureIndex].url
-                    if self._assethandler:
-                        sm.data.material.texture = self._assethandler(fname)
-                    else:
-                        sm.data.material.texture = fname
-                    sm.data.uvmap = numpy.array(adata.textureCoordinate).reshape(len(adata.textureCoordinate)/2, 2)
-                    sm.data.uvmap_index = numpy.array(adata.textureCoordIndices).reshape(len(adata.textureCoordIndices)/3, 3)
-            elif sdata.primitiveType == OpenHRP.SP_SPHERE:
+                sm.data = self.readMesh(sdata)
+            elif sdata.primitiveType == OpenHRP.SP_SPHERE and numpy.allclose(sm.matrix, numpy.identity(4)):
                 sm.shapeType = model.ShapeModel.SP_SPHERE
                 sm.data = model.SphereData()
                 sm.data.radius = sdata.primitiveParameters[0]
                 sm.data.material = self._materials[sdata.appearanceIndex]
-            elif sdata.primitiveType == OpenHRP.SP_CYLINDER:
+            elif sdata.primitiveType == OpenHRP.SP_CYLINDER and numpy.allclose(sm.matrix, numpy.identity(4)):
                 sm.shapeType = model.ShapeModel.SP_CYLINDER
                 sm.data = model.CylinderData()
                 sm.data.radius = sdata.primitiveParameters[0]
                 sm.data.height = sdata.primitiveParameters[1]
                 sm.data.material = self._materials[sdata.appearanceIndex]
-            elif sdata.primitiveType == OpenHRP.SP_BOX:
+            elif sdata.primitiveType == OpenHRP.SP_BOX and numpy.allclose(sm.matrix, numpy.identity(4)):
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()
                 sm.data.x = sdata.primitiveParameters[0]
@@ -245,9 +209,51 @@ class VRMLReader(object):
                 sm.data.z = sdata.primitiveParameters[2]
                 sm.data.material = self._materials[sdata.appearanceIndex]
             else:
-                raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
+                # raise Exception('unsupported shape primitive: %s' % sdata.primitiveType)
+                sm.shapeType = model.ShapeModel.SP_MESH
+                sm.data = self.readMesh(sdata)
             lm.visuals.append(sm)
         return lm
+
+    def readMesh(self, sdata):
+        data = model.MeshData()
+        data.vertex = numpy.array(sdata.vertices).reshape(len(sdata.vertices)/3, 3)
+        data.vertex_index = numpy.array(sdata.triangles).reshape(len(sdata.triangles)/3, 3)
+        adata = self._hrpapperances[sdata.appearanceIndex]
+        if adata.normalPerVertex is True:
+            data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+            if len(adata.normalIndices) > 0:
+                data.normal_index = numpy.array(adata.normalIndices).reshape(len(adata.normalIndices)/3, 3)
+            else:
+                data.normal_index = data.vertex_index
+        else:
+            data.normal = numpy.array(adata.normals).reshape(len(adata.normals)/3, 3)
+            if len(adata.normalIndices) > 0:
+                idx = []
+                for i in adata.normalIndices:
+                    idx.append(i)
+                    idx.append(i)
+                    idx.append(i)
+                data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+            else:
+                idx = []
+                for i in range(0, len(adata.normals)/3):
+                    idx.append(i)
+                    idx.append(i)
+                    idx.append(i)
+                data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
+        if len(data.vertex_index) != len(data.normal_index):
+            raise Exception('vertex length and normal length not match')
+        data.material = self._materials[adata.materialIndex]
+        if adata.textureIndex >= 0:
+            fname = self._hrptextures[adata.textureIndex].url
+            if self._assethandler:
+                data.material.texture = self._assethandler(fname)
+            else:
+                data.material.texture = fname
+            data.uvmap = numpy.array(adata.textureCoordinate).reshape(len(adata.textureCoordinate)/2, 2)
+            data.uvmap_index = numpy.array(adata.textureCoordIndices).reshape(len(adata.textureCoordIndices)/3, 3)
+        return data
 
     def readChild(self, parent, child):
         # first convert link shape information
