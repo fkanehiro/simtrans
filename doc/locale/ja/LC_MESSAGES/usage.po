@@ -2,13 +2,13 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 17:30+0900\n"
-"PO-Revision-Date: 2014-12-12 17:26+0900\n"
+"PO-Revision-Date: 2014-12-15 16:25+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -91,7 +91,7 @@ msgstr "gazeboを使ってプロジェクトを開く。"
 # 82215cfb9eeb4dcb82df041482defaf8
 #: ../../usage.rst:46
 msgid "Visualize joint structure using graphviz"
-msgstr "graphvizを使った関節構造の視覚化。"
+msgstr "graphvizを使った関節構造の視覚化"
 
 # 4e7784a617bb40758eda2398ad470870
 #: ../../usage.rst:48
@@ -100,11 +100,11 @@ msgstr "例えば、PR2ロボットは以下のようにして視覚化できま
 
 #: ../../usage.rst:12
 msgid "Convert URDF model to VRML format"
-msgstr ""
+msgstr "URDFフォーマットからVRMLフォーマットへの変換"
 
 #: ../../usage.rst:30
 msgid "Convert VRML model to SDF format"
-msgstr ""
+msgstr "VRMLフォーマットからSDFフォーマットへの変換"
 
 #~ msgid "Convert URDF model to VRML(OpenHRP) format"
 #~ msgstr "URDF形式のモデルのVRML（OpenHRP）形式への変換"
