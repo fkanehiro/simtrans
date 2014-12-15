@@ -224,8 +224,10 @@ class SDFWriter(object):
     '''
     def __init__(self):
         self._jointparentmap = {}
+        self._linkmap = {}
         self._sensorparentmap = {}
         self._absolutepositionmap = {}
+        self._root = None
 
 
     def write(self, m, f):
@@ -263,22 +265,32 @@ class SDFWriter(object):
         # render mesh collada file for each links
         for j in m.joints:
             self._jointparentmap[j.child] = j
+        for l in m.links:
+            self._linkmap[l.name] = l
+        self._linkmap['world'] = model.LinkModel()
         for s in m.sensors:
             if s.parent in self._sensorparentmap:
                 self._sensorparentmap[s.parent].append(s)
             else:
                 self._sensorparentmap[s.parent] = [s]
         try:
-            root = utils.findroot(m)[0]
+            self._root = utils.findroot(m)[0]
         except IndexError:
             if len(m.joints) == 0:
-                root = m.links[0].name
+                self._root = m.links[0].name
         if m.joints[0].jointType == model.JointModel.J_FIXED:
             m.joints[0].jointType = model.JointModel.J_REVOLUTE
-        rootposition = model.TransformationModel()
-        # rootposition.trans = rootposition.trans + numpy.array([0, 0, 0.3])  # add offset to the root joint
-        self._absolutepositionmap[root] = rootposition
-        for cjoint in utils.findchildren(m, root):
+            m.joints[0].limits = [0, 0]
+
+        rootposition = self._linkmap[self._root]
+
+        # add offset to the root joint
+        rootposition.trans = rootposition.gettranslation() + m.gettranslation()
+        rootposition.rot = rootposition.getrotation()
+        rootposition.matrix = None
+
+        self._absolutepositionmap[self._root] = rootposition
+        for cjoint in utils.findchildren(m, self._root):
             self.convertchildren(m, cjoint)
         template = env.get_template('sdf.xml')
         with open(f, 'w') as ofile:

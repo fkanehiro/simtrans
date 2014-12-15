@@ -114,6 +114,7 @@ class VRMLReader(object):
             m.transparency = a.transparency
             self._materials.append(m)
         root = self._hrplinks[0]
+        bm.trans = numpy.array(root.translation)
         if root.jointType == 'fixed':
             world = model.JointModel()
             world.name = 'world'
