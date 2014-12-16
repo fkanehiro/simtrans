@@ -59,6 +59,7 @@ class SDFReader(object):
     def __init__(self):
         self._assethandler = None
         self._linkmap = {}
+        self._relpositionmap = {}
 
     def read(self, fname, assethandler=None):
         '''
@@ -134,7 +135,38 @@ class SDFReader(object):
             # phisical property
             bm.joints.append(jm)
 
+        self._linkmap['world'] = model.TransformationModel()
+        roots = utils.findroot(bm)
+        if len(roots) > 0:
+            root = roots[0]
+            rootlink = self._linkmap[root]
+            self._relpositionmap[root] = rootlink
+            bm.trans = rootlink.gettranslation()
+            bm.rot = rootlink.getrotation()
+            for c in utils.findchildren(bm, root):
+                self.convertchildren(bm, c)
+
+        for l in bm.links:
+            try:
+                relpos = self._relpositionmap[l.name]
+                l.trans = relpos.gettranslation()
+                l.rot = relpos.getrotation()
+            except KeyError:
+                pass
+
         return bm
+
+    def convertchildren(self, mdata, joint):
+        absparent = self._linkmap[joint.parent]
+        abschild = self._linkmap[joint.child]
+        relchild = model.TransformationModel()
+        joint.trans = abschild.trans - absparent.trans
+        joint.rot = abschild.getrotation()
+        #relchild.rot = tf.quaternion_multiply(absparent.rot, joint.getrotation())
+        #joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3]
+        self._relpositionmap[joint.child] = relchild
+        for cjoint in utils.findchildren(mdata, joint.child):
+            self.convertchildren(mdata, cjoint)
 
     def readPose(self, m, doc):
         pose = numpy.array([float(v) for v in doc.text.split(' ')])
