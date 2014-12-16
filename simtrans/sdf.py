@@ -75,9 +75,21 @@ class SDFReader(object):
             r = SDFReader()
             m = r.read(utils.resolveFile(i.find('uri').text) + '/model.sdf')
             name = i.find('name').text
+            pose = i.find('pose')
+            p = model.TransformationModel()
+            if pose is not None:
+                self.readPose(p, pose)
             for l in m.links:
                 l.name = name + '::' + l.name
                 bm.links.append(l)
+                if pose is not None:
+                    j = model.JointModel()
+                    j.jointType = model.JointModel.J_FIXED
+                    j.parent = 'world'
+                    j.child = l.name
+                    j.trans = p.gettranslation()
+                    j.rot = p.getrotation()
+                    bm.joints.append(j)
 
         for l in dm.findall('link'):
             # general information
