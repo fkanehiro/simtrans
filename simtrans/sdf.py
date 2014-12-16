@@ -71,6 +71,14 @@ class SDFReader(object):
         dm = d.find('model')
         bm.name = dm.attrib['name']
 
+        for i in dm.findall('include'):
+            r = SDFReader()
+            m = r.read(utils.resolveFile(i.find('uri').text) + '/model.sdf')
+            name = i.find('name').text
+            for l in m.links:
+                l.name = name + '::' + l.name
+                bm.links.append(l)
+
         for l in dm.findall('link'):
             # general information
             lm = model.LinkModel()
@@ -95,7 +103,6 @@ class SDFReader(object):
             #if collision is not None:
             #    lm.collision = self.readShape(collision)
             bm.links.append(lm)
-            self._linkmap[lm.name] = lm
 
         for j in dm.findall('joint'):
             jm = model.JointModel()
@@ -135,6 +142,8 @@ class SDFReader(object):
             # phisical property
             bm.joints.append(jm)
 
+        for lm in bm.links:
+            self._linkmap[lm.name] = lm
         self._linkmap['world'] = model.TransformationModel()
         roots = utils.findroot(bm)
         if len(roots) > 0:
