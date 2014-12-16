@@ -7,7 +7,6 @@
    <property name="method" value="EULER"/>
   </item>
   <item class="com.generalrobotix.ui.item.GrxModelItem" name="sample1" url="{{fname}}">
-    <property name="{{root}}.translation" value="0  0  1"/>
     {%- for j in model.joints %}
     <property name="{{j.name}}.mode" value="HighGain"/>
     {%- endfor %}
