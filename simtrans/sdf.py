@@ -81,15 +81,17 @@ class SDFReader(object):
                 self.readPose(p, pose)
             for l in m.links:
                 l.name = name + '::' + l.name
-                bm.links.append(l)
                 if pose is not None:
-                    j = model.JointModel()
-                    j.jointType = model.JointModel.J_FIXED
-                    j.parent = 'world'
-                    j.child = l.name
-                    j.trans = p.gettranslation()
-                    j.rot = p.getrotation()
-                    bm.joints.append(j)
+                    l.trans = p.gettranslation()
+                    l.rot = p.getrotation()
+                bm.links.append(l)
+            for j in m.joints:
+                j.name = name + '::' + j.name
+                if j.parent != 'world':
+                    j.parent = name + '::' + j.parent
+                if j.child != 'world':
+                    j.child = name + '::' + j.child
+                bm.joints.append(j)
 
         for l in dm.findall('link'):
             # general information

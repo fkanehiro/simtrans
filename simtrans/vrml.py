@@ -335,7 +335,9 @@ class VRMLWriter(object):
         if len(self._roots) > 0:
             root = self._roots[0]
             if root == 'world':
-                root = utils.findchildren(mdata, root)[0].child
+                roots = utils.findchildren(mdata, root)
+                if len(roots) == 1:
+                    root = utils.findchildren(mdata, root)[0].child
                 rootlink = self._linkmap[root]
                 # print("root joint is world. using %s as root" % root)
                 rootjoint = model.JointModel()
