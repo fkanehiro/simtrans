@@ -60,6 +60,7 @@ class SDFReader(object):
         self._assethandler = None
         self._linkmap = {}
         self._relpositionmap = {}
+        self._rootname = None
 
     def read(self, fname, assethandler=None):
         '''
@@ -69,7 +70,7 @@ class SDFReader(object):
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
         dm = d.find('model')
-        bm.name = dm.attrib['name']
+        bm.name = self._rootname = dm.attrib['name']
 
         for i in dm.findall('include'):
             r = SDFReader()
@@ -229,7 +230,7 @@ class SDFReader(object):
 
     def readShape(self, d):
         m = model.ShapeModel()
-        m.name = d.attrib['name']
+        m.name = self._rootname + '-' + d.attrib['name']
         pose = d.find('pose')
         if pose is not None:
             self.readPose(m, pose)
