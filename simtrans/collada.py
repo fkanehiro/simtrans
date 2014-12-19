@@ -75,7 +75,7 @@ class ColladaReader(object):
                     mm.texture = self._assethandler(fname)
                 else:
                     mm.texture = fname
-            else:
+            elif m.effect.diffuse is not None:
                 mm.diffuse = m.effect.diffuse
             self._materials[mm.name] = mm
         m = model.MeshTransformData()

@@ -42,7 +42,12 @@ Shape {
     }
     coordIndex [
       {%- for n in c.vertex_index %}
+      {%- if n|length == 3 %}
       {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+      {%- endif %}
+      {%- if n|length == 2 %}
+      {{n[0]}}, {{n[1]}}, -1,
+      {%- endif %}
       {%- endfor %}
     ]
     {%- if c.normal is not none %}
