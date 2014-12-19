@@ -149,8 +149,10 @@ class SDFReader(object):
                 if limit is not None:
                     try:
                         jm.limit = [float(limit.find('upper').text), float(limit.find('lower').text)]
-                        velocity = float(limit.find('velocity').text)
-                        jm.velocitylimit = [velocity, -velocity]
+                        velocity = limit.find('velocity').text
+                        if type(velocity) in [str, int, float]:
+                            velocity = float(velocity)
+                            jm.velocitylimit = [velocity, -velocity]
                     except AttributeError:
                         pass
             # phisical property
@@ -283,7 +285,6 @@ class SDFWriter(object):
         self._sensorparentmap = {}
         self._absolutepositionmap = {}
         self._root = None
-
 
     def write(self, m, f):
         '''
