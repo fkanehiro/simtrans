@@ -28,7 +28,10 @@ def resolveFile(f):
             fn = f.replace('model://', '')
             paths = ['~/.gazebo/models']
             for env in ['GAZEBO_MODEL_PATH', 'OPENHRP_MODEL_PATH']:
-                paths.extend(os.environ[env].split(':'))
+                try:
+                    paths.extend(os.environ[env].split(':'))
+                except KeyError:
+                    pass
             for p in paths:
                 ff = os.path.expanduser(os.path.join(p, fn))
                 if os.path.exists(ff):
