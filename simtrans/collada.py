@@ -116,7 +116,9 @@ class ColladaReader(object):
             m.matrix = d.matrix
             m.children = []
             for c in d.children:
-                m.children.append(self.convertchild(c))
+                cc = self.convertchild(c)
+                if cc is not None:
+                    m.children.append(cc)
         elif type(d) == collada.scene.GeometryNode:
             m = model.MeshTransformData()
             materialmap = {}
@@ -126,6 +128,8 @@ class ColladaReader(object):
                 sm = model.MeshData()
                 sm.vertex = p.vertex
                 if len(p.vertex_index.shape) == 2:
+                    if len(p.vertex_index[0]) < 3:
+                        return None
                     sm.vertex_index = p.vertex_index
                 else:
                     sm.vertex_index = numpy.array(p.vertex_index).reshape(len(p.vertex_index)/3, 3)
