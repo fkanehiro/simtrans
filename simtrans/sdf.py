@@ -118,6 +118,10 @@ class SDFReader(object):
             #    lm.collision = self.readShape(collision)
             bm.links.append(lm)
 
+        for lm in bm.links:
+            self._linkmap[lm.name] = lm
+        self._linkmap['world'] = model.TransformationModel()
+
         for j in dm.findall('joint'):
             jm = model.JointModel()
             # general property
@@ -155,12 +159,14 @@ class SDFReader(object):
                             jm.velocitylimit = [velocity, -velocity]
                     except AttributeError:
                         pass
-            # phisical property
-            bm.joints.append(jm)
+            # check if each links really exist
+            if jm.parent not in self._linkmap:
+                print "warning: link %s referenced by joint %s does not exist (ignoring)" % (jm.parent, jm.name)
+            elif jm.child not in self._linkmap:
+                print "warning: link %s referenced by joint %s does not exist (ignoring)" % (jm.child, jm.name)
+            else:
+                bm.joints.append(jm)
 
-        for lm in bm.links:
-            self._linkmap[lm.name] = lm
-        self._linkmap['world'] = model.TransformationModel()
         roots = utils.findroot(bm)
         if len(roots) > 0:
             root = roots[0]
