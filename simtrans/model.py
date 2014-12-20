@@ -179,6 +179,37 @@ class MeshTransformData(TransformationModel):
         TransformationModel.__init__(self)
         self.children = []
 
+    def maxv(self, trans=None):
+        mv = numpy.array([0, 0, 0, 0])
+        if trans is None:
+            trans = numpy.identity(4)
+        if self.matrix is not None:
+            trans2 = numpy.dot(self.matrix, trans)
+        else:
+            trans2 = trans
+        for c in self.children:
+            if type(c) == MeshTransformData:
+                mv = numpy.maximum(mv, c.maxv(trans2))
+            elif type(c) == MeshData:
+                for v in c.vertex:
+                    mv = numpy.maximum(mv, numpy.dot(trans2, numpy.append(v, 1)))
+        return mv
+
+    def minv(self, trans=None):
+        mv = numpy.array([numpy.Inf, numpy.Inf, numpy.Inf, numpy.Inf])
+        if trans is None:
+            trans = numpy.identity(4)
+        if self.matrix is not None:
+            trans2 = numpy.dot(self.matrix, trans)
+        else:
+            trans2 = trans
+        for c in self.children:
+            if type(c) == MeshTransformData:
+                mv = numpy.minimum(mv, c.minv(trans2))
+            elif type(c) == MeshData:
+                for v in c.vertex:
+                    mv = numpy.minimum(mv, numpy.dot(trans2, numpy.append(v, 1)))
+        return mv
 
 class MeshData(object):
     """
@@ -197,7 +228,6 @@ class MeshData(object):
     def __init__(self):
         self.vertex = []
         self.vertex_index = []
-
 
 class BoxData(object):
     """
