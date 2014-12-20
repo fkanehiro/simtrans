@@ -192,10 +192,14 @@ class SDFReader(object):
         absparent = self._linkmap[joint.parent]
         abschild = self._linkmap[joint.child]
         relchild = model.TransformationModel()
-        joint.trans = abschild.trans - absparent.trans
-        joint.rot = abschild.getrotation()
+        rot = tf.quaternion_matrix(absparent.getrotation())
+        joint.trans = numpy.dot(rot, numpy.hstack((abschild.trans - absparent.trans, [1])))[0:3]
+        inv = numpy.linalg.pinv(rot)
+        rot = numpy.dot(tf.quaternion_matrix(abschild.getrotation()), inv)
+        joint.rot = tf.quaternion_from_matrix(rot)
         #relchild.rot = tf.quaternion_multiply(absparent.rot, joint.getrotation())
-        #joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3]
+        if joint.axis is not None:
+            joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3].tolist()
         self._relpositionmap[joint.child] = relchild
         for cjoint in utils.findchildren(mdata, joint.child):
             self.convertchildren(mdata, cjoint)
