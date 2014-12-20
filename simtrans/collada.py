@@ -85,7 +85,9 @@ class ColladaReader(object):
         rootnodes = d.scene.nodes
         if submesh is not None:
             for n in d.scene.nodes:
-                f = self.findchild(n, submesh)
+                trans = model.TransformationModel()
+                trans.matrix = numpy.identity(4)
+                f = self.findchild(n, submesh, trans)
                 if f is not None:
                     rootnodes = [f]
                     break
@@ -95,16 +97,19 @@ class ColladaReader(object):
                 m.children.append(cm)
         return m
 
-    def findchild(self, d, name):
+    def findchild(self, d, name, trans):
         if type(d) not in [collada.scene.Node, collada.scene.NodeNode]:
             return None
         try:
             if d.xmlnode.attrib['name'] == name:
+                d.matrix = numpy.dot(d.matrix, trans.matrix)
                 return d
         except KeyError:
             pass
+        trans2 = model.TransformationModel()
+        trans2.matrix = numpy.dot(d.matrix, trans.matrix)
         for c in d.children:
-            f = self.findchild(c, name)
+            f = self.findchild(c, name, trans2)
             if f is not None:
                 return f
         return None

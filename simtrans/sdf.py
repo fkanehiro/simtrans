@@ -262,6 +262,10 @@ class SDFReader(object):
                     except KeyError:
                         pass
                     m.data = reader.read(filename, submesh=submeshname, assethandler=self._assethandler)
+                    if submeshcenter is True:
+                        # need to implement centering logic
+                        # https://bitbucket.org/osrf/gazebo/src/a5543c1b774c388afe241979de35ffeaea88f78a/gazebo/common/Mesh.cc?at=default#cl-891
+                        pass
                     m.name = m.name + '-' + submeshname
                 else:
                     m.data = reader.read(filename, assethandler=self._assethandler)
