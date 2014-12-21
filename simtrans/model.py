@@ -184,7 +184,7 @@ class MeshTransformData(TransformationModel):
         if trans is None:
             trans = numpy.identity(4)
         if self.matrix is not None:
-            trans2 = numpy.dot(self.matrix, trans)
+            trans2 = numpy.dot(trans, self.matrix)
         else:
             trans2 = trans
         for c in self.children:
@@ -200,7 +200,7 @@ class MeshTransformData(TransformationModel):
         if trans is None:
             trans = numpy.identity(4)
         if self.matrix is not None:
-            trans2 = numpy.dot(self.matrix, trans)
+            trans2 = numpy.dot(trans, self.matrix)
         else:
             trans2 = trans
         for c in self.children:

@@ -265,13 +265,14 @@ class SDFReader(object):
                     if submeshcenter is True:
                         tm = model.MeshTransformData()
                         tm.children = [m.data]
-                        center = (m.data.maxv() + m.data.minv()) / 2
+                        maxv = m.data.maxv()
+                        minv = m.data.minv()
+                        center = (maxv + minv) / 2
                         tm.matrix = numpy.identity(4)
                         tm.matrix[0, 3] = -center[0]
                         tm.matrix[1, 3] = -center[1]
                         tm.matrix[2, 3] = -center[2]
                         m.data = tm
-                        print(center)
                     m.name = m.name + '-' + submeshname
                 else:
                     m.data = reader.read(filename, assethandler=self._assethandler)
