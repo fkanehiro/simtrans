@@ -60,7 +60,12 @@ Shape {
     }
     normalIndex [
       {%- for n in c.normal_index %}
+      {%- if n|length == 3 %}
       {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+      {%- endif %}
+      {%- if n|length == 2 %}
+      {{n[0]}}, {{n[1]}}, {{n[1]}}, -1,
+      {%- endif %}
       {%- endfor %}
     ]
     normalPerVertex TRUE
@@ -77,7 +82,12 @@ Shape {
     }
     colorIndex [
       {%- for n in c.color_index %}
+      {%- if n|length == 3 %}
       {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+      {%- endif %}
+      {%- if n|length == 2 %}
+      {{n[0]}}, {{n[1]}}, {{n[1]}}, -1,
+      {%- endif %}
       {%- endfor %}
     ]
     colorPerVertex TRUE
@@ -94,7 +104,12 @@ Shape {
     }
     texCoordIndex [
       {%- for n in c.uvmap_index %}
+      {%- if n|length == 3 %}
       {{n[0]}}, {{n[1]}}, {{n[2]}}, -1,
+      {%- endif %}
+      {%- if n|length == 2 %}
+      {{n[0]}}, {{n[1]}}, {{n[1]}}, -1,
+      {%- endif %}
       {%- endfor %}
     ]
     {%- endif %}
