@@ -133,8 +133,8 @@ class ColladaReader(object):
                 sm = model.MeshData()
                 sm.vertex = p.vertex
                 if len(p.vertex_index.shape) == 2:
-                    if len(p.vertex_index[0]) < 3:
-                        return None
+                    #if len(p.vertex_index[0]) < 3:
+                    #    return None
                     sm.vertex_index = p.vertex_index
                 else:
                     sm.vertex_index = numpy.array(p.vertex_index).reshape(len(p.vertex_index)/3, 3)
