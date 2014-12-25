@@ -88,6 +88,7 @@ class ColladaReader(object):
                 trans = model.TransformationModel()
                 trans.matrix = numpy.identity(4)
                 f = self.findchild(n, submesh, trans)
+                f = self.filterchild(f, submesh)
                 if f is not None:
                     rootnodes = [f]
                     break
@@ -113,6 +114,23 @@ class ColladaReader(object):
             if f is not None:
                 return f
         return None
+
+    def filterchild(self, d, name):
+        if type(d) in [collada.scene.Node, collada.scene.NodeNode]:
+            try:
+                if d.xmlnode.attrib['name'] != name:
+                    return None
+            except KeyError:
+                pass
+            children = []
+            for c in d.children:
+                children.append(c)
+            d.children = []
+            for c in children:
+                cc = self.filterchild(c, name)
+                if cc is not None:
+                    d.children.append(cc)
+        return d
 
     def convertchild(self, d):
         m = None
