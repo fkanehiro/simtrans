@@ -68,7 +68,9 @@ class TransformationModel(object):
 
     def getrotation(self):
         if self.matrix is not None:
-            return tf.quaternion_from_matrix(self.matrix)
+            transform, scale, axis = hrputil.decomposeMatrix(self.matrix)
+            m = tf.quaternion_matrix(tf.quaternion_about_axis(axis[1], axis[0]))
+            return tf.quaternion_from_matrix(m)
         else:
             return self.rot
 
@@ -88,6 +90,27 @@ class TransformationModel(object):
             m = tf.quaternion_matrix(self.rot)
             transform, scale, axis = hrputil.decomposeMatrix(m)
             return axis
+
+    def getmatrix(self):
+        if self.matrix is not None:
+            return self.matrix
+        else:
+            M = numpy.identity(4)
+            if self.trans is not None:
+                T = numpy.identity(4)
+                T[:3, 3] = self.trans[:3]
+                M = numpy.dot(M, T)
+            if self.rot is not None:
+                R = tf.quaternion_matrix(self.rot)
+                M = numpy.dot(M, R)
+            if self.scale is not None:
+                S = numpy.identity(4)
+                S[0, 0] = self.scale[0]
+                S[1, 1] = self.scale[1]
+                S[2, 2] = self.scale[2]
+                M = numpy.dot(M, S)
+            M /= M[3, 3]
+            return M
 
 
 class BodyModel(TransformationModel):
@@ -180,11 +203,11 @@ class MeshTransformData(TransformationModel):
         self.children = []
 
     def maxv(self, trans=None):
-        mv = numpy.array([0, 0, 0, 0])
+        mv = numpy.array([-numpy.Inf, -numpy.Inf, -numpy.Inf, -numpy.Inf])
         if trans is None:
             trans = numpy.identity(4)
         if self.matrix is not None:
-            trans2 = numpy.dot(trans, self.matrix)
+            trans2 = numpy.dot(trans, self.getmatrix())
         else:
             trans2 = trans
         for c in self.children:
@@ -200,7 +223,7 @@ class MeshTransformData(TransformationModel):
         if trans is None:
             trans = numpy.identity(4)
         if self.matrix is not None:
-            trans2 = numpy.dot(trans, self.matrix)
+            trans2 = numpy.dot(trans, self.getmatrix())
         else:
             trans2 = trans
         for c in self.children:
@@ -210,6 +233,14 @@ class MeshTransformData(TransformationModel):
                 for v in c.vertex:
                     mv = numpy.minimum(mv, numpy.dot(trans2, numpy.append(v, 1)))
         return mv
+
+    def getcenter(self):
+        maxv = self.maxv()
+        minv = self.minv()
+        half = (maxv - minv) / 2
+        center = minv + half
+        return center[0:3]
+
 
 class MeshData(object):
     """
