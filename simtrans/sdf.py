@@ -36,8 +36,6 @@ logger = getLogger(__name__)
 
 import os
 import subprocess
-import tempfile
-from copy import deepcopy
 import lxml.etree
 import numpy
 import warnings
@@ -191,15 +189,19 @@ class SDFReader(object):
     def convertchildren(self, mdata, joint):
         absparent = self._linkmap[joint.parent]
         abschild = self._linkmap[joint.child]
-        relchild = model.TransformationModel()
-        rot = tf.quaternion_matrix(absparent.getrotation())
-        joint.trans = numpy.dot(rot, numpy.hstack((abschild.trans - absparent.trans, [1])))[0:3]
-        inv = numpy.linalg.pinv(rot)
-        rot = numpy.dot(tf.quaternion_matrix(abschild.getrotation()), inv)
-        joint.rot = tf.quaternion_from_matrix(rot)
-        #relchild.rot = tf.quaternion_multiply(absparent.rot, joint.getrotation())
+        parentmat = absparent.getmatrix()
+        childmat = abschild.getmatrix()
+        parentinv = numpy.linalg.pinv(parentmat)
+        #childinv = numpy.linalg.pinv(childmat)
+        joint.matrix = numpy.dot(parentinv, childmat)
+        joint.trans = None
+        joint.rot = None
         if joint.axis is not None:
-            joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3].tolist()
+            axismat = tf.quaternion_matrix(joint.getrotation())
+            axisinv = numpy.linalg.pinv(axismat)
+            joint.axis = numpy.dot(axisinv, numpy.hstack((joint.axis, [1])))[0:3]
+            joint.axis = (joint.axis / numpy.linalg.norm(joint.axis)).tolist()
+        relchild = model.TransformationModel()
         self._relpositionmap[joint.child] = relchild
         for cjoint in utils.findchildren(mdata, joint.child):
             self.convertchildren(mdata, cjoint)
@@ -258,16 +260,14 @@ class SDFReader(object):
                     submeshname = submesh.find('name').text
                     submeshcenter = False
                     try:
-                        submeshcenter = (submesh.find('center').text.count('true') > 0)
+                        submeshcenter = (submesh.find('center').text.lower().count('true') > 0)
                     except KeyError:
                         pass
                     m.data = reader.read(filename, submesh=submeshname, assethandler=self._assethandler)
                     if submeshcenter is True:
                         tm = model.MeshTransformData()
                         tm.children = [m.data]
-                        maxv = m.data.maxv()
-                        minv = m.data.minv()
-                        center = (maxv + minv) / 2
+                        center = m.data.getcenter()
                         tm.matrix = numpy.identity(4)
                         tm.matrix[0, 3] = -center[0]
                         tm.matrix[1, 3] = -center[1]
