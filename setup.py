@@ -28,8 +28,7 @@ setup(name='simtrans',
           'Programming Language :: Python :: 2.7',
           'Topic :: Software Development',
       ],
-      packages=find_packages(),
-      scripts=['ModelLoader_idl.py', 'OpenHRPCommon_idl.py'],
+      packages=find_packages(exclude=['tests']),
       package_data={'simtrans': ['template/*']},
       entry_points={
           'console_scripts': [
@@ -38,6 +37,5 @@ setup(name='simtrans',
               'gzfetch = simtrans.gzfetch:main'
           ]
       },
-      install_requires=['python-graph-core'],
       cmdclass=versioneer.get_cmdclass(),
       test_suite='nose2.collector.collector')
