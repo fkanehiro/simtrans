@@ -345,7 +345,4 @@ class MaterialModel(object):
     texture = None       #: path string of texture image
 
     def __init__(self):
-        self.ambient = [0.8, 0.8, 0.8, 1.0]
         self.diffuse = [0.8, 0.8, 0.8, 1.0]
-        self.specular = [0.8, 0.8, 0.8, 1.0]
-        self.emission = [0.8, 0.8, 0.8, 1.0]

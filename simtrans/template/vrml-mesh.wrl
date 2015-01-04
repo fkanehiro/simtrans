@@ -22,8 +22,12 @@ Shape {
   appearance Appearance {
     material Material {
       diffuseColor {{c.material.diffuse[0]}} {{c.material.diffuse[1]}} {{c.material.diffuse[2]}}
+      {%- if c.material.specular is not none %}
       specularColor {{c.material.specular[0]}} {{c.material.specular[1]}} {{c.material.specular[2]}}
+      {%- endif %}
+      {%- if c.material.emission is not none %}
       emissiveColor {{c.material.emission[0]}} {{c.material.emission[1]}} {{c.material.emission[2]}}
+      {%- endif %}
     }
     {%- if c.material.texture is not none %}
     texture ImageTexture {
