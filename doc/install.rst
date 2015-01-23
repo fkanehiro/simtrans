@@ -6,8 +6,8 @@ First, install required binary packages:
 
 .. code-block:: bash
 
-   $ sudo add-apt-repository ppa:hrg/ppa
-   $ sudo apt-get install openhrp3 meshlab imagemagick omniorb-python
+   $ sudo add-apt-repository ppa:hrg/daily
+   $ sudo apt-get install openhrp meshlab imagemagick omniorb-python
 
 Clone most recent source from github:
 
