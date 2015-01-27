@@ -142,7 +142,7 @@ class VRMLReader(object):
 
     def readLink(self, m):
         lm = model.LinkModel()
-        lm.name = m.name
+        lm.name = m.name + '_LINK'
         lm.mass = m.mass
         lm.centerofmass = numpy.array(m.centerOfMass)
         lm.visuals = []
@@ -262,9 +262,12 @@ class VRMLReader(object):
         self._links.append(lm)
         # then create joint pairs
         jm = model.JointModel()
-        jm.parent = parent.name
-        jm.child = child.name
-        jm.name = jm.parent + jm.child
+        if parent.name != 'world':
+            jm.parent = parent.name + '_LINK'
+        else:
+            jm.parent = parent.name
+        jm.child = child.name + '_LINK'
+        jm.name = child.name
         if child.jointType == 'fixed':
             jm.jointType = model.JointModel.J_FIXED
         elif child.jointType == 'rotate':
