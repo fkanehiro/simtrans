@@ -128,8 +128,8 @@ class VRMLReader(object):
             # extra joint for closed link models
             m = model.JointModel()
             m.jointType = model.JointModel.J_REVOLUTE
-            m.parent = j.link[0]
-            m.child = j.link[1]
+            m.parent = j.link[0] + '_LINK'
+            m.child = j.link[1] + '_LINK'
             m.name = j.name
             m.axis = numpy.array(j.axis)
             m.trans = numpy.array(j.point[1])
@@ -145,6 +145,7 @@ class VRMLReader(object):
         lm.name = m.name + '_LINK'
         lm.mass = m.mass
         lm.centerofmass = numpy.array(m.centerOfMass)
+        lm.inertia = numpy.array(m.inertia).reshape(3, 3)
         lm.visuals = []
         for s in m.sensors:
             sm = model.SensorModel()
