@@ -3,3 +3,5 @@ nose2
 sphinx-autobuild
 sphinx-gettext-helper
 sphinx_rtd_theme
+sphinxcontrib-autoprogram
+
