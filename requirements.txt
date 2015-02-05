@@ -1,6 +1,0 @@
-lxml
-numpy
-numpy-stl
-pycollada
-jinja2
-

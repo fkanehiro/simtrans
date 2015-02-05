@@ -1,2 +1,0 @@
-include versioneer.py
-include simtrans/_version.py
