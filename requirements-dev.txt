@@ -1,3 +1,4 @@
+lxml
 numpy
 unittest2
 nose2
