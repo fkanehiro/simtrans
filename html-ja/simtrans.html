@@ -1,0 +1,1518 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Architecture &mdash; simtrans 0.0.1 ドキュメント</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 ドキュメント" href="index.html"/>
+        <link rel="up" title="API" href="modules.html"/>
+        <link rel="next" title="simtrans.thirdparty package" href="simtrans.thirdparty.html"/>
+        <link rel="prev" title="API" href="modules.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">インストール</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#install-most-recent-version-of-gazebo-optional">最新バージョンのgazeboのインストール（オプション）</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">利用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#commandline-options">コマンドラインオプション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#convert-urdf-model-to-vrml-format">URDFフォーマットからVRMLフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#convert-vrml-model-to-sdf-format">VRMLフォーマットからSDFフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#visualize-joint-structure-using-graphviz">graphvizを使った関節構造の視覚化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="screenshots.html">Screenshots</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">API</a> &raquo;</li>
+      
+    <li>Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/simtrans.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>Software architecture of simtrans is shown below.
+Reader and writer for each formats will read and write the common data structure.</p>
+<p class="graphviz">
+<img src="_images/graphviz-a5fe4d7af60d69b5237e5355046cbff702364ec1.png" alt="digraph comp {
+  rankdir=LR;
+  &quot;SDLReader&quot; -&gt; &quot;Model&quot;
+  &quot;URDFReader&quot; -&gt; &quot;Model&quot;
+  &quot;VRMLReader&quot; -&gt; &quot;Model&quot;
+  &quot;STLReader&quot; -&gt; &quot;Model&quot;
+  &quot;ColladaReader&quot; -&gt; &quot;Model&quot;
+  &quot;Model&quot; -&gt; &quot;SDLWriter&quot;;
+  &quot;Model&quot; -&gt; &quot;URDFWriter&quot;;
+  &quot;Model&quot; -&gt; &quot;VRMLWriter&quot;;
+  &quot;Model&quot; -&gt; &quot;STLWriter&quot;;
+  &quot;Model&quot; -&gt; &quot;ColladaWriter&quot;;
+}" />
+</p>
+</div>
+<div class="section" id="common-data-structure">
+<h1>Common data structure<a class="headerlink" href="#common-data-structure" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="module-simtrans.model">
+<span id="simtrans-model"></span><h2>simtrans.model<a class="headerlink" href="#module-simtrans.model" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Common data structure for model converter</p>
+<dl class="class">
+<dt id="simtrans.model.BodyModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">BodyModel</tt><a class="reference internal" href="_modules/simtrans/model.html#BodyModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.BodyModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Body model</p>
+<dl class="attribute">
+<dt id="simtrans.model.BodyModel.joints">
+<tt class="descname">joints</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.joints" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of joints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BodyModel.links">
+<tt class="descname">links</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.links" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of links</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BodyModel.materials">
+<tt class="descname">materials</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.materials" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of materials</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BodyModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BodyModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of the body</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BodyModel.sensors">
+<tt class="descname">sensors</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.sensors" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of sensors</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.BoxData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">BoxData</tt><a class="reference internal" href="_modules/simtrans/model.html#BoxData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.BoxData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Box shape data</p>
+<dl class="attribute">
+<dt id="simtrans.model.BoxData.material">
+<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.material" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of material</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BoxData.x">
+<tt class="descname">x</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.x" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Width</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BoxData.y">
+<tt class="descname">y</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.y" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Height</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.BoxData.z">
+<tt class="descname">z</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.z" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Depth</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.CameraData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">CameraData</tt><a class="reference internal" href="_modules/simtrans/model.html#CameraData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.CameraData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Camera sensor data</p>
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.CS_COLOR">
+<tt class="descname">CS_COLOR</tt><em class="property"> = 'color'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_COLOR" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.CS_DEPTH">
+<tt class="descname">CS_DEPTH</tt><em class="property"> = 'depth'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_DEPTH" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.CS_MONO">
+<tt class="descname">CS_MONO</tt><em class="property"> = 'mono'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_MONO" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.cameraType">
+<tt class="descname">cameraType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CameraData.cameraType" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Camera type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.far">
+<tt class="descname">far</tt><em class="property"> = 50.0</em><a class="headerlink" href="#simtrans.model.CameraData.far" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Far clip distance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.fov">
+<tt class="descname">fov</tt><em class="property"> = 1.5708</em><a class="headerlink" href="#simtrans.model.CameraData.fov" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Field of view (horizontal)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.height">
+<tt class="descname">height</tt><em class="property"> = 480</em><a class="headerlink" href="#simtrans.model.CameraData.height" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Height</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.near">
+<tt class="descname">near</tt><em class="property"> = 0.01</em><a class="headerlink" href="#simtrans.model.CameraData.near" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Near clip distance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CameraData.width">
+<tt class="descname">width</tt><em class="property"> = 640</em><a class="headerlink" href="#simtrans.model.CameraData.width" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Width</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.CylinderData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">CylinderData</tt><a class="reference internal" href="_modules/simtrans/model.html#CylinderData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.CylinderData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Cylinder shape data</p>
+<dl class="attribute">
+<dt id="simtrans.model.CylinderData.height">
+<tt class="descname">height</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.height" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Height</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CylinderData.material">
+<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.material" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of material</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.CylinderData.radius">
+<tt class="descname">radius</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.radius" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Radius</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.JointModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">JointModel</tt><a class="reference internal" href="_modules/simtrans/model.html#JointModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.JointModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Joint model</p>
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_CONTINUOUS">
+<tt class="descname">J_CONTINUOUS</tt><em class="property"> = 'continuous'</em><a class="headerlink" href="#simtrans.model.JointModel.J_CONTINUOUS" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Continuous type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_FIXED">
+<tt class="descname">J_FIXED</tt><em class="property"> = 'fixed'</em><a class="headerlink" href="#simtrans.model.JointModel.J_FIXED" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Fixed type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_PRISMATIC">
+<tt class="descname">J_PRISMATIC</tt><em class="property"> = 'prismatic'</em><a class="headerlink" href="#simtrans.model.JointModel.J_PRISMATIC" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Prismatic type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_REVOLUTE">
+<tt class="descname">J_REVOLUTE</tt><em class="property"> = 'revolute'</em><a class="headerlink" href="#simtrans.model.JointModel.J_REVOLUTE" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Revolute type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_SCREW">
+<tt class="descname">J_SCREW</tt><em class="property"> = 'screw'</em><a class="headerlink" href="#simtrans.model.JointModel.J_SCREW" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Screw type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.axis">
+<tt class="descname">axis</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.axis" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Joint axis (relative to parent link)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.child">
+<tt class="descname">child</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.child" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of child link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.damping">
+<tt class="descname">damping</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.damping" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Damping factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.friction">
+<tt class="descname">friction</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.friction" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Friction factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.jointType">
+<tt class="descname">jointType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.jointType" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Joint type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.limit">
+<tt class="descname">limit</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.limit" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Joint limits (upper and lower limits in 2-dim array)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Joint name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.offsetPosition">
+<tt class="descname">offsetPosition</tt><em class="property"> = False</em><a class="headerlink" href="#simtrans.model.JointModel.offsetPosition" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Whether offset joint position or not</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.parent">
+<tt class="descname">parent</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.parent" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of parent link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.velocitylimit">
+<tt class="descname">velocitylimit</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.velocitylimit" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Velocity limits (upper and lower limits in 2-dim array)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.LinkModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">LinkModel</tt><a class="reference internal" href="_modules/simtrans/model.html#LinkModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.LinkModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Link model</p>
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.centerofmass">
+<tt class="descname">centerofmass</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.centerofmass" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Center of mass (3-dim array)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.collisions">
+<tt class="descname">collisions</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.collisions" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of shape information used for collision detection</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.inertia">
+<tt class="descname">inertia</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.inertia" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Inertia (3x3 numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.mass">
+<tt class="descname">mass</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.LinkModel.mass" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Mass of the link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of the link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.LinkModel.visuals">
+<tt class="descname">visuals</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.visuals" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of shape information used for rendering</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.MaterialModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MaterialModel</tt><a class="reference internal" href="_modules/simtrans/model.html#MaterialModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MaterialModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Material model</p>
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.ambient">
+<tt class="descname">ambient</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.ambient" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>[r,g,b,a] array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.diffuse">
+<tt class="descname">diffuse</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.diffuse" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>[r,g,b,a] array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.emission">
+<tt class="descname">emission</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.emission" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>[r,g,b,a] array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of the material</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.shininess">
+<tt class="descname">shininess</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.shininess" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>float value or path string of texture image</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.specular">
+<tt class="descname">specular</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.specular" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>[r,g,b,a] array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.texture">
+<tt class="descname">texture</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.texture" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>path string of texture image</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MaterialModel.transparency">
+<tt class="descname">transparency</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.transparency" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>float value or path string of texture image</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.MeshData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MeshData</tt><a class="reference internal" href="_modules/simtrans/model.html#MeshData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Mesh data</p>
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.color">
+<tt class="descname">color</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Color ([R,G,B,A] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.color_index">
+<tt class="descname">color_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color_index" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Color index  ([p1,p2,p3] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.material">
+<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.material" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of material</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.normal">
+<tt class="descname">normal</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Normal direction ([x,y,z] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.normal_index">
+<tt class="descname">normal_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal_index" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Normal index  ([p1,p2,p3] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.uvmap">
+<tt class="descname">uvmap</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>UV mapping ([u,v] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.uvmap_index">
+<tt class="descname">uvmap_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap_index" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Vertex index  ([p1,p2,p3] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.vertex">
+<tt class="descname">vertex</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Vertex position ([x,y,z] * N numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.MeshData.vertex_index">
+<tt class="descname">vertex_index</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex_index" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Vertex index  ([p1,p2,p3] * N numpy matrix)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.MeshTransformData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MeshTransformData</tt><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Mesh transform data</p>
+<p>Intended to store scenegraph structure inside collada or vrml</p>
+<dl class="attribute">
+<dt id="simtrans.model.MeshTransformData.children">
+<tt class="descname">children</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshTransformData.children" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Children (store MeshData or MeshTransformData)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.MeshTransformData.getcenter">
+<tt class="descname">getcenter</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.getcenter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.getcenter" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.MeshTransformData.maxv">
+<tt class="descname">maxv</tt><big>(</big><em>trans=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.maxv"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.maxv" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.MeshTransformData.minv">
+<tt class="descname">minv</tt><big>(</big><em>trans=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.minv"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.minv" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.ProjectModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">ProjectModel</tt><a class="reference internal" href="_modules/simtrans/model.html#ProjectModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.ProjectModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Project model</p>
+<dl class="attribute">
+<dt id="simtrans.model.ProjectModel.bodies">
+<tt class="descname">bodies</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.ProjectModel.bodies" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>List of body models</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ProjectModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ProjectModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of the simulation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.RayData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">RayData</tt><a class="reference internal" href="_modules/simtrans/model.html#RayData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.RayData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Ray sensor data</p>
+<dl class="attribute">
+<dt id="simtrans.model.RayData.max_angle">
+<tt class="descname">max_angle</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_angle" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.RayData.max_range">
+<tt class="descname">max_range</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_range" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.RayData.min_angle">
+<tt class="descname">min_angle</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_angle" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.RayData.min_range">
+<tt class="descname">min_range</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_range" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.SensorModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">SensorModel</tt><a class="reference internal" href="_modules/simtrans/model.html#SensorModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.SensorModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Sensor model</p>
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.SS_CAMERA">
+<tt class="descname">SS_CAMERA</tt><em class="property"> = 'camera'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_CAMERA" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Camera (color, mono, depth)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.SS_IMU">
+<tt class="descname">SS_IMU</tt><em class="property"> = 'imu'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_IMU" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>IMU sensor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.SS_RAY">
+<tt class="descname">SS_RAY</tt><em class="property"> = 'ray'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_RAY" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Laser range finder</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.data">
+<tt class="descname">data</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.data" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.parent">
+<tt class="descname">parent</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.parent" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of parent link</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.rate">
+<tt class="descname">rate</tt><em class="property"> = 20</em><a class="headerlink" href="#simtrans.model.SensorModel.rate" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Update rate of sensor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SensorModel.sensorType">
+<tt class="descname">sensorType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.sensorType" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Type of sensor</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.ShapeModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">ShapeModel</tt><a class="reference internal" href="_modules/simtrans/model.html#ShapeModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.ShapeModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<p>Shape model</p>
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.SP_BOX">
+<tt class="descname">SP_BOX</tt><em class="property"> = 'box'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_BOX" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Box shape</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.SP_CYLINDER">
+<tt class="descname">SP_CYLINDER</tt><em class="property"> = 'cylinder'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_CYLINDER" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Cylinder shape</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.SP_MESH">
+<tt class="descname">SP_MESH</tt><em class="property"> = 'mesh'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_MESH" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Mesh shape</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.SP_SPHERE">
+<tt class="descname">SP_SPHERE</tt><em class="property"> = 'sphere'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_SPHERE" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Sphere shape</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.data">
+<tt class="descname">data</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.data" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Store properties for each specific type of shape</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.name" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Shape name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.ShapeModel.shapeType">
+<tt class="descname">shapeType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.shapeType" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Shape type</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.SphereData">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">SphereData</tt><a class="reference internal" href="_modules/simtrans/model.html#SphereData"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.SphereData" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Sphere shape data</p>
+<dl class="attribute">
+<dt id="simtrans.model.SphereData.material">
+<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.material" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Name of material</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.SphereData.radius">
+<tt class="descname">radius</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.radius" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Radius</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.model.TransformationModel">
+<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">TransformationModel</tt><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Transformation model with utility methods</p>
+<p>Used as a base class for each models</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">getscale</span><span class="p">(),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">getrpy</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">getangle</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.getangle">
+<tt class="descname">getangle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getangle"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getangle" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.getmatrix">
+<tt class="descname">getmatrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getmatrix"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getmatrix" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.getrotation">
+<tt class="descname">getrotation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrotation"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrotation" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.getrpy">
+<tt class="descname">getrpy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrpy"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrpy" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.getscale">
+<tt class="descname">getscale</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getscale"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getscale" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.gettranslation">
+<tt class="descname">gettranslation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.gettranslation"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.gettranslation" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.TransformationModel.matrix">
+<tt class="descname">matrix</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.matrix" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Transformation matrix (4x4 numpy matrix)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.TransformationModel.rot">
+<tt class="descname">rot</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.rot" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Rotation (4-dim numpy array in quaternion representation)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.TransformationModel.scale">
+<tt class="descname">scale</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.scale" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Scale vector (3-dim numpy array)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.TransformationModel.trans">
+<tt class="descname">trans</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.trans" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Translation vector (3-dim numpy array)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="command-line-interface">
+<h1>Command-line interface<a class="headerlink" href="#command-line-interface" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="module-simtrans.cli">
+<span id="simtrans-cli"></span><h2>simtrans.cli<a class="headerlink" href="#module-simtrans.cli" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>simtrans command line interface</p>
+<dl class="function">
+<dt id="simtrans.cli.main">
+<tt class="descclassname">simtrans.cli.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/cli.html#main"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.cli.main" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-simtrans.catxml">
+<span id="simtrans-catxml"></span><h2>simtrans.catxml<a class="headerlink" href="#module-simtrans.catxml" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Utility command to concatinate two or more xml files to one</p>
+<dl class="function">
+<dt id="simtrans.catxml.main">
+<tt class="descclassname">simtrans.catxml.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/catxml.html#main"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.catxml.main" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-simtrans.gzfetch">
+<span id="simtrans-gzfetch"></span><h2>simtrans.gzfetch<a class="headerlink" href="#module-simtrans.gzfetch" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Utility command to fetch simulation model from gazebo&#8217;s model database</p>
+<dl class="function">
+<dt id="simtrans.gzfetch.main">
+<tt class="descclassname">simtrans.gzfetch.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/gzfetch.html#main"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.gzfetch.main" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="simtrans.gzfetch.renderworld">
+<tt class="descclassname">simtrans.gzfetch.</tt><tt class="descname">renderworld</tt><big>(</big><em>models</em><big>)</big><a class="reference internal" href="_modules/simtrans/gzfetch.html#renderworld"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.gzfetch.renderworld" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="reader-and-writer">
+<h1>Reader and writer<a class="headerlink" href="#reader-and-writer" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="module-simtrans.collada">
+<span id="simtrans-collada"></span><h2>simtrans.collada<a class="headerlink" href="#module-simtrans.collada" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Reader and writer for collada format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">AIST</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>numpy</li>
+<li>lxml xml parser</li>
+<li>pycollada</li>
+</ul>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Read collada model data given the file path</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">ColladaReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/meshes/head.dae&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="simtrans.collada.ColladaReader">
+<em class="property">class </em><tt class="descclassname">simtrans.collada.</tt><tt class="descname">ColladaReader</tt><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Collada reader class</p>
+<dl class="method">
+<dt id="simtrans.collada.ColladaReader.convertchild">
+<tt class="descname">convertchild</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.convertchild"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.convertchild" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.collada.ColladaReader.filterchild">
+<tt class="descname">filterchild</tt><big>(</big><em>d</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.filterchild"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.filterchild" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.collada.ColladaReader.findchild">
+<tt class="descname">findchild</tt><big>(</big><em>d</em>, <em>name</em>, <em>trans</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.findchild"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.findchild" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.collada.ColladaReader.read">
+<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em>, <em>submesh=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.read"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.read" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Read collada model data given the file path</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.collada.ColladaWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.collada.</tt><tt class="descname">ColladaWriter</tt><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Collada writer class</p>
+<dl class="method">
+<dt id="simtrans.collada.ColladaWriter.convertchild">
+<tt class="descname">convertchild</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.convertchild"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.convertchild" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.collada.ColladaWriter.write">
+<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in collada format</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-simtrans.graphviz">
+<span id="simtrans-graphviz"></span><h2>simtrans.graphviz<a class="headerlink" href="#module-simtrans.graphviz" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Writer for graphviz dot format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">MID</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h3>Examples<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Write simulation model in graphviz dot format</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">GraphvizWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/atlas.dot&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">GraphvizWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/pr2.dot&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">GraphvizWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/pa10.dot&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="simtrans.graphviz.GraphvizWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.graphviz.</tt><tt class="descname">GraphvizWriter</tt><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>Graphviz writer class</p>
+<dl class="method">
+<dt id="simtrans.graphviz.GraphvizWriter.write">
+<tt class="descname">write</tt><big>(</big><em>mdata</em>, <em>fname</em><big>)</big><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in graphviz dot format</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-simtrans.sdf">
+<span id="simtrans-sdf"></span><h2>simtrans.sdf<a class="headerlink" href="#module-simtrans.sdf" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Reader and writer for SDF format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">AIST</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id2">
+<h3>Requirements<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>numpy</li>
+<li>lxml xml parser</li>
+<li>jinja2 template engine</li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h3>Examples<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Read SDF model data given the model file</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">SDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Write simulation model in SDF format</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">SDFWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;gz sdf -k /tmp/hrp4c.sdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="simtrans.sdf.SDFReader">
+<em class="property">class </em><tt class="descclassname">simtrans.sdf.</tt><tt class="descname">SDFReader</tt><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>SDF reader class</p>
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.convertchildren">
+<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>joint</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.convertchildren"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.convertchildren" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.read">
+<tt class="descname">read</tt><big>(</big><em>fname</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.read"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.read" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Read SDF model data given the model file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.readInertia">
+<tt class="descname">readInertia</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readInertia"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readInertia" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.readJointType">
+<tt class="descname">readJointType</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readJointType"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readJointType" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.readPose">
+<tt class="descname">readPose</tt><big>(</big><em>m</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readPose"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readPose" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.readShape">
+<tt class="descname">readShape</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readShape"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readShape" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.sdf.SDFWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.sdf.</tt><tt class="descname">SDFWriter</tt><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>SDF writer class</p>
+<dl class="method">
+<dt id="simtrans.sdf.SDFWriter.convertchildren">
+<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>joint</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.convertchildren"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.convertchildren" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFWriter.write">
+<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in SDF format</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFWriter.write2">
+<tt class="descname">write2</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write2"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write2" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in SDF format
+(internally use urdf and convert to sdf using gz sdf utility)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-simtrans.stl">
+<span id="simtrans-stl"></span><h2>simtrans.stl<a class="headerlink" href="#module-simtrans.stl" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Reader and writer for stl format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">AIST</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id4">
+<h3>Requirements<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>numpy</li>
+<li>numpy-stl</li>
+<li>meshlab</li>
+</ul>
+<dl class="class">
+<dt id="simtrans.stl.STLReader">
+<em class="property">class </em><tt class="descclassname">simtrans.stl.</tt><tt class="descname">STLReader</tt><a class="reference internal" href="_modules/simtrans/stl.html#STLReader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.stl.STLReader" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>STL reader class</p>
+<dl class="method">
+<dt id="simtrans.stl.STLReader.read">
+<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/stl.html#STLReader.read"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.stl.STLReader.read" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Read mesh model in STL format</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.stl.STLWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.stl.</tt><tt class="descname">STLWriter</tt><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>STL writer class</p>
+<dl class="method">
+<dt id="simtrans.stl.STLWriter.write">
+<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write mesh model in STL format
+This method first generates collada and use meshlab to output stl</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-simtrans.urdf">
+<span id="simtrans-urdf"></span><h2>simtrans.urdf<a class="headerlink" href="#module-simtrans.urdf" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Reader and writer for URDF format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">AIST</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id5">
+<h3>Requirements<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>numpy</li>
+<li>lxml xml parser</li>
+<li>jinja2 template engine</li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h3>Examples<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Read URDF model data given the model file</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Write simulation model in URDF format</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">URDFWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;check_urdf /tmp/hrp4c.urdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="simtrans.urdf.URDFReader">
+<em class="property">class </em><tt class="descclassname">simtrans.urdf.</tt><tt class="descname">URDFReader</tt><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>URDF reader class</p>
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.read">
+<tt class="descname">read</tt><big>(</big><em>fname</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Read URDF model data given the model file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">パラメタ:</th><td class="field-body"><ul class="first simple">
+<li><strong>fname</strong> &#8211; path of the file to read</li>
+<li><strong>assethandler</strong> &#8211; asset handler (optional)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">戻り値:</th><td class="field-body"><p class="first">model data</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">戻り値の型:</th><td class="field-body"><p class="first last">model.Model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.readInertia">
+<tt class="descname">readInertia</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readInertia"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readInertia" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.readJointType">
+<tt class="descname">readJointType</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readJointType"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readJointType" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.readOrigin">
+<tt class="descname">readOrigin</tt><big>(</big><em>m</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readOrigin"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readOrigin" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.readShape">
+<tt class="descname">readShape</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readShape"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readShape" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.urdf.URDFWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.urdf.</tt><tt class="descname">URDFWriter</tt><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>URDF writer class</p>
+<dl class="method">
+<dt id="simtrans.urdf.URDFWriter.write">
+<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in URDF format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">パラメタ:</th><td class="field-body"><ul class="first simple">
+<li><strong>m</strong> &#8211; model data</li>
+<li><strong>f</strong> &#8211; path of the file to save</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">戻り値:</th><td class="field-body"><p class="first">None</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">戻り値の型:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-simtrans.vrml">
+<span id="simtrans-vrml"></span><h2>simtrans.vrml<a class="headerlink" href="#module-simtrans.vrml" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Reader and writer for VRML format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Organization:</th><td class="field-body">AIST</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id7">
+<h3>Requirements<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<ul class="simple">
+<li>numpy</li>
+<li>omniorb-python</li>
+<li>jinja2 template engine</li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h3>Examples<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>Read vrml model data given the file path</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">VRMLReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Write simulation model in URDF format</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">URDFWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;check_urdf /tmp/hrp4c.urdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>Write simulation model in VRML format</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">VRMLWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/atlas.wrl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">VRMLWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/pr2.wrl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="simtrans.vrml.VRMLReader">
+<em class="property">class </em><tt class="descclassname">simtrans.vrml.</tt><tt class="descname">VRMLReader</tt><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>VRML reader class</p>
+<dl class="method">
+<dt id="simtrans.vrml.VRMLReader.read">
+<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.read"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.read" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Read vrml model data given the file path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLReader.readChild">
+<tt class="descname">readChild</tt><big>(</big><em>parent</em>, <em>child</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readChild"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readChild" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLReader.readLink">
+<tt class="descname">readLink</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readLink"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readLink" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLReader.readMesh">
+<tt class="descname">readMesh</tt><big>(</big><em>sdata</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readMesh"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readMesh" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLReader.resolveModelLoader">
+<tt class="descname">resolveModelLoader</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.resolveModelLoader"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.resolveModelLoader" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="simtrans.vrml.VRMLWriter">
+<em class="property">class </em><tt class="descclassname">simtrans.vrml.</tt><tt class="descname">VRMLWriter</tt><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<p>VRML writer class</p>
+<dl class="method">
+<dt id="simtrans.vrml.VRMLWriter.convertchildren">
+<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>linkname</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildren"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildren" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLWriter.convertjointtype">
+<tt class="descname">convertjointtype</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertjointtype"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertjointtype" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.vrml.VRMLWriter.write">
+<tt class="descname">write</tt><big>(</big><em>mdata</em>, <em>fname</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.write"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.write" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Write simulation model in VRML format</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="utility-functions">
+<h1>Utility functions<a class="headerlink" href="#utility-functions" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="module-simtrans.utils">
+<span id="simtrans-utils"></span><h2>simtrans.utils<a class="headerlink" href="#module-simtrans.utils" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>Miscellaneous utility functions</p>
+<dl class="function">
+<dt id="simtrans.utils.findchildren">
+<tt class="descclassname">simtrans.utils.</tt><tt class="descname">findchildren</tt><big>(</big><em>mdata</em>, <em>linkname</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#findchildren"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.utils.findchildren" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Find child joints connected to specified link</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">VRMLWriter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">child</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">w</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;pelvis&#39;</span><span class="p">)]</span>
+<span class="go">[&#39;ltorso&#39;, &#39;l_uglut&#39;, &#39;r_uglut&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="simtrans.utils.findroot">
+<tt class="descclassname">simtrans.utils.</tt><tt class="descname">findroot</tt><big>(</big><em>mdata</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#findroot"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.utils.findroot" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Find root link from parent to child relationships.
+Currently based on following simple principle:
+- Link with no parent will be the root.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;pelvis&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://ur_description/urdf/ur5_robot.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;world&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;base_footprint&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="simtrans.utils.resolveFile">
+<tt class="descclassname">simtrans.utils.</tt><tt class="descname">resolveFile</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#resolveFile"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.utils.resolveFile" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Resolve file by replacing file path heading &#8220;package://&#8221; or &#8220;model://&#8221;</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/package.xml&#39;</span><span class="p">)</span>
+<span class="go">&#39;/opt/ros/indigo/share/atlas_description/package.xml&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas.urdf&#39;</span><span class="p">)</span>
+<span class="go">&#39;/opt/ros/indigo/share/atlas_description/urdf/atlas.urdf&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/.gazebo/models/pr2/model.sdf&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;model://PA10/pa10.main.wrl&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="thirdparty-library">
+<h1>Thirdparty library<a class="headerlink" href="#thirdparty-library" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="simtrans.thirdparty.html">simtrans.thirdparty package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.thirdparty.html#module-simtrans.thirdparty.hrputil">simtrans.thirdparty.hrputil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.thirdparty.html#module-simtrans.thirdparty.transformations">simtrans.thirdparty.transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.thirdparty.html#requirements">Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.thirdparty.html#notes">Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.thirdparty.html#references">References</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.thirdparty.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simtrans.thirdparty.html" class="btn btn-neutral float-right" title="simtrans.thirdparty package"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="API"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

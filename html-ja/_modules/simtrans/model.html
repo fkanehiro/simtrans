@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.model &mdash; simtrans 0.0.1 ドキュメント</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 ドキュメント" href="../../index.html"/>
+        <link rel="up" title="モジュールコード" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">インストール</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">最新バージョンのgazeboのインストール（オプション）</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">利用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">コマンドラインオプション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">URDFフォーマットからVRMLフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">VRMLフォーマットからSDFフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">graphvizを使った関節構造の視覚化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">モジュールコード</a> &raquo;</li>
+      
+    <li>simtrans.model</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>simtrans.model のソースコード</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+<span class="c"># pylint: disable=too-few-public-methods, line-too-long</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Common data structure for model converter</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">hrputil</span> <span class="k">as</span> <span class="n">hrputil</span>
+
+
+<div class="viewcode-block" id="ProjectModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ProjectModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">ProjectModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Project model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Name of the simulation</span>
+    <span class="n">bodies</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c">#: List of body models</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bodies</span> <span class="o">=</span> <span class="p">[]</span>
+
+</div>
+<div class="viewcode-block" id="TransformationModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">TransformationModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transformation model with utility methods</span>
+
+<span class="sd">    Used as a base class for each models</span>
+
+<span class="sd">    &gt;&gt;&gt; m = TransformationModel()</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.gettranslation(), [0, 0, 0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getscale(), [1, 1, 1])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getrpy(), [0, 0, 0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getangle(), [0, 0, 0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="bp">None</span>     <span class="c">#: Transformation matrix (4x4 numpy matrix)</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Translation vector (3-dim numpy array)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Scale vector (3-dim numpy array)</span>
+    <span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Rotation (4-dim numpy array in quaternion representation)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<div class="viewcode-block" id="TransformationModel.gettranslation"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.gettranslation">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">gettranslation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">translation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">translation</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.getscale"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.getscale">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getscale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">scale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.getrotation"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.getrotation">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getrotation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_from_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rot</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.getrpy"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.getrpy">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getrpy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">euler_from_matrix</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">euler_from_quaternion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rot</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.getangle"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.getangle">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getangle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">axis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rot</span><span class="p">)</span>
+            <span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">hrputil</span><span class="o">.</span><span class="n">decomposeMatrix</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">axis</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.getmatrix"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.getmatrix">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">T</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rot</span><span class="p">)</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">S</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">/=</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">M</span>
+
+</div></div>
+<div class="viewcode-block" id="BodyModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BodyModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">BodyModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Body model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Name of the body</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c">#: List of links</span>
+    <span class="n">joints</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c">#: List of joints</span>
+    <span class="n">sensors</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c">#: List of sensors</span>
+    <span class="n">materials</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c">#: List of materials</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="p">[]</span>
+
+</div>
+<div class="viewcode-block" id="LinkModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">LinkModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Link model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Name of the link</span>
+    <span class="n">mass</span> <span class="o">=</span> <span class="mi">0</span>             <span class="c">#: Mass of the link</span>
+    <span class="n">centerofmass</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c">#: Center of mass (3-dim array)</span>
+    <span class="n">inertia</span> <span class="o">=</span> <span class="bp">None</span>       <span class="c">#: Inertia (3x3 numpy matrix)</span>
+    <span class="n">visuals</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c">#: List of shape information used for rendering</span>
+    <span class="n">collisions</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c">#: List of shape information used for collision detection</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="JointModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.JointModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">JointModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Joint model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">J_FIXED</span> <span class="o">=</span> <span class="s">&#39;fixed&#39;</span>            <span class="c">#: Fixed type</span>
+    <span class="n">J_REVOLUTE</span> <span class="o">=</span> <span class="s">&#39;revolute&#39;</span>      <span class="c">#: Revolute type</span>
+    <span class="n">J_PRISMATIC</span> <span class="o">=</span> <span class="s">&#39;prismatic&#39;</span>    <span class="c">#: Prismatic type</span>
+    <span class="n">J_SCREW</span> <span class="o">=</span> <span class="s">&#39;screw&#39;</span>            <span class="c">#: Screw type</span>
+    <span class="n">J_CONTINUOUS</span> <span class="o">=</span> <span class="s">&#39;continuous&#39;</span>  <span class="c">#: Continuous type</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint name</span>
+    <span class="n">jointType</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Joint type</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint axis (relative to parent link)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>           <span class="c">#: Name of parent link</span>
+    <span class="n">child</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Name of child link</span>
+    <span class="n">damping</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Damping factor</span>
+    <span class="n">friction</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Friction factor</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
+    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="bp">None</span>    <span class="c">#: Velocity limits (upper and lower limits in 2-dim array)</span>
+    <span class="n">offsetPosition</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c">#: Whether offset joint position or not</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ShapeModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ShapeModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">ShapeModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shape model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SP_MESH</span> <span class="o">=</span> <span class="s">&#39;mesh&#39;</span>         <span class="c">#: Mesh shape</span>
+    <span class="n">SP_BOX</span> <span class="o">=</span> <span class="s">&#39;box&#39;</span>           <span class="c">#: Box shape</span>
+    <span class="n">SP_CYLINDER</span> <span class="o">=</span> <span class="s">&#39;cylinder&#39;</span> <span class="c">#: Cylinder shape</span>
+    <span class="n">SP_SPHERE</span> <span class="o">=</span> <span class="s">&#39;sphere&#39;</span>     <span class="c">#: Sphere shape</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>              <span class="c">#: Shape name</span>
+    <span class="n">shapeType</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Shape type</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>              <span class="c">#: Store properties for each specific type of shape</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="MeshTransformData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData">[ドキュメント]</a><span class="k">class</span> <span class="nc">MeshTransformData</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mesh transform data</span>
+
+<span class="sd">    Intended to store scenegraph structure inside collada or vrml</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c">#: Children (store MeshData or MeshTransformData)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MeshTransformData.maxv"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.maxv">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">maxv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">trans</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trans2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trans2</span> <span class="o">=</span> <span class="n">trans</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshTransformData</span><span class="p">:</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">mv</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">maxv</span><span class="p">(</span><span class="n">trans2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshData</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+                    <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">mv</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trans2</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">mv</span>
+</div>
+<div class="viewcode-block" id="MeshTransformData.minv"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.minv">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">minv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">trans</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trans2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trans2</span> <span class="o">=</span> <span class="n">trans</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshTransformData</span><span class="p">:</span>
+                <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">mv</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">minv</span><span class="p">(</span><span class="n">trans2</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="n">MeshData</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+                    <span class="n">mv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">mv</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trans2</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">mv</span>
+</div>
+<div class="viewcode-block" id="MeshTransformData.getcenter"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.getcenter">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getcenter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">maxv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxv</span><span class="p">()</span>
+        <span class="n">minv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minv</span><span class="p">()</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxv</span> <span class="o">-</span> <span class="n">minv</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">minv</span> <span class="o">+</span> <span class="n">half</span>
+        <span class="k">return</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+
+</div></div>
+<div class="viewcode-block" id="MeshData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshData">[ドキュメント]</a><span class="k">class</span> <span class="nc">MeshData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mesh data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vertex</span> <span class="o">=</span> <span class="p">[]</span>          <span class="c">#: Vertex position ([x,y,z] * N numpy matrix)</span>
+    <span class="n">vertex_index</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c">#: Vertex index  ([p1,p2,p3] * N numpy matrix)</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Normal direction ([x,y,z] * N numpy matrix)</span>
+    <span class="n">normal_index</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c">#: Normal index  ([p1,p2,p3] * N numpy matrix)</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Color ([R,G,B,A] * N numpy matrix)</span>
+    <span class="n">color_index</span> <span class="o">=</span> <span class="bp">None</span>   <span class="c">#: Color index  ([p1,p2,p3] * N numpy matrix)</span>
+    <span class="n">uvmap</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: UV mapping ([u,v] * N numpy matrix)</span>
+    <span class="n">uvmap_index</span> <span class="o">=</span> <span class="bp">None</span>   <span class="c">#: Vertex index  ([p1,p2,p3] * N numpy matrix)</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="p">[]</span>
+</div>
+<div class="viewcode-block" id="BoxData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BoxData">[ドキュメント]</a><span class="k">class</span> <span class="nc">BoxData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Box shape data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Width</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Height</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Depth</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+</div>
+<div class="viewcode-block" id="CylinderData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.CylinderData">[ドキュメント]</a><span class="k">class</span> <span class="nc">CylinderData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cylinder shape data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Radius</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Height</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+</div>
+<div class="viewcode-block" id="SphereData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.SphereData">[ドキュメント]</a><span class="k">class</span> <span class="nc">SphereData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sphere shape data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Radius</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+</div>
+<div class="viewcode-block" id="SensorModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.SensorModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">SensorModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sensor model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SS_CAMERA</span> <span class="o">=</span> <span class="s">&quot;camera&quot;</span>  <span class="c">#: Camera (color, mono, depth)</span>
+    <span class="n">SS_RAY</span> <span class="o">=</span> <span class="s">&quot;ray&quot;</span>        <span class="c">#: Laser range finder</span>
+    <span class="n">SS_IMU</span> <span class="o">=</span> <span class="s">&quot;imu&quot;</span>        <span class="c">#: IMU sensor</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>           <span class="c">#: Name</span>
+    <span class="n">sensorType</span> <span class="o">=</span> <span class="bp">None</span>     <span class="c">#: Type of sensor</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Name of parent link</span>
+    <span class="n">rate</span> <span class="o">=</span> <span class="mi">20</span>             <span class="c">#: Update rate of sensor</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="CameraData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.CameraData">[ドキュメント]</a><span class="k">class</span> <span class="nc">CameraData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Camera sensor data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CS_COLOR</span> <span class="o">=</span> <span class="s">&quot;color&quot;</span>
+    <span class="n">CS_MONO</span> <span class="o">=</span> <span class="s">&quot;mono&quot;</span>
+    <span class="n">CS_DEPTH</span> <span class="o">=</span> <span class="s">&quot;depth&quot;</span>
+
+    <span class="n">cameraType</span> <span class="o">=</span> <span class="bp">None</span>    <span class="c">#: Camera type</span>
+    <span class="n">near</span> <span class="o">=</span> <span class="mf">0.01</span>          <span class="c">#: Near clip distance</span>
+    <span class="n">far</span> <span class="o">=</span> <span class="mf">50.0</span>           <span class="c">#: Far clip distance</span>
+    <span class="n">fov</span> <span class="o">=</span> <span class="mf">1.5708</span>         <span class="c">#: Field of view (horizontal)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">640</span>          <span class="c">#: Width</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="mi">480</span>         <span class="c">#: Height</span>
+
+</div>
+<div class="viewcode-block" id="RayData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.RayData">[ドキュメント]</a><span class="k">class</span> <span class="nc">RayData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ray sensor data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">min_angle</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_angle</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">min_range</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_range</span> <span class="o">=</span> <span class="mi">0</span>
+
+</div>
+<div class="viewcode-block" id="MaterialModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MaterialModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">MaterialModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Material model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Name of the material</span>
+    <span class="n">ambient</span> <span class="o">=</span> <span class="bp">None</span>       <span class="c">#: [r,g,b,a] array</span>
+    <span class="n">diffuse</span> <span class="o">=</span> <span class="bp">None</span>       <span class="c">#: [r,g,b,a] array</span>
+    <span class="n">specular</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: [r,g,b,a] array</span>
+    <span class="n">emission</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: [r,g,b,a] array</span>
+    <span class="n">shininess</span> <span class="o">=</span> <span class="bp">None</span>     <span class="c">#: float value or path string of texture image</span>
+    <span class="n">transparency</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c">#: float value or path string of texture image</span>
+    <span class="n">texture</span> <span class="o">=</span> <span class="bp">None</span>       <span class="c">#: path string of texture image</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffuse</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.gzfetch &mdash; simtrans 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">Commandline options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>simtrans.gzfetch</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for simtrans.gzfetch</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Utility command to fetch simulation model from gazebo&#39;s model database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span><span class="p">,</span> <span class="n">OptionError</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">jinja2</span>
+
+
+<div class="viewcode-block" id="renderworld"><a class="viewcode-back" href="../../simtrans.html#simtrans.gzfetch.renderworld">[docs]</a><span class="k">def</span> <span class="nf">renderworld</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+    <span class="n">fd</span><span class="p">,</span> <span class="n">worldfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.world&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">worldfile</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+        <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jinja2</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+<span class="s">&lt;sdf version=&quot;1.5&quot;&gt;</span>
+<span class="s">  &lt;world name=&quot;default&quot;&gt;</span>
+<span class="s">{</span><span class="si">%- f</span><span class="s">or m in models %}</span>
+<span class="s">    &lt;include&gt;</span>
+<span class="s">      &lt;uri&gt;model://{{m}}&lt;/uri&gt;</span>
+<span class="s">    &lt;/include&gt;</span>
+<span class="s">{</span><span class="si">%- e</span><span class="s">ndfor %}</span>
+<span class="s">  &lt;/world&gt;</span>
+<span class="s">&lt;/sdf&gt;</span>
+<span class="s">&#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">({</span><span class="s">&#39;models&#39;</span><span class="p">:</span> <span class="n">models</span><span class="p">}))</span>
+    <span class="k">return</span> <span class="n">worldfile</span>
+
+</div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../simtrans.html#simtrans.gzfetch.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;Usage: %prog [options] model://name</span>
+<span class="s">Utility command to fetch simulation model from gazebo&#39;s model database.&#39;&#39;&#39;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="n">usage</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="s">&#39;--fromfile&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;fromfile&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;read list from FILE (optional)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;verbose output&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">OptionError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;OptionError: &#39;</span><span class="p">,</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="c"># prepare world file which contains required model information</span>
+    <span class="n">worldfile</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
+        <span class="n">worldfile</span> <span class="o">=</span> <span class="n">renderworld</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+        <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;.world&#39;</span><span class="p">):</span>
+        <span class="n">worldfile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">worldfile</span> <span class="o">=</span> <span class="n">renderworld</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="c"># now fetch the simulation model (run gzserver for only one iteration)</span>
+    <span class="k">print</span> <span class="s">&quot;running gzserver to fetch the models ... (this will take a while)&quot;</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;gzserver&#39;</span><span class="p">,</span> <span class="s">&#39;--iters&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="n">worldfile</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s">&quot;done!&quot;</span>
+
+    <span class="k">if</span> <span class="n">needcleanup</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">worldfile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mi">0</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.collada &mdash; simtrans 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">Commandline options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>simtrans.collada</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for simtrans.collada</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Reader and writer for collada format</span>
+
+<span class="sd">:Organization:</span>
+<span class="sd"> AIST</span>
+
+<span class="sd">Requirements</span>
+<span class="sd">------------</span>
+<span class="sd">* numpy</span>
+<span class="sd">* lxml xml parser</span>
+<span class="sd">* pycollada</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Read collada model data given the file path</span>
+
+<span class="sd">&gt;&gt;&gt; r = ColladaReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;package://atlas_description/meshes/head.dae&#39;)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collada</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">lxml</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+
+<div class="viewcode-block" id="ColladaReader"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaReader">[docs]</a><span class="k">class</span> <span class="nc">ColladaReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collada reader class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basepath</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="ColladaReader.read"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">submesh</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Read collada model data given the file path</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="n">assethandler</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># workaround for pycollada&#39;s handling of xml comments</span>
+            <span class="n">xdoc</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">xdoc</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s">&#39;//comment()&#39;</span><span class="p">):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">lxml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">xdoc</span><span class="p">)))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;error while processing </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">f</span>
+                <span class="k">raise</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">materials</span><span class="p">:</span>
+            <span class="n">mm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MaterialModel</span><span class="p">()</span>
+            <span class="n">mm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">diffuse</span><span class="p">)</span> <span class="o">==</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Map</span><span class="p">:</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basepath</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">diffuse</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;/meshes/&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;/meshes/&#39;</span><span class="p">,</span> <span class="s">&#39;/materials/textures/&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">:</span>
+                    <span class="n">mm</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mm</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">fname</span>
+            <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">diffuse</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mm</span><span class="o">.</span><span class="n">diffuse</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">diffuse</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">mm</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">()</span>
+        <span class="n">unitmeter</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitmeter</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">scale_matrix</span><span class="p">(</span><span class="n">unitmeter</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rootnodes</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">nodes</span>
+        <span class="k">if</span> <span class="n">submesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">trans</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+                <span class="n">trans</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findchild</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">submesh</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterchild</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">submesh</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">rootnodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">]</span>
+                    <span class="k">break</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">rootnodes</span><span class="p">:</span>
+            <span class="n">cm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchild</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span>
+</div>
+<div class="viewcode-block" id="ColladaReader.findchild"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaReader.findchild">[docs]</a>    <span class="k">def</span> <span class="nf">findchild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">xmlnode</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">d</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">trans2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+        <span class="n">trans2</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">trans</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findchild</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">trans2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="ColladaReader.filterchild"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaReader.filterchild">[docs]</a>    <span class="k">def</span> <span class="nf">filterchild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">xmlnode</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                <span class="n">cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterchild</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span>
+</div>
+<div class="viewcode-block" id="ColladaReader.convertchild"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaReader.convertchild">[docs]</a>    <span class="k">def</span> <span class="nf">convertchild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">NodeNode</span><span class="p">]:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">matrix</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">cc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchild</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">()</span>
+            <span class="n">materialmap</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">mm</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">materials</span><span class="p">:</span>
+                <span class="n">materialmap</span><span class="p">[</span><span class="n">mm</span><span class="o">.</span><span class="n">symbol</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">mm</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">primitives</span><span class="p">:</span>
+                <span class="n">sm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">()</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">vertex</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">vertex_index</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c">#if len(p.vertex_index[0]) &lt; 3:</span>
+                    <span class="c">#    return None</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">vertex_index</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">vertex_index</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">vertex_index</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">normal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">normal</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">normal_index</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">sm</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">normal_index</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sm</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">normal_index</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">normal_index</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">texcoordset</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">uvmap</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">texcoordset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">texcoord_indexset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">sm</span><span class="o">.</span><span class="n">uvmap_index</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">texcoord_indexset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sm</span><span class="o">.</span><span class="n">uvmap_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">texcoord_indexset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">texcoord_indexset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">materialmap</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">material</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MaterialModel</span><span class="p">()</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span>
+
+</div></div>
+<div class="viewcode-block" id="ColladaWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaWriter">[docs]</a><span class="k">class</span> <span class="nc">ColladaWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collada writer class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matnode</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="ColladaWriter.write"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Write simulation model in collada format</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># we use pycollada to generate the dae file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">Collada</span><span class="p">()</span>
+
+        <span class="c"># create effect and material</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">texture</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">CImage</span><span class="p">(</span><span class="s">&quot;material0-image&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">texture</span><span class="p">)</span>
+                <span class="n">surface</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="s">&quot;material0-image-surface&quot;</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+                <span class="n">sampler2d</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Sampler2D</span><span class="p">(</span><span class="s">&quot;material0-image-sampler&quot;</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span>
+                <span class="n">map1</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">sampler2d</span><span class="p">,</span> <span class="s">&quot;UVSET0&quot;</span><span class="p">)</span>
+                <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span><span class="s">&quot;effect0&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">sampler2d</span><span class="p">],</span> <span class="s">&quot;lambert&quot;</span><span class="p">,</span>
+                                                 <span class="n">emission</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                                 <span class="n">ambient</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                                 <span class="n">diffuse</span><span class="o">=</span><span class="n">map1</span><span class="p">,</span>
+                                                 <span class="n">transparency</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                                 <span class="n">double_sided</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span><span class="s">&quot;effect0&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="s">&quot;phong&quot;</span><span class="p">,</span>
+                                                 <span class="n">double_sided</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                 <span class="n">diffuse</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">diffuse</span><span class="p">,</span>
+                                                 <span class="n">specular</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">specular</span><span class="p">,</span>
+                                                 <span class="n">transparency</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">transparency</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">effect</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Effect</span><span class="p">(</span><span class="s">&quot;effect0&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="s">&quot;phong&quot;</span><span class="p">,</span>
+                                             <span class="n">double_sided</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                             <span class="n">diffuse</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.8</span><span class="p">),</span>
+                                             <span class="n">specular</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="s">&quot;material0&quot;</span><span class="p">,</span> <span class="s">&quot;mymaterial&quot;</span><span class="p">,</span> <span class="n">effect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">effect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matnode</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">MaterialNode</span><span class="p">(</span><span class="s">&quot;materialref&quot;</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[])</span>
+
+        <span class="c"># convert shapes recursively</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;root&quot;</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">convertchild</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="p">)])</span>
+
+        <span class="c"># create scene graph</span>
+        <span class="n">myscene</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Scene</span><span class="p">(</span><span class="s">&quot;myscene&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">node</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">scenes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">myscene</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">myscene</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ColladaWriter.convertchild"><a class="viewcode-back" href="../../simtrans.html#simtrans.collada.ColladaWriter.convertchild">[docs]</a>    <span class="k">def</span> <span class="nf">convertchild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">:</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;node-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchild</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cn</span><span class="p">:</span>
+                    <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="n">children</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">node</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;shape-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">vertexname</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;-vertex&#39;</span>
+            <span class="n">normalname</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;-normal&#39;</span>
+            <span class="n">uvmapname</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;-uvmap&#39;</span>
+            <span class="n">sources</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">input_list</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">InputList</span><span class="p">()</span>
+            <span class="n">sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span><span class="n">vertexname</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">vertex</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">vertex</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="s">&#39;Y&#39;</span><span class="p">,</span> <span class="s">&#39;Z&#39;</span><span class="p">)))</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">vertex_index</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">vertex_index</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;VERTEX&#39;</span><span class="p">,</span> <span class="s">&#39;#&#39;</span> <span class="o">+</span> <span class="n">vertexname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">normal</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span><span class="n">normalname</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="s">&#39;Y&#39;</span><span class="p">,</span> <span class="s">&#39;Z&#39;</span><span class="p">)))</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">indices</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">normal_index</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">normal_index</span><span class="o">.</span><span class="n">size</span><span class="p">)])</span>
+                <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;NORMAL&#39;</span><span class="p">,</span> <span class="s">&#39;#&#39;</span> <span class="o">+</span> <span class="n">normalname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">uvmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">collada</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">FloatSource</span><span class="p">(</span><span class="n">uvmapname</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">uvmap</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">uvmap</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;S&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span><span class="p">)))</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">indices</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">uvmap_index</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">uvmap_index</span><span class="o">.</span><span class="n">size</span><span class="p">)])</span>
+                <span class="n">input_list</span><span class="o">.</span><span class="n">addInput</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;TEXCOORD&#39;</span><span class="p">,</span> <span class="s">&#39;#&#39;</span> <span class="o">+</span> <span class="n">uvmapname</span><span class="p">,</span> <span class="nb">set</span><span class="o">=</span><span class="s">&quot;0&quot;</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="p">,</span> <span class="s">&#39;geometry0&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">double_sided</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># create triangles</span>
+            <span class="n">triset</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">createTriangleSet</span><span class="p">(</span><span class="n">indices</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indices</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">input_list</span><span class="p">,</span> <span class="s">&#39;materialref&#39;</span><span class="p">)</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">primitives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mesh</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">GeometryNode</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_matnode</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">node</span>
+        <span class="k">return</span> <span class="bp">None</span></div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

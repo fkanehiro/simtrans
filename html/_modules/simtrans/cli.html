@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.cli &mdash; simtrans 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">Commandline options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>simtrans.cli</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for simtrans.cli</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;simtrans command line interface</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">ArgumentParser</span><span class="p">,</span> <span class="n">ArgumentError</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">graphviz</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;Convert robot simulation model from one another.&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="s">&#39;--input&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;fromfile&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;convert from FILE&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="s">&#39;--output&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;tofile&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;convert to FILE&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="s">&#39;--from&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;fromformat&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FORMAT&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;convert from FORMAT (optional)&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-t&#39;</span><span class="p">,</span> <span class="s">&#39;--to&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;toformat&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FORMAT&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;convert to FORMAT (optional)&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;verbose output&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../simtrans.html#simtrans.cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">ArgumentError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;OptionError: &#39;</span><span class="p">,</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">tofile</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">reader</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromformat</span> <span class="o">==</span> <span class="s">&quot;vrml&quot;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromformat</span> <span class="o">==</span> <span class="s">&quot;urdf&quot;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromformat</span> <span class="o">==</span> <span class="s">&quot;sdf&quot;</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">reader</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.wrl&#39;</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.urdf&#39;</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.sdf&#39;</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;unable to detect input format (may be not supported?)&#39;</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">writer</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">handler</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">toformat</span> <span class="o">==</span> <span class="s">&quot;vrml&quot;</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLWriter</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">toformat</span> <span class="o">==</span> <span class="s">&quot;urdf&quot;</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFWriter</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">toformat</span> <span class="o">==</span> <span class="s">&quot;sdf&quot;</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFWriter</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">toformat</span> <span class="o">==</span> <span class="s">&quot;dot&quot;</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">graphviz</span><span class="o">.</span><span class="n">GraphvizWriter</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">tofile</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.wrl&#39;</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLWriter</span><span class="p">()</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">tofile</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">jpegconvert</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.jpg&#39;</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">&#39;convert&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fname</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">fname</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="n">jpegconvert</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.urdf&#39;</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFWriter</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.sdf&#39;</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFWriter</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.world&#39;</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFWriter</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.dot&#39;</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">graphviz</span><span class="o">.</span><span class="n">GraphvizWriter</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;unable to detect output format (may be not supported?)&#39;</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">print</span> <span class="s">&quot;converting from: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span>
+    <span class="k">print</span> <span class="s">&quot;             to: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">options</span><span class="o">.</span><span class="n">tofile</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="n">handler</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">links</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;cannot read links at all (probably the model refers to another model by &lt;include&gt; tag)&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">tofile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mi">0</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

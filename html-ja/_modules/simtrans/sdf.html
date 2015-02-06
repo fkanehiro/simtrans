@@ -1,0 +1,612 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.sdf &mdash; simtrans 0.0.1 ドキュメント</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 ドキュメント" href="../../index.html"/>
+        <link rel="up" title="モジュールコード" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">インストール</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">最新バージョンのgazeboのインストール（オプション）</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">利用方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">コマンドラインオプション</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">URDFフォーマットからVRMLフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">VRMLフォーマットからSDFフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">graphvizを使った関節構造の視覚化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">モジュールコード</a> &raquo;</li>
+      
+    <li>simtrans.sdf</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>simtrans.sdf のソースコード</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Reader and writer for SDF format</span>
+
+<span class="sd">:Organization:</span>
+<span class="sd"> AIST</span>
+
+<span class="sd">Requirements</span>
+<span class="sd">------------</span>
+<span class="sd">* numpy</span>
+<span class="sd">* lxml xml parser</span>
+<span class="sd">* jinja2 template engine</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Read SDF model data given the model file</span>
+
+<span class="sd">&gt;&gt;&gt; r = SDFReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;model://pr2/model.sdf&#39;)</span>
+<span class="sd"> </span>
+<span class="sd">Write simulation model in SDF format</span>
+
+<span class="sd">&gt;&gt;&gt; from . import vrml</span>
+<span class="sd">&gt;&gt;&gt; r = vrml.VRMLReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;)</span>
+<span class="sd">&gt;&gt;&gt; w = SDFWriter()</span>
+<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/hrp4c.sdf&#39;)</span>
+<span class="sd">&gt;&gt;&gt; import subprocess</span>
+<span class="sd">&gt;&gt;&gt; subprocess.check_call(&#39;gz sdf -k /tmp/hrp4c.sdf&#39;.split(&#39; &#39;))</span>
+<span class="sd">0</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">lxml.etree</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">jinja2</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">collada</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">stl</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<div class="viewcode-block" id="SDFReader"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader">[ドキュメント]</a><span class="k">class</span> <span class="nc">SDFReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    SDF reader class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relpositionmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rootname</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="SDFReader.read"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.read">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Read SDF model data given the model file</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="n">assethandler</span>
+        <span class="n">bm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">BodyModel</span><span class="p">()</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">resolveFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)))</span>
+        <span class="n">dm</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;model&#39;</span><span class="p">)</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rootname</span> <span class="o">=</span> <span class="n">dm</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dm</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;include&#39;</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">SDFReader</span><span class="p">()</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">resolveFile</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;uri&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;/model.sdf&#39;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">pose</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;pose&#39;</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readPose</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;::&#39;</span> <span class="o">+</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">l</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">()</span>
+                    <span class="n">l</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">getrotation</span><span class="p">()</span>
+                <span class="n">bm</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+                <span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;::&#39;</span> <span class="o">+</span> <span class="n">j</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="o">!=</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
+                    <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;::&#39;</span> <span class="o">+</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span>
+                <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="o">!=</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
+                    <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;::&#39;</span> <span class="o">+</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span>
+                <span class="n">bm</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">dm</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;link&#39;</span><span class="p">):</span>
+            <span class="c"># general information</span>
+            <span class="n">lm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">pose</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;pose&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readPose</span><span class="p">(</span><span class="n">lm</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
+            <span class="c"># phisical property</span>
+            <span class="n">inertial</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;inertial&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inertial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">lm</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inertial</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;mass&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">pose</span> <span class="o">=</span> <span class="n">inertial</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;pose&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">lm</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pose</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">lm</span><span class="o">.</span><span class="n">inertia</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readInertia</span><span class="p">(</span><span class="n">inertial</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;inertia&#39;</span><span class="p">))</span>
+            <span class="c"># visual property</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">visuals</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;visual&#39;</span><span class="p">):</span>
+                <span class="n">lm</span><span class="o">.</span><span class="n">visuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readShape</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+            <span class="c"># contact property</span>
+            <span class="c">#collision = l.find(&#39;collision&#39;)</span>
+            <span class="c">#if collision is not None:</span>
+            <span class="c">#    lm.collision = self.readShape(collision)</span>
+            <span class="n">bm</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">lm</span> <span class="ow">in</span> <span class="n">bm</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">lm</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">lm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dm</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s">&#39;joint&#39;</span><span class="p">):</span>
+            <span class="n">jm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+            <span class="c"># general property</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;parent&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;child&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readJointType</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">])</span>
+            <span class="n">pose</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;pose&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readPose</span><span class="p">(</span><span class="n">jm</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">jm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">trans</span>
+                    <span class="n">jm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">rot</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;axis&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">jm</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;xyz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)]</span>
+                <span class="n">dynamics</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;dynamics&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dynamics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">damping</span> <span class="o">=</span> <span class="n">dynamics</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;damping&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">damping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">jm</span><span class="o">.</span><span class="n">damping</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">damping</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                    <span class="n">friction</span> <span class="o">=</span> <span class="n">dynamics</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;friction&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">friction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">jm</span><span class="o">.</span><span class="n">friction</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">friction</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">limit</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;limit&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">jm</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">limit</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;upper&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">limit</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;lower&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)]</span>
+                        <span class="n">velocity</span> <span class="o">=</span> <span class="n">limit</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;velocity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+                        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+                            <span class="n">velocity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>
+                            <span class="n">jm</span><span class="o">.</span><span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="n">velocity</span><span class="p">,</span> <span class="o">-</span><span class="n">velocity</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+            <span class="c"># check if each links really exist</span>
+            <span class="k">if</span> <span class="n">jm</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;warning: link </span><span class="si">%s</span><span class="s"> referenced by joint </span><span class="si">%s</span><span class="s"> does not exist (ignoring)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">jm</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">jm</span><span class="o">.</span><span class="n">child</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&quot;warning: link </span><span class="si">%s</span><span class="s"> referenced by joint </span><span class="si">%s</span><span class="s"> does not exist (ignoring)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jm</span><span class="o">.</span><span class="n">child</span><span class="p">,</span> <span class="n">jm</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bm</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jm</span><span class="p">)</span>
+
+        <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">bm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_relpositionmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
+            <span class="n">bm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">()</span>
+            <span class="n">bm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">getrotation</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">bm</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">bm</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">bm</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">relpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relpositionmap</span><span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">relpos</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">()</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">relpos</span><span class="o">.</span><span class="n">getrotation</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">bm</span>
+</div>
+<div class="viewcode-block" id="SDFReader.convertchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.convertchildren">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">convertchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+        <span class="n">absparent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span>
+        <span class="n">abschild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
+        <span class="n">parentmat</span> <span class="o">=</span> <span class="n">absparent</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
+        <span class="n">childmat</span> <span class="o">=</span> <span class="n">abschild</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
+        <span class="n">parentinv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">parentmat</span><span class="p">)</span>
+        <span class="c">#childinv = numpy.linalg.pinv(childmat)</span>
+        <span class="n">joint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">parentinv</span><span class="p">,</span> <span class="n">childmat</span><span class="p">)</span>
+        <span class="n">joint</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">joint</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">axismat</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">getrotation</span><span class="p">())</span>
+            <span class="n">axisinv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">axismat</span><span class="p">)</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axisinv</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">relchild</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relpositionmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">relchild</span>
+        <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">cjoint</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SDFReader.readPose"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readPose">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">readPose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="n">pose</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)])</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_from_euler</span><span class="p">(</span><span class="n">pose</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">pose</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">pose</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="SDFReader.readJointType"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readJointType">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">readJointType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&quot;fixed&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&quot;revolute&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&#39;prismatic&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_PRISMATIC</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&#39;screw&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_SCREW</span>
+        <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&#39;continuous&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_CONTINUOUS</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">d</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SDFReader.readInertia"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readInertia">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">readInertia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;ixx&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">inertia</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;ixy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">inertia</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;ixz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;iyy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">inertia</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;iyz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">inertia</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;izz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inertia</span>
+</div>
+<div class="viewcode-block" id="SDFReader.readShape"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readShape">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">readShape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rootname</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">pose</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;pose&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readPose</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;geometry&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">getchildren</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;mesh&#39;</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span>
+                <span class="c"># print &quot;reading mesh &quot; + mesh.attrib[&#39;filename&#39;]</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">resolveFile</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;uri&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">fileext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">fileext</span> <span class="o">==</span> <span class="s">&#39;.dae&#39;</span><span class="p">:</span>
+                    <span class="n">reader</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">ColladaReader</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">fileext</span> <span class="o">==</span> <span class="s">&#39;.stl&#39;</span><span class="p">:</span>
+                    <span class="n">reader</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">STLReader</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported mesh format: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fileext</span><span class="p">)</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;scale&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scale</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)])</span>
+                <span class="n">submesh</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;submesh&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">submesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">submeshname</span> <span class="o">=</span> <span class="n">submesh</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+                    <span class="n">submeshcenter</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">submeshcenter</span> <span class="o">=</span> <span class="p">(</span><span class="n">submesh</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;center&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;true&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">submesh</span><span class="o">=</span><span class="n">submeshname</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">submeshcenter</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+                        <span class="n">tm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">()</span>
+                        <span class="n">tm</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+                        <span class="n">center</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">getcenter</span><span class="p">()</span>
+                        <span class="n">tm</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                        <span class="n">tm</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">tm</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">tm</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">tm</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">+</span> <span class="n">submeshname</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;box&#39;</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_BOX</span>
+                <span class="n">boxsize</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">BoxData</span><span class="p">()</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">boxsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">boxsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">boxsize</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;cylinder&#39;</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_CYLINDER</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CylinderData</span><span class="p">()</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;radius&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s">&#39;sphere&#39;</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_SPHERE</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SphereData</span><span class="p">()</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;radius&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported shape type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m</span>
+
+</div></div>
+<div class="viewcode-block" id="SDFWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFWriter">[ドキュメント]</a><span class="k">class</span> <span class="nc">SDFWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    SDF writer class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jointparentmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sensorparentmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_absolutepositionmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="SDFWriter.write"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFWriter.write">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Write simulation model in SDF format</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># render the data structure using template</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="s">&#39;template&#39;</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">loader</span><span class="p">)</span>
+
+        <span class="c"># render mesh data to each separate collada file</span>
+        <span class="n">cwriter</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">ColladaWriter</span><span class="p">()</span>
+        <span class="n">swriter</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">STLWriter</span><span class="p">()</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">fpath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.world&#39;</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="n">fpath</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;sdf-model-config.xml&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&#39;model.config&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                    <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">m</span>
+                <span class="p">}))</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;sdf-world.xml&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                    <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">m</span>
+                <span class="p">}))</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&#39;model.sdf&#39;</span><span class="p">)</span>
+
+        <span class="c"># render mesh collada file for each links</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_jointparentmap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">sensors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sensorparentmap</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sensorparentmap</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sensorparentmap</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">jointType</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">rootposition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">]</span>
+
+        <span class="c"># add offset to the root joint</span>
+        <span class="n">rootposition</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">rootposition</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">()</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">()</span>
+        <span class="n">rootposition</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">rootposition</span><span class="o">.</span><span class="n">getrotation</span><span class="p">()</span>
+        <span class="n">rootposition</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_absolutepositionmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootposition</span>
+        <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">cjoint</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;sdf.xml&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">m</span><span class="p">,</span>
+                <span class="s">&#39;jointparentmap&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jointparentmap</span><span class="p">,</span>
+                <span class="s">&#39;sensorparentmap&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sensorparentmap</span><span class="p">,</span>
+                <span class="s">&#39;absolutepositionmap&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absolutepositionmap</span><span class="p">,</span>
+                <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span>
+            <span class="p">}))</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span><span class="p">:</span>
+                    <span class="n">cwriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.dae&quot;</span><span class="p">))</span>
+                    <span class="n">swriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.stl&quot;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="SDFWriter.convertchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFWriter.convertchildren">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">convertchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">joint</span><span class="p">):</span>
+        <span class="n">absparent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absolutepositionmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span>
+        <span class="n">abschild</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TransformationModel</span><span class="p">()</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">absparent</span><span class="o">.</span><span class="n">rot</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">joint</span><span class="o">.</span><span class="n">gettranslation</span><span class="p">(),</span> <span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+        <span class="n">abschild</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">absparent</span><span class="o">.</span><span class="n">trans</span> <span class="o">+</span> <span class="n">trans</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">abschild</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">absparent</span><span class="o">.</span><span class="n">rot</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">getrotation</span><span class="p">())</span>
+        <span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">absparent</span><span class="o">.</span><span class="n">rot</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">joint</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_absolutepositionmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">abschild</span>
+        <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">cjoint</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SDFWriter.write2"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFWriter.write2">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">write2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Write simulation model in SDF format</span>
+<span class="sd">        (internally use urdf and convert to sdf using gz sdf utility)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># render the data structure using template</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="s">&#39;template&#39;</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">loader</span><span class="p">)</span>
+
+        <span class="c"># render mesh data to each separate collada file</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">fpath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s">&#39;.world&#39;</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="n">dirname</span> <span class="o">=</span> <span class="n">fpath</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;sdf-model-config.xml&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&#39;model.config&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                    <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">m</span>
+                <span class="p">}))</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;sdf-world.xml&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                    <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">m</span>
+                <span class="p">}))</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&#39;model.sdf&#39;</span><span class="p">)</span>
+
+        <span class="n">uwriter</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFWriter</span><span class="p">()</span>
+        <span class="n">urdffile</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.sdf&#39;</span><span class="p">,</span> <span class="s">&#39;.urdf&#39;</span><span class="p">)</span>
+        <span class="n">uwriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">urdffile</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;gz&#39;</span><span class="p">,</span> <span class="s">&#39;sdf&#39;</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="n">urdffile</span><span class="p">])</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">of</span><span class="p">:</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

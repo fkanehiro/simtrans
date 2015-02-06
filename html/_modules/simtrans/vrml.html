@@ -1,0 +1,626 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>simtrans.vrml &mdash; simtrans 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="simtrans 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> simtrans</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#commandline-options">Commandline options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../usage.html#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../screenshots.html">Screenshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#common-data-structure">Common data structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#command-line-interface">Command-line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#reader-and-writer">Reader and writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#utility-functions">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simtrans.html#thirdparty-library">Thirdparty library</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">simtrans</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>simtrans.vrml</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for simtrans.vrml</h1><div class="highlight"><pre>
+<span class="c"># -*- coding:utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;Reader and writer for VRML format</span>
+
+<span class="sd">:Organization:</span>
+<span class="sd"> AIST</span>
+
+<span class="sd">Requirements</span>
+<span class="sd">------------</span>
+<span class="sd">* numpy</span>
+<span class="sd">* omniorb-python</span>
+<span class="sd">* jinja2 template engine</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Read vrml model data given the file path</span>
+
+<span class="sd">&gt;&gt;&gt; r = VRMLReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl&#39;)</span>
+
+<span class="sd">Write simulation model in URDF format</span>
+
+<span class="sd">&gt;&gt;&gt; from . import vrml</span>
+<span class="sd">&gt;&gt;&gt; r = vrml.VRMLReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;)</span>
+<span class="sd">&gt;&gt;&gt; w = URDFWriter()</span>
+<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/hrp4c.urdf&#39;)</span>
+<span class="sd">&gt;&gt;&gt; import subprocess</span>
+<span class="sd">&gt;&gt;&gt; subprocess.check_call(&#39;check_urdf /tmp/hrp4c.urdf&#39;.split(&#39; &#39;))</span>
+<span class="sd">0</span>
+
+<span class="sd">Write simulation model in VRML format</span>
+
+<span class="sd">&gt;&gt;&gt; from . import urdf</span>
+<span class="sd">&gt;&gt;&gt; r = urdf.URDFReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;)</span>
+<span class="sd">&gt;&gt;&gt; w = VRMLWriter()</span>
+<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/atlas.wrl&#39;)</span>
+
+<span class="sd">&gt;&gt;&gt; from . import sdf</span>
+<span class="sd">&gt;&gt;&gt; r = sdf.SDFReader()</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(&#39;model://pr2/model.sdf&#39;)</span>
+<span class="sd">&gt;&gt;&gt; w = VRMLWriter()</span>
+<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/pr2.wrl&#39;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">jinja2</span>
+<span class="kn">import</span> <span class="nn">CORBA</span>
+<span class="kn">import</span> <span class="nn">CosNaming</span>
+<span class="kn">import</span> <span class="nn">OpenHRP</span>
+
+
+<div class="viewcode-block" id="VRMLReader"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader">[docs]</a><span class="k">class</span> <span class="nc">VRMLReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    VRML reader class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">CORBA</span><span class="o">.</span><span class="n">ORB_init</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="s">&quot;-ORBInitRef&quot;</span><span class="p">,</span>
+                                    <span class="s">&quot;NameService=corbaloc::localhost:2809/NameService&quot;</span><span class="p">],</span>
+                                   <span class="n">CORBA</span><span class="o">.</span><span class="n">ORB_ID</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_links</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sensors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="VRMLReader.read"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Read vrml model data given the file path</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span> <span class="o">=</span> <span class="n">assethandler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolveModelLoader</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span><span class="o">.</span><span class="n">loadBodyInfo</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">CORBA</span><span class="o">.</span><span class="n">TRANSIENT</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;unable to connect to model loader corba service (is &quot;openhrp-model-loader&quot; running?)&#39;</span>
+            <span class="k">raise</span>
+        <span class="n">bm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">BodyModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_links</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sensors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrplinks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_links</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrpshapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_shapes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrpapperances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_appearances</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrpmaterials</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_materials</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrptextures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_textures</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hrpextrajoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">_get_extraJoints</span><span class="p">()</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrpmaterials</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MaterialModel</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;material-</span><span class="si">%i</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">mid</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">ambient</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">ambientIntensity</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">diffuse</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">diffuseColor</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">specular</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">specularColor</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">emission</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">emissiveColor</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">shininess</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shininess</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">transparency</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrplinks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">translation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">jointType</span> <span class="o">==</span> <span class="s">&#39;fixed&#39;</span><span class="p">:</span>
+            <span class="n">world</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+            <span class="n">world</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#39;world&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readChild</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readLink</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">childIndices</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readChild</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrplinks</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrpextrajoints</span><span class="p">:</span>
+            <span class="c"># extra joint for closed link models</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;_LINK&#39;</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;_LINK&#39;</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">j</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">offsetPosition</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">sensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sensors</span>
+        <span class="k">return</span> <span class="n">bm</span>
+</div>
+<div class="viewcode-block" id="VRMLReader.readLink"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readLink">[docs]</a>    <span class="k">def</span> <span class="nf">readLink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="n">lm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#39;_LINK&#39;</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">mass</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">)</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">inertia</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">lm</span><span class="o">.</span><span class="n">visuals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">sensors</span><span class="p">:</span>
+            <span class="n">sm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SensorModel</span><span class="p">()</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">translation</span><span class="p">)</span>
+            <span class="c"># sensors in OpenHRP is defined based on Z-axis up. so we</span>
+            <span class="c"># will rotate them to X-axis up here.</span>
+            <span class="c"># see http://www.openrtp.jp/openhrp3/jp/create_model.html</span>
+            <span class="n">rot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">rotation</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">s</span><span class="o">.</span><span class="n">rotation</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">rot</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;Vision&#39;</span><span class="p">:</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">sensorType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SensorModel</span><span class="o">.</span><span class="n">SS_CAMERA</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CameraData</span><span class="p">()</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">near</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">far</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fov</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cameraType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CameraData</span><span class="o">.</span><span class="n">CS_COLOR</span>
+                <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cameraType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CameraData</span><span class="o">.</span><span class="n">CS_MONO</span>
+                <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cameraType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CameraData</span><span class="o">.</span><span class="n">CS_DEPTH</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported camera type: </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;Range&#39;</span><span class="p">:</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">sensorType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SensorModel</span><span class="o">.</span><span class="n">SS_RAY</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">RayData</span><span class="p">()</span>
+                <span class="p">(</span><span class="n">scanangle</span><span class="p">,</span> <span class="n">scanstep</span><span class="p">,</span> <span class="n">scanrate</span><span class="p">,</span> <span class="n">maxdistance</span><span class="p">)</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">specValues</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min_angle</span> <span class="o">=</span> <span class="o">-</span> <span class="n">scanangle</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max_angle</span> <span class="o">=</span> <span class="n">scanangle</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">min_range</span> <span class="o">=</span> <span class="mf">0.08</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max_range</span> <span class="o">=</span> <span class="n">maxdistance</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">scanrate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sensors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">shapeIndices</span><span class="p">:</span>
+            <span class="n">sm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="p">()</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;shape-</span><span class="si">%i</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">s</span><span class="o">.</span><span class="n">shapeIndex</span>
+            <span class="n">sm</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">transformMatrix</span><span class="o">+</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">sdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrpshapes</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">shapeIndex</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveType</span> <span class="o">==</span> <span class="n">OpenHRP</span><span class="o">.</span><span class="n">SP_MESH</span><span class="p">:</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readMesh</span><span class="p">(</span><span class="n">sdata</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveType</span> <span class="o">==</span> <span class="n">OpenHRP</span><span class="o">.</span><span class="n">SP_SPHERE</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_SPHERE</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SphereData</span><span class="p">()</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">sdata</span><span class="o">.</span><span class="n">appearanceIndex</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveType</span> <span class="o">==</span> <span class="n">OpenHRP</span><span class="o">.</span><span class="n">SP_CYLINDER</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_CYLINDER</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">CylinderData</span><span class="p">()</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">sdata</span><span class="o">.</span><span class="n">appearanceIndex</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveType</span> <span class="o">==</span> <span class="n">OpenHRP</span><span class="o">.</span><span class="n">SP_BOX</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)):</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_BOX</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">BoxData</span><span class="p">()</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">primitiveParameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">sdata</span><span class="o">.</span><span class="n">appearanceIndex</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># raise Exception(&#39;unsupported shape primitive: %s&#39; % sdata.primitiveType)</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span>
+                <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readMesh</span><span class="p">(</span><span class="n">sdata</span><span class="p">)</span>
+            <span class="n">lm</span><span class="o">.</span><span class="n">visuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lm</span>
+</div>
+<div class="viewcode-block" id="VRMLReader.readMesh"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readMesh">[docs]</a>    <span class="k">def</span> <span class="nf">readMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sdata</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">triangles</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">triangles</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">adata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrpapperances</span><span class="p">[</span><span class="n">sdata</span><span class="o">.</span><span class="n">appearanceIndex</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">adata</span><span class="o">.</span><span class="n">normalPerVertex</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normalIndices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normalIndices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normalIndices</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">vertex_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">normal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normalIndices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">normalIndices</span><span class="p">:</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">normals</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">):</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">vertex_index</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">normal_index</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;vertex length and normal length not match&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">materialIndex</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">adata</span><span class="o">.</span><span class="n">textureIndex</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrptextures</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">textureIndex</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">fname</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">uvmap</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordinate</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordinate</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">uvmap_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordIndices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordIndices</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="VRMLReader.readChild"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readChild">[docs]</a>    <span class="k">def</span> <span class="nf">readChild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="c"># first convert link shape information</span>
+        <span class="n">lm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readLink</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
+        <span class="c"># then create joint pairs</span>
+        <span class="n">jm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#39;_LINK&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">jm</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#39;_LINK&#39;</span>
+        <span class="n">jm</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">jointType</span> <span class="o">==</span> <span class="s">&#39;fixed&#39;</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span>
+        <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">jointType</span> <span class="o">==</span> <span class="s">&#39;rotate&#39;</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span>
+        <span class="k">elif</span> <span class="n">child</span><span class="o">.</span><span class="n">jointType</span> <span class="o">==</span> <span class="s">&#39;slide&#39;</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_PRISMATIC</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">child</span><span class="o">.</span><span class="n">jointType</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">ulimit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">child</span><span class="o">.</span><span class="n">llimit</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">jm</span><span class="o">.</span><span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">uvlimit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">child</span><span class="o">.</span><span class="n">lvlimit</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">jm</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">jointAxis</span>
+        <span class="n">jm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">translation</span><span class="p">)</span>
+        <span class="n">jm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">quaternion_about_axis</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">rotation</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">child</span><span class="o">.</span><span class="n">rotation</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jm</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">child</span><span class="o">.</span><span class="n">childIndices</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readChild</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrplinks</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="VRMLReader.resolveModelLoader"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.resolveModelLoader">[docs]</a>    <span class="k">def</span> <span class="nf">resolveModelLoader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nsobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">resolve_initial_references</span><span class="p">(</span><span class="s">&quot;NameService&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="n">nsobj</span><span class="o">.</span><span class="n">_narrow</span><span class="p">(</span><span class="n">CosNaming</span><span class="o">.</span><span class="n">NamingContext</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span><span class="o">.</span><span class="n">resolve</span><span class="p">([</span><span class="n">CosNaming</span><span class="o">.</span><span class="n">NameComponent</span><span class="p">(</span><span class="s">&quot;ModelLoader&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_narrow</span><span class="p">(</span><span class="n">OpenHRP</span><span class="o">.</span><span class="n">ModelLoader</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">CosNaming</span><span class="o">.</span><span class="n">NamingContext</span><span class="o">.</span><span class="n">NotFound</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;unable to resolve OpenHRP model loader on CORBA name service&quot;</span>
+            <span class="k">raise</span>
+
+</div></div>
+<div class="viewcode-block" id="VRMLWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter">[docs]</a><span class="k">class</span> <span class="nc">VRMLWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    VRML writer class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="VRMLWriter.write"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Write simulation model in VRML format</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">fpath</span><span class="p">,</span> <span class="n">fext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">basename</span>
+
+        <span class="c"># find root joint (including local peaks)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">mdata</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;world&#39;</span><span class="p">)</span>
+
+        <span class="c"># list non empty link</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="p">]</span>
+        <span class="c"># list joint with parent</span>
+        <span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="ow">in</span> <span class="n">links</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="p">]</span>
+
+        <span class="c"># first convert data structure (VRML uses tree structure)</span>
+        <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
+                <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">root</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">child</span>
+                <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+                <span class="c"># print(&quot;root joint is world. using %s as root&quot; % root)</span>
+                <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+                <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
+                <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;fixed&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+                <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+                <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
+                <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;free&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="s">&#39;waist&#39;</span>
+            <span class="n">rootlink</span> <span class="o">=</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+            <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
+            <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;free&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
+
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="n">rmodel</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">nmodel</span><span class="p">]</span>
+
+        <span class="c"># assign jointId</span>
+        <span class="n">jointmap</span> <span class="o">=</span> <span class="p">{</span><span class="n">root</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">jointcount</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jointcount</span>
+            <span class="n">jointcount</span> <span class="o">=</span> <span class="n">jointcount</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c"># render the data structure using template</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="s">&#39;template&#39;</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">loader</span><span class="p">)</span>
+
+        <span class="c"># render main vrml file</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;vrml.wrl&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">rmodel</span><span class="p">,</span>
+                <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="n">mdata</span><span class="p">,</span>
+                <span class="s">&#39;links&#39;</span><span class="p">:</span> <span class="n">links</span><span class="p">,</span>
+                <span class="s">&#39;joints&#39;</span><span class="p">:</span> <span class="n">joints</span><span class="p">,</span>
+                <span class="s">&#39;jointmap&#39;</span><span class="p">:</span> <span class="n">jointmap</span><span class="p">,</span>
+                <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span>
+            <span class="p">}))</span>
+
+        <span class="c"># render mesh vrml file for each links</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;vrml-mesh.wrl&#39;</span><span class="p">)</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span><span class="p">:</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">m</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.wrl&quot;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                        <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="p">,</span>
+                            <span class="s">&#39;mesh&#39;</span><span class="p">:</span> <span class="n">m</span>
+                        <span class="p">}))</span>
+
+        <span class="c"># render openhrp project</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;openhrp-project.xml&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.wrl&#39;</span><span class="p">,</span> <span class="s">&#39;-project.xml&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">mdata</span><span class="p">,</span>
+                <span class="s">&#39;root&#39;</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span>
+                <span class="s">&#39;fname&#39;</span><span class="p">:</span> <span class="n">fname</span>
+            <span class="p">}))</span>
+</div>
+<div class="viewcode-block" id="VRMLWriter.convertchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertchildren">[docs]</a>    <span class="k">def</span> <span class="nf">convertchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+            <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cjoint</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertjointtype</span><span class="p">(</span><span class="n">cjoint</span><span class="o">.</span><span class="n">jointType</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c">#print &quot;warning: unable to find child link %s&quot; % cjoint.child</span>
+                <span class="k">pass</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
+            <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmodel</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">children</span>
+</div>
+<div class="viewcode-block" id="VRMLWriter.convertjointtype"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertjointtype">[docs]</a>    <span class="k">def</span> <span class="nf">convertjointtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;fixed&quot;</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;rotate&quot;</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_PRISMATIC</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;slide&quot;</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_SCREW</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;rotate&quot;</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_CONTINUOUS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;rotate&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, AIST.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
