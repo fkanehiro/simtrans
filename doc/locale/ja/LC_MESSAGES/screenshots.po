@@ -2,7 +2,7 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
@@ -20,4 +20,12 @@ msgstr ""
 # ed8381b301944787ac10a4ecb33e1ee8
 #: ../../screenshots.rst:3
 msgid "Screenshots"
-msgstr ""
+msgstr "スクリーンショット"
+
+#: ../../screenshots.rst:5
+msgid "PR2 robot model used in Choreonoid"
+msgstr "Choreonoid上で表示したPR2ロボット"
+
+#: ../../screenshots.rst:9
+msgid "PA10 robot model used in Gazebo simulator"
+msgstr "Gazeboシミュレータ上で表示したPA10ロボット"
