@@ -29,7 +29,7 @@ msgid ""
 "\"simtrans\" is a model format converter which can read and write formats "
 "used in major robotic simulators."
 msgstr ""
-"\"simtrans\"は主要なロボットシミュレータで用いられている各フォーマットを変化"
+"\"simtrans\"は主要なロボットシミュレータで用いられている各フォーマットを変換"
 "するツールです。"
 
 # eca1526974e94ae4867ecc1e0684dd49
