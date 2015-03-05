@@ -20,6 +20,7 @@ Next, install pip and install required package using pip:
 
 .. code-block:: bash
 
+   $ sudo apt-get install python-setuptools
    $ sudo easy_install pip
    $ cd simtrans
    $ sudo pip install -r requirements.txt
