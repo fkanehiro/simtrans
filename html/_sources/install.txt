@@ -8,7 +8,7 @@ First, install required binary packages:
 
    $ sudo add-apt-repository ppa:hrg/daily
    $ sudo apt-get update
-   $ sudo apt-get install openhrp meshlab imagemagick python-omniorb
+   $ sudo apt-get install openhrp meshlab imagemagick python-omniorb openrtm-aist-python
 
 Clone most recent source from github:
 
