@@ -14,7 +14,7 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -25,6 +25,8 @@
   
   
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
   
 
   
@@ -45,9 +47,12 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="fa fa-home"> simtrans</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+        
+          <a href="index.html" class="fa fa-home"> simtrans</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -57,8 +62,9 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
         
-        
-            <ul class="current">
+          
+          
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
@@ -83,6 +89,7 @@
 </li>
 </ul>
 
+          
         
       </div>
       &nbsp;
@@ -115,7 +122,7 @@
   </ul>
   <hr/>
 </div>
-          <div role="main">
+          <div role="main" class="document">
             
   <div class="section" id="architecture">
 <h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
@@ -144,36 +151,36 @@ Reader and writer for each formats will read and write the common data structure
 <p>Common data structure for model converter</p>
 <dl class="class">
 <dt id="simtrans.model.BodyModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">BodyModel</tt><a class="reference internal" href="_modules/simtrans/model.html#BodyModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.BodyModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">BodyModel</code><a class="reference internal" href="_modules/simtrans/model.html#BodyModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.BodyModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Body model</p>
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.joints">
-<tt class="descname">joints</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.joints" title="Permalink to this definition">¶</a></dt>
+<code class="descname">joints</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.joints" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of joints</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.links">
-<tt class="descname">links</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.links" title="Permalink to this definition">¶</a></dt>
+<code class="descname">links</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.links" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of links</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.materials">
-<tt class="descname">materials</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.materials" title="Permalink to this definition">¶</a></dt>
+<code class="descname">materials</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.materials" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of materials</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BodyModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BodyModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the body</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.sensors">
-<tt class="descname">sensors</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.sensors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sensors</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.sensors" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of sensors</p>
 </dd></dl>
 
@@ -181,30 +188,30 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.BoxData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">BoxData</tt><a class="reference internal" href="_modules/simtrans/model.html#BoxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.BoxData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">BoxData</code><a class="reference internal" href="_modules/simtrans/model.html#BoxData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.BoxData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Box shape data</p>
 <dl class="attribute">
 <dt id="simtrans.model.BoxData.material">
-<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.material" title="Permalink to this definition">¶</a></dt>
+<code class="descname">material</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of material</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BoxData.x">
-<tt class="descname">x</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.x" title="Permalink to this definition">¶</a></dt>
+<code class="descname">x</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Width</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BoxData.y">
-<tt class="descname">y</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.y" title="Permalink to this definition">¶</a></dt>
+<code class="descname">y</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Height</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.BoxData.z">
-<tt class="descname">z</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.z" title="Permalink to this definition">¶</a></dt>
+<code class="descname">z</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.BoxData.z" title="Permalink to this definition">¶</a></dt>
 <dd><p>Depth</p>
 </dd></dl>
 
@@ -212,57 +219,57 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.CameraData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">CameraData</tt><a class="reference internal" href="_modules/simtrans/model.html#CameraData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.CameraData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">CameraData</code><a class="reference internal" href="_modules/simtrans/model.html#CameraData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.CameraData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Camera sensor data</p>
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.CS_COLOR">
-<tt class="descname">CS_COLOR</tt><em class="property"> = 'color'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_COLOR" title="Permalink to this definition">¶</a></dt>
+<code class="descname">CS_COLOR</code><em class="property"> = 'color'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_COLOR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.CS_DEPTH">
-<tt class="descname">CS_DEPTH</tt><em class="property"> = 'depth'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_DEPTH" title="Permalink to this definition">¶</a></dt>
+<code class="descname">CS_DEPTH</code><em class="property"> = 'depth'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_DEPTH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.CS_MONO">
-<tt class="descname">CS_MONO</tt><em class="property"> = 'mono'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_MONO" title="Permalink to this definition">¶</a></dt>
+<code class="descname">CS_MONO</code><em class="property"> = 'mono'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_MONO" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.cameraType">
-<tt class="descname">cameraType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CameraData.cameraType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cameraType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CameraData.cameraType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Camera type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.far">
-<tt class="descname">far</tt><em class="property"> = 50.0</em><a class="headerlink" href="#simtrans.model.CameraData.far" title="Permalink to this definition">¶</a></dt>
+<code class="descname">far</code><em class="property"> = 50.0</em><a class="headerlink" href="#simtrans.model.CameraData.far" title="Permalink to this definition">¶</a></dt>
 <dd><p>Far clip distance</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.fov">
-<tt class="descname">fov</tt><em class="property"> = 1.5708</em><a class="headerlink" href="#simtrans.model.CameraData.fov" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fov</code><em class="property"> = 1.5708</em><a class="headerlink" href="#simtrans.model.CameraData.fov" title="Permalink to this definition">¶</a></dt>
 <dd><p>Field of view (horizontal)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.height">
-<tt class="descname">height</tt><em class="property"> = 480</em><a class="headerlink" href="#simtrans.model.CameraData.height" title="Permalink to this definition">¶</a></dt>
+<code class="descname">height</code><em class="property"> = 480</em><a class="headerlink" href="#simtrans.model.CameraData.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>Height</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.near">
-<tt class="descname">near</tt><em class="property"> = 0.01</em><a class="headerlink" href="#simtrans.model.CameraData.near" title="Permalink to this definition">¶</a></dt>
+<code class="descname">near</code><em class="property"> = 0.01</em><a class="headerlink" href="#simtrans.model.CameraData.near" title="Permalink to this definition">¶</a></dt>
 <dd><p>Near clip distance</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CameraData.width">
-<tt class="descname">width</tt><em class="property"> = 640</em><a class="headerlink" href="#simtrans.model.CameraData.width" title="Permalink to this definition">¶</a></dt>
+<code class="descname">width</code><em class="property"> = 640</em><a class="headerlink" href="#simtrans.model.CameraData.width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Width</p>
 </dd></dl>
 
@@ -270,24 +277,24 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.CylinderData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">CylinderData</tt><a class="reference internal" href="_modules/simtrans/model.html#CylinderData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.CylinderData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">CylinderData</code><a class="reference internal" href="_modules/simtrans/model.html#CylinderData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.CylinderData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Cylinder shape data</p>
 <dl class="attribute">
 <dt id="simtrans.model.CylinderData.height">
-<tt class="descname">height</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.height" title="Permalink to this definition">¶</a></dt>
+<code class="descname">height</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>Height</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CylinderData.material">
-<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.material" title="Permalink to this definition">¶</a></dt>
+<code class="descname">material</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of material</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.CylinderData.radius">
-<tt class="descname">radius</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.radius" title="Permalink to this definition">¶</a></dt>
+<code class="descname">radius</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CylinderData.radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius</p>
 </dd></dl>
 
@@ -295,96 +302,96 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.JointModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">JointModel</tt><a class="reference internal" href="_modules/simtrans/model.html#JointModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.JointModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">JointModel</code><a class="reference internal" href="_modules/simtrans/model.html#JointModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.JointModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Joint model</p>
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.J_CONTINUOUS">
-<tt class="descname">J_CONTINUOUS</tt><em class="property"> = 'continuous'</em><a class="headerlink" href="#simtrans.model.JointModel.J_CONTINUOUS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">J_CONTINUOUS</code><em class="property"> = 'continuous'</em><a class="headerlink" href="#simtrans.model.JointModel.J_CONTINUOUS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continuous type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.J_FIXED">
-<tt class="descname">J_FIXED</tt><em class="property"> = 'fixed'</em><a class="headerlink" href="#simtrans.model.JointModel.J_FIXED" title="Permalink to this definition">¶</a></dt>
+<code class="descname">J_FIXED</code><em class="property"> = 'fixed'</em><a class="headerlink" href="#simtrans.model.JointModel.J_FIXED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fixed type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.J_PRISMATIC">
-<tt class="descname">J_PRISMATIC</tt><em class="property"> = 'prismatic'</em><a class="headerlink" href="#simtrans.model.JointModel.J_PRISMATIC" title="Permalink to this definition">¶</a></dt>
+<code class="descname">J_PRISMATIC</code><em class="property"> = 'prismatic'</em><a class="headerlink" href="#simtrans.model.JointModel.J_PRISMATIC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prismatic type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.J_REVOLUTE">
-<tt class="descname">J_REVOLUTE</tt><em class="property"> = 'revolute'</em><a class="headerlink" href="#simtrans.model.JointModel.J_REVOLUTE" title="Permalink to this definition">¶</a></dt>
+<code class="descname">J_REVOLUTE</code><em class="property"> = 'revolute'</em><a class="headerlink" href="#simtrans.model.JointModel.J_REVOLUTE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Revolute type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.J_SCREW">
-<tt class="descname">J_SCREW</tt><em class="property"> = 'screw'</em><a class="headerlink" href="#simtrans.model.JointModel.J_SCREW" title="Permalink to this definition">¶</a></dt>
+<code class="descname">J_SCREW</code><em class="property"> = 'screw'</em><a class="headerlink" href="#simtrans.model.JointModel.J_SCREW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Screw type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.axis">
-<tt class="descname">axis</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.axis" title="Permalink to this definition">¶</a></dt>
+<code class="descname">axis</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joint axis (relative to parent link)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.child">
-<tt class="descname">child</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.child" title="Permalink to this definition">¶</a></dt>
+<code class="descname">child</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of child link</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.damping">
-<tt class="descname">damping</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.damping" title="Permalink to this definition">¶</a></dt>
+<code class="descname">damping</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.damping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Damping factor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.friction">
-<tt class="descname">friction</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.friction" title="Permalink to this definition">¶</a></dt>
+<code class="descname">friction</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.friction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Friction factor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.jointType">
-<tt class="descname">jointType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.jointType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">jointType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.jointType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joint type</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.limit">
-<tt class="descname">limit</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.limit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">limit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.limit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joint limits (upper and lower limits in 2-dim array)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joint name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.offsetPosition">
-<tt class="descname">offsetPosition</tt><em class="property"> = False</em><a class="headerlink" href="#simtrans.model.JointModel.offsetPosition" title="Permalink to this definition">¶</a></dt>
+<code class="descname">offsetPosition</code><em class="property"> = False</em><a class="headerlink" href="#simtrans.model.JointModel.offsetPosition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether offset joint position or not</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.parent">
-<tt class="descname">parent</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of parent link</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.velocitylimit">
-<tt class="descname">velocitylimit</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.velocitylimit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">velocitylimit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.velocitylimit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Velocity limits (upper and lower limits in 2-dim array)</p>
 </dd></dl>
 
@@ -392,42 +399,42 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.LinkModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">LinkModel</tt><a class="reference internal" href="_modules/simtrans/model.html#LinkModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.LinkModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">LinkModel</code><a class="reference internal" href="_modules/simtrans/model.html#LinkModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.LinkModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Link model</p>
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.centerofmass">
-<tt class="descname">centerofmass</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.centerofmass" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centerofmass</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.centerofmass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass (3-dim array)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.collisions">
-<tt class="descname">collisions</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.collisions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">collisions</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.collisions" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of shape information used for collision detection</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.inertia">
-<tt class="descname">inertia</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descname">inertia</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inertia (3x3 numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.mass">
-<tt class="descname">mass</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.LinkModel.mass" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mass</code><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.LinkModel.mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mass of the link</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the link</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.visuals">
-<tt class="descname">visuals</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.visuals" title="Permalink to this definition">¶</a></dt>
+<code class="descname">visuals</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.LinkModel.visuals" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of shape information used for rendering</p>
 </dd></dl>
 
@@ -435,54 +442,54 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.MaterialModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MaterialModel</tt><a class="reference internal" href="_modules/simtrans/model.html#MaterialModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MaterialModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">MaterialModel</code><a class="reference internal" href="_modules/simtrans/model.html#MaterialModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MaterialModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Material model</p>
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.ambient">
-<tt class="descname">ambient</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.ambient" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ambient</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.ambient" title="Permalink to this definition">¶</a></dt>
 <dd><p>[r,g,b,a] array</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.diffuse">
-<tt class="descname">diffuse</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.diffuse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">diffuse</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.diffuse" title="Permalink to this definition">¶</a></dt>
 <dd><p>[r,g,b,a] array</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.emission">
-<tt class="descname">emission</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.emission" title="Permalink to this definition">¶</a></dt>
+<code class="descname">emission</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.emission" title="Permalink to this definition">¶</a></dt>
 <dd><p>[r,g,b,a] array</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the material</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.shininess">
-<tt class="descname">shininess</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.shininess" title="Permalink to this definition">¶</a></dt>
+<code class="descname">shininess</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.shininess" title="Permalink to this definition">¶</a></dt>
 <dd><p>float value or path string of texture image</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.specular">
-<tt class="descname">specular</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.specular" title="Permalink to this definition">¶</a></dt>
+<code class="descname">specular</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.specular" title="Permalink to this definition">¶</a></dt>
 <dd><p>[r,g,b,a] array</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.texture">
-<tt class="descname">texture</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.texture" title="Permalink to this definition">¶</a></dt>
+<code class="descname">texture</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.texture" title="Permalink to this definition">¶</a></dt>
 <dd><p>path string of texture image</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MaterialModel.transparency">
-<tt class="descname">transparency</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.transparency" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transparency</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MaterialModel.transparency" title="Permalink to this definition">¶</a></dt>
 <dd><p>float value or path string of texture image</p>
 </dd></dl>
 
@@ -490,60 +497,60 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.MeshData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MeshData</tt><a class="reference internal" href="_modules/simtrans/model.html#MeshData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">MeshData</code><a class="reference internal" href="_modules/simtrans/model.html#MeshData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Mesh data</p>
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.color">
-<tt class="descname">color</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color" title="Permalink to this definition">¶</a></dt>
+<code class="descname">color</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Color ([R,G,B,A] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.color_index">
-<tt class="descname">color_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">color_index</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.color_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Color index  ([p1,p2,p3] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.material">
-<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.material" title="Permalink to this definition">¶</a></dt>
+<code class="descname">material</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of material</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.normal">
-<tt class="descname">normal</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal" title="Permalink to this definition">¶</a></dt>
+<code class="descname">normal</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normal direction ([x,y,z] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.normal_index">
-<tt class="descname">normal_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">normal_index</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.normal_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normal index  ([p1,p2,p3] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.uvmap">
-<tt class="descname">uvmap</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap" title="Permalink to this definition">¶</a></dt>
+<code class="descname">uvmap</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>UV mapping ([u,v] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.uvmap_index">
-<tt class="descname">uvmap_index</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">uvmap_index</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.MeshData.uvmap_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vertex index  ([p1,p2,p3] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.vertex">
-<tt class="descname">vertex</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">vertex</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vertex position ([x,y,z] * N numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.MeshData.vertex_index">
-<tt class="descname">vertex_index</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex_index" title="Permalink to this definition">¶</a></dt>
+<code class="descname">vertex_index</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshData.vertex_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vertex index  ([p1,p2,p3] * N numpy matrix)</p>
 </dd></dl>
 
@@ -551,47 +558,47 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.MeshTransformData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">MeshTransformData</tt><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">MeshTransformData</code><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Mesh transform data</p>
 <p>Intended to store scenegraph structure inside collada or vrml</p>
 <dl class="attribute">
 <dt id="simtrans.model.MeshTransformData.children">
-<tt class="descname">children</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshTransformData.children" title="Permalink to this definition">¶</a></dt>
+<code class="descname">children</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshTransformData.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Children (store MeshData or MeshTransformData)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.MeshTransformData.getcenter">
-<tt class="descname">getcenter</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.getcenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.getcenter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getcenter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.getcenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.getcenter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.MeshTransformData.maxv">
-<tt class="descname">maxv</tt><big>(</big><em>trans=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.maxv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.maxv" title="Permalink to this definition">¶</a></dt>
+<code class="descname">maxv</code><span class="sig-paren">(</span><em>trans=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.maxv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.maxv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.MeshTransformData.minv">
-<tt class="descname">minv</tt><big>(</big><em>trans=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.minv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.minv" title="Permalink to this definition">¶</a></dt>
+<code class="descname">minv</code><span class="sig-paren">(</span><em>trans=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.minv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.minv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="simtrans.model.ProjectModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">ProjectModel</tt><a class="reference internal" href="_modules/simtrans/model.html#ProjectModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.ProjectModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">ProjectModel</code><a class="reference internal" href="_modules/simtrans/model.html#ProjectModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.ProjectModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Project model</p>
 <dl class="attribute">
 <dt id="simtrans.model.ProjectModel.bodies">
-<tt class="descname">bodies</tt><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.ProjectModel.bodies" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bodies</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.ProjectModel.bodies" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of body models</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ProjectModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ProjectModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ProjectModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the simulation</p>
 </dd></dl>
 
@@ -599,80 +606,80 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.RayData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">RayData</tt><a class="reference internal" href="_modules/simtrans/model.html#RayData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.RayData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">RayData</code><a class="reference internal" href="_modules/simtrans/model.html#RayData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.RayData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Ray sensor data</p>
 <dl class="attribute">
 <dt id="simtrans.model.RayData.max_angle">
-<tt class="descname">max_angle</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_angle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_angle</code><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_angle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.RayData.max_range">
-<tt class="descname">max_range</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_range" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_range</code><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.max_range" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.RayData.min_angle">
-<tt class="descname">min_angle</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_angle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">min_angle</code><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_angle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.RayData.min_range">
-<tt class="descname">min_range</tt><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_range" title="Permalink to this definition">¶</a></dt>
+<code class="descname">min_range</code><em class="property"> = 0</em><a class="headerlink" href="#simtrans.model.RayData.min_range" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="simtrans.model.SensorModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">SensorModel</tt><a class="reference internal" href="_modules/simtrans/model.html#SensorModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.SensorModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">SensorModel</code><a class="reference internal" href="_modules/simtrans/model.html#SensorModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.SensorModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Sensor model</p>
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.SS_CAMERA">
-<tt class="descname">SS_CAMERA</tt><em class="property"> = 'camera'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_CAMERA" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_CAMERA</code><em class="property"> = 'camera'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_CAMERA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Camera (color, mono, depth)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.SS_IMU">
-<tt class="descname">SS_IMU</tt><em class="property"> = 'imu'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_IMU" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_IMU</code><em class="property"> = 'imu'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_IMU" title="Permalink to this definition">¶</a></dt>
 <dd><p>IMU sensor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.SS_RAY">
-<tt class="descname">SS_RAY</tt><em class="property"> = 'ray'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_RAY" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_RAY</code><em class="property"> = 'ray'</em><a class="headerlink" href="#simtrans.model.SensorModel.SS_RAY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Laser range finder</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.data">
-<tt class="descname">data</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">data</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.parent">
-<tt class="descname">parent</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of parent link</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.rate">
-<tt class="descname">rate</tt><em class="property"> = 20</em><a class="headerlink" href="#simtrans.model.SensorModel.rate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rate</code><em class="property"> = 20</em><a class="headerlink" href="#simtrans.model.SensorModel.rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update rate of sensor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SensorModel.sensorType">
-<tt class="descname">sensorType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.sensorType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sensorType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SensorModel.sensorType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of sensor</p>
 </dd></dl>
 
@@ -680,48 +687,48 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.ShapeModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">ShapeModel</tt><a class="reference internal" href="_modules/simtrans/model.html#ShapeModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.ShapeModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><tt class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">ShapeModel</code><a class="reference internal" href="_modules/simtrans/model.html#ShapeModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.ShapeModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Shape model</p>
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.SP_BOX">
-<tt class="descname">SP_BOX</tt><em class="property"> = 'box'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_BOX" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SP_BOX</code><em class="property"> = 'box'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_BOX" title="Permalink to this definition">¶</a></dt>
 <dd><p>Box shape</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.SP_CYLINDER">
-<tt class="descname">SP_CYLINDER</tt><em class="property"> = 'cylinder'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_CYLINDER" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SP_CYLINDER</code><em class="property"> = 'cylinder'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_CYLINDER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cylinder shape</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.SP_MESH">
-<tt class="descname">SP_MESH</tt><em class="property"> = 'mesh'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_MESH" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SP_MESH</code><em class="property"> = 'mesh'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_MESH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mesh shape</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.SP_SPHERE">
-<tt class="descname">SP_SPHERE</tt><em class="property"> = 'sphere'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_SPHERE" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SP_SPHERE</code><em class="property"> = 'sphere'</em><a class="headerlink" href="#simtrans.model.ShapeModel.SP_SPHERE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sphere shape</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.data">
-<tt class="descname">data</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">data</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store properties for each specific type of shape</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.name">
-<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.ShapeModel.shapeType">
-<tt class="descname">shapeType</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.shapeType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">shapeType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.ShapeModel.shapeType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape type</p>
 </dd></dl>
 
@@ -729,18 +736,18 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.SphereData">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">SphereData</tt><a class="reference internal" href="_modules/simtrans/model.html#SphereData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.SphereData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">SphereData</code><a class="reference internal" href="_modules/simtrans/model.html#SphereData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.SphereData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Sphere shape data</p>
 <dl class="attribute">
 <dt id="simtrans.model.SphereData.material">
-<tt class="descname">material</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.material" title="Permalink to this definition">¶</a></dt>
+<code class="descname">material</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.material" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of material</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.SphereData.radius">
-<tt class="descname">radius</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.radius" title="Permalink to this definition">¶</a></dt>
+<code class="descname">radius</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.SphereData.radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius</p>
 </dd></dl>
 
@@ -748,8 +755,8 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.model.TransformationModel">
-<em class="property">class </em><tt class="descclassname">simtrans.model.</tt><tt class="descname">TransformationModel</tt><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">TransformationModel</code><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Transformation model with utility methods</p>
 <p>Used as a base class for each models</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="p">()</span>
@@ -765,55 +772,55 @@ Reader and writer for each formats will read and write the common data structure
 </div>
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.getangle">
-<tt class="descname">getangle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getangle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getangle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getangle" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.getmatrix">
-<tt class="descname">getmatrix</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getmatrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getmatrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getmatrix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.getrotation">
-<tt class="descname">getrotation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrotation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getrotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrotation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.getrpy">
-<tt class="descname">getrpy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrpy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getrpy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getrpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getrpy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.getscale">
-<tt class="descname">getscale</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getscale" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getscale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.getscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.getscale" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.TransformationModel.gettranslation">
-<tt class="descname">gettranslation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.gettranslation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.gettranslation" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gettranslation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.gettranslation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.gettranslation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.matrix">
-<tt class="descname">matrix</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">matrix</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transformation matrix (4x4 numpy matrix)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.rot">
-<tt class="descname">rot</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.rot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rot</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.rot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotation (4-dim numpy array in quaternion representation)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.scale">
-<tt class="descname">scale</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.scale" title="Permalink to this definition">¶</a></dt>
+<code class="descname">scale</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scale vector (3-dim numpy array)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.trans">
-<tt class="descname">trans</tt><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.trans" title="Permalink to this definition">¶</a></dt>
+<code class="descname">trans</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.trans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translation vector (3-dim numpy array)</p>
 </dd></dl>
 
@@ -828,7 +835,7 @@ Reader and writer for each formats will read and write the common data structure
 <p>simtrans command line interface</p>
 <dl class="function">
 <dt id="simtrans.cli.main">
-<tt class="descclassname">simtrans.cli.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.cli.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.cli.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.cli.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -837,7 +844,7 @@ Reader and writer for each formats will read and write the common data structure
 <p>Utility command to concatinate two or more xml files to one</p>
 <dl class="function">
 <dt id="simtrans.catxml.main">
-<tt class="descclassname">simtrans.catxml.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/catxml.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.catxml.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.catxml.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/catxml.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.catxml.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -846,12 +853,12 @@ Reader and writer for each formats will read and write the common data structure
 <p>Utility command to fetch simulation model from gazebo&#8217;s model database</p>
 <dl class="function">
 <dt id="simtrans.gzfetch.main">
-<tt class="descclassname">simtrans.gzfetch.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/gzfetch.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.gzfetch.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.gzfetch.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/gzfetch.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.gzfetch.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="simtrans.gzfetch.renderworld">
-<tt class="descclassname">simtrans.gzfetch.</tt><tt class="descname">renderworld</tt><big>(</big><em>models</em><big>)</big><a class="reference internal" href="_modules/simtrans/gzfetch.html#renderworld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.gzfetch.renderworld" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.gzfetch.</code><code class="descname">renderworld</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/gzfetch.html#renderworld"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.gzfetch.renderworld" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -886,27 +893,27 @@ Reader and writer for each formats will read and write the common data structure
 </div>
 <dl class="class">
 <dt id="simtrans.collada.ColladaReader">
-<em class="property">class </em><tt class="descclassname">simtrans.collada.</tt><tt class="descname">ColladaReader</tt><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.collada.</code><code class="descname">ColladaReader</code><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Collada reader class</p>
 <dl class="method">
 <dt id="simtrans.collada.ColladaReader.convertchild">
-<tt class="descname">convertchild</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.convertchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.convertchild" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchild</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.convertchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.convertchild" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaReader.filterchild">
-<tt class="descname">filterchild</tt><big>(</big><em>d</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.filterchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.filterchild" title="Permalink to this definition">¶</a></dt>
+<code class="descname">filterchild</code><span class="sig-paren">(</span><em>d</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.filterchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.filterchild" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaReader.findchild">
-<tt class="descname">findchild</tt><big>(</big><em>d</em>, <em>name</em>, <em>trans</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.findchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.findchild" title="Permalink to this definition">¶</a></dt>
+<code class="descname">findchild</code><span class="sig-paren">(</span><em>d</em>, <em>name</em>, <em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.findchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.findchild" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaReader.read">
-<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em>, <em>submesh=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em>, <em>submesh=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read collada model data given the file path</p>
 </dd></dl>
 
@@ -914,17 +921,17 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.collada.ColladaWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.collada.</tt><tt class="descname">ColladaWriter</tt><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.collada.</code><code class="descname">ColladaWriter</code><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Collada writer class</p>
 <dl class="method">
 <dt id="simtrans.collada.ColladaWriter.convertchild">
-<tt class="descname">convertchild</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.convertchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.convertchild" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchild</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.convertchild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.convertchild" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaWriter.write">
-<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in collada format</p>
 </dd></dl>
 
@@ -969,12 +976,12 @@ Reader and writer for each formats will read and write the common data structure
 </div>
 <dl class="class">
 <dt id="simtrans.graphviz.GraphvizWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.graphviz.</tt><tt class="descname">GraphvizWriter</tt><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.graphviz.</code><code class="descname">GraphvizWriter</code><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Graphviz writer class</p>
 <dl class="method">
 <dt id="simtrans.graphviz.GraphvizWriter.write">
-<tt class="descname">write</tt><big>(</big><em>mdata</em>, <em>fname</em><big>)</big><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>mdata</em>, <em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/graphviz.html#GraphvizWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.graphviz.GraphvizWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in graphviz dot format</p>
 </dd></dl>
 
@@ -1021,61 +1028,61 @@ Reader and writer for each formats will read and write the common data structure
 </div>
 <dl class="class">
 <dt id="simtrans.sdf.SDFReader">
-<em class="property">class </em><tt class="descclassname">simtrans.sdf.</tt><tt class="descname">SDFReader</tt><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.sdf.</code><code class="descname">SDFReader</code><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>SDF reader class</p>
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.convertchildren">
-<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>joint</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.convertchildren" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.convertchildren" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.read">
-<tt class="descname">read</tt><big>(</big><em>fname</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read SDF model data given the model file</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.readInertia">
-<tt class="descname">readInertia</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readInertia" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readInertia</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readInertia" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.readJointType">
-<tt class="descname">readJointType</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readJointType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readJointType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readJointType</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readJointType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readJointType" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.readPose">
-<tt class="descname">readPose</tt><big>(</big><em>m</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readPose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readPose" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readPose</code><span class="sig-paren">(</span><em>m</em>, <em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readPose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readPose" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.readShape">
-<tt class="descname">readShape</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readShape" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readShape</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readShape" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="simtrans.sdf.SDFWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.sdf.</tt><tt class="descname">SDFWriter</tt><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.sdf.</code><code class="descname">SDFWriter</code><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>SDF writer class</p>
 <dl class="method">
 <dt id="simtrans.sdf.SDFWriter.convertchildren">
-<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>joint</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFWriter.write">
-<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in SDF format</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFWriter.write2">
-<tt class="descname">write2</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write2" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write2</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in SDF format
 (internally use urdf and convert to sdf using gz sdf utility)</p>
 </dd></dl>
@@ -1104,12 +1111,12 @@ Reader and writer for each formats will read and write the common data structure
 </ul>
 <dl class="class">
 <dt id="simtrans.stl.STLReader">
-<em class="property">class </em><tt class="descclassname">simtrans.stl.</tt><tt class="descname">STLReader</tt><a class="reference internal" href="_modules/simtrans/stl.html#STLReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.stl.</code><code class="descname">STLReader</code><a class="reference internal" href="_modules/simtrans/stl.html#STLReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>STL reader class</p>
 <dl class="method">
 <dt id="simtrans.stl.STLReader.read">
-<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/stl.html#STLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read mesh model in STL format</p>
 </dd></dl>
 
@@ -1117,12 +1124,12 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="class">
 <dt id="simtrans.stl.STLWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.stl.</tt><tt class="descname">STLWriter</tt><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.stl.</code><code class="descname">STLWriter</code><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>STL writer class</p>
 <dl class="method">
 <dt id="simtrans.stl.STLWriter.write">
-<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write mesh model in STL format
 This method first generates collada and use meshlab to output stl</p>
 </dd></dl>
@@ -1170,12 +1177,12 @@ This method first generates collada and use meshlab to output stl</p>
 </div>
 <dl class="class">
 <dt id="simtrans.urdf.URDFReader">
-<em class="property">class </em><tt class="descclassname">simtrans.urdf.</tt><tt class="descname">URDFReader</tt><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.urdf.</code><code class="descname">URDFReader</code><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>URDF reader class</p>
 <dl class="method">
 <dt id="simtrans.urdf.URDFReader.read">
-<tt class="descname">read</tt><big>(</big><em>fname</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read URDF model data given the model file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1199,34 +1206,34 @@ This method first generates collada and use meshlab to output stl</p>
 
 <dl class="method">
 <dt id="simtrans.urdf.URDFReader.readInertia">
-<tt class="descname">readInertia</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readInertia" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readInertia</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readInertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readInertia" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.urdf.URDFReader.readJointType">
-<tt class="descname">readJointType</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readJointType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readJointType" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readJointType</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readJointType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readJointType" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.urdf.URDFReader.readOrigin">
-<tt class="descname">readOrigin</tt><big>(</big><em>m</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readOrigin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readOrigin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readOrigin</code><span class="sig-paren">(</span><em>m</em>, <em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readOrigin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readOrigin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.urdf.URDFReader.readShape">
-<tt class="descname">readShape</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readShape" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readShape</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.readShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.readShape" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="simtrans.urdf.URDFWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.urdf.</tt><tt class="descname">URDFWriter</tt><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.urdf.</code><code class="descname">URDFWriter</code><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>URDF writer class</p>
 <dl class="method">
 <dt id="simtrans.urdf.URDFWriter.write">
-<tt class="descname">write</tt><big>(</big><em>m</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in URDF format</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1241,7 +1248,7 @@ This method first generates collada and use meshlab to output stl</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">None</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)">None</a></p>
 </td>
 </tr>
 </tbody>
@@ -1306,55 +1313,55 @@ This method first generates collada and use meshlab to output stl</p>
 </div>
 <dl class="class">
 <dt id="simtrans.vrml.VRMLReader">
-<em class="property">class </em><tt class="descclassname">simtrans.vrml.</tt><tt class="descname">VRMLReader</tt><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.vrml.</code><code class="descname">VRMLReader</code><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>VRML reader class</p>
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.read">
-<tt class="descname">read</tt><big>(</big><em>f</em>, <em>assethandler=None</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read vrml model data given the file path</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.readChild">
-<tt class="descname">readChild</tt><big>(</big><em>parent</em>, <em>child</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readChild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readChild" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readChild</code><span class="sig-paren">(</span><em>parent</em>, <em>child</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readChild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readChild" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.readLink">
-<tt class="descname">readLink</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readLink" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readLink</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readLink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readLink" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.readMesh">
-<tt class="descname">readMesh</tt><big>(</big><em>sdata</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readMesh" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readMesh</code><span class="sig-paren">(</span><em>sdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.readMesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.readMesh" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.resolveModelLoader">
-<tt class="descname">resolveModelLoader</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.resolveModelLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.resolveModelLoader" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resolveModelLoader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.resolveModelLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.resolveModelLoader" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="simtrans.vrml.VRMLWriter">
-<em class="property">class </em><tt class="descclassname">simtrans.vrml.</tt><tt class="descname">VRMLWriter</tt><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">simtrans.vrml.</code><code class="descname">VRMLWriter</code><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>VRML writer class</p>
 <dl class="method">
 <dt id="simtrans.vrml.VRMLWriter.convertchildren">
-<tt class="descname">convertchildren</tt><big>(</big><em>mdata</em>, <em>linkname</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLWriter.convertjointtype">
-<tt class="descname">convertjointtype</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertjointtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertjointtype" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertjointtype</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertjointtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertjointtype" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLWriter.write">
-<tt class="descname">write</tt><big>(</big><em>mdata</em>, <em>fname</em><big>)</big><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>mdata</em>, <em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in VRML format</p>
 </dd></dl>
 
@@ -1370,7 +1377,7 @@ This method first generates collada and use meshlab to output stl</p>
 <p>Miscellaneous utility functions</p>
 <dl class="function">
 <dt id="simtrans.utils.findchildren">
-<tt class="descclassname">simtrans.utils.</tt><tt class="descname">findchildren</tt><big>(</big><em>mdata</em>, <em>linkname</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#findchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findchildren" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.utils.</code><code class="descname">findchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#findchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findchildren" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find child joints connected to specified link</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
@@ -1384,7 +1391,7 @@ This method first generates collada and use meshlab to output stl</p>
 
 <dl class="function">
 <dt id="simtrans.utils.findroot">
-<tt class="descclassname">simtrans.utils.</tt><tt class="descname">findroot</tt><big>(</big><em>mdata</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#findroot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findroot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.utils.</code><code class="descname">findroot</code><span class="sig-paren">(</span><em>mdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#findroot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findroot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find root link from parent to child relationships.
 Currently based on following simple principle:
 - Link with no parent will be the root.</p>
@@ -1413,7 +1420,7 @@ Currently based on following simple principle:
 
 <dl class="function">
 <dt id="simtrans.utils.resolveFile">
-<tt class="descclassname">simtrans.utils.</tt><tt class="descname">resolveFile</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="_modules/simtrans/utils.html#resolveFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.resolveFile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">simtrans.utils.</code><code class="descname">resolveFile</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#resolveFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.resolveFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve file by replacing file path heading &#8220;package://&#8221; or &#8220;model://&#8221;</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/package.xml&#39;</span><span class="p">)</span>
 <span class="go">&#39;/opt/ros/indigo/share/atlas_description/package.xml&#39;</span>
@@ -1454,7 +1461,7 @@ Currently based on following simple principle:
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="simtrans.thirdparty.html" class="btn btn-neutral float-right" title="simtrans.thirdparty package"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="simtrans.thirdparty.html" class="btn btn-neutral float-right" title="simtrans.thirdparty package">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="modules.html" class="btn btn-neutral" title="API"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -1470,7 +1477,8 @@ Currently based on following simple principle:
     </p>
   </div>
 
-  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
         </div>
       </div>
@@ -1495,7 +1503,7 @@ Currently based on following simple principle:
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

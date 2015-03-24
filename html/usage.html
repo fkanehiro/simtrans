@@ -14,7 +14,7 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -25,6 +25,8 @@
   
   
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
   
 
   
@@ -44,9 +46,12 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
-        <a href="index.html" class="fa fa-home"> simtrans</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+        
+          <a href="index.html" class="fa fa-home"> simtrans</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -56,8 +61,9 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
         
-        
-            <ul class="current">
+          
+          
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install.html#install-most-recent-version-of-gazebo-optional">Install most recent version of gazebo (optional)</a></li>
@@ -82,6 +88,7 @@
 </li>
 </ul>
 
+          
         
       </div>
       &nbsp;
@@ -112,7 +119,7 @@
   </ul>
   <hr/>
 </div>
-          <div role="main">
+          <div role="main" class="document">
             
   <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
@@ -123,37 +130,37 @@
 <p>Convert robot simulation model from one another.</p>
 <dl class="option">
 <dt id="cmdoption-simtrans-h">
-<span id="cmdoption-simtrans--help"></span><tt class="descname">-h</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--help</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-simtrans-h" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--help"></span><code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-h" title="Permalink to this definition">¶</a></dt>
 <dd><p>show this help message and exit</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-i">
-<span id="cmdoption-simtrans--input"></span><tt class="descname">-i</tt><tt class="descclassname"> &lt;file&gt;</tt><tt class="descclassname">, </tt><tt class="descname">--input</tt><tt class="descclassname"> &lt;file&gt;</tt><a class="headerlink" href="#cmdoption-simtrans-i" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--input"></span><code class="descname">-i</code><code class="descclassname"> &lt;file&gt;</code><code class="descclassname">, </code><code class="descname">--input</code><code class="descclassname"> &lt;file&gt;</code><a class="headerlink" href="#cmdoption-simtrans-i" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert from FILE</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-o">
-<span id="cmdoption-simtrans--output"></span><tt class="descname">-o</tt><tt class="descclassname"> &lt;file&gt;</tt><tt class="descclassname">, </tt><tt class="descname">--output</tt><tt class="descclassname"> &lt;file&gt;</tt><a class="headerlink" href="#cmdoption-simtrans-o" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--output"></span><code class="descname">-o</code><code class="descclassname"> &lt;file&gt;</code><code class="descclassname">, </code><code class="descname">--output</code><code class="descclassname"> &lt;file&gt;</code><a class="headerlink" href="#cmdoption-simtrans-o" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert to FILE</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-f">
-<span id="cmdoption-simtrans--from"></span><tt class="descname">-f</tt><tt class="descclassname"> &lt;format&gt;</tt><tt class="descclassname">, </tt><tt class="descname">--from</tt><tt class="descclassname"> &lt;format&gt;</tt><a class="headerlink" href="#cmdoption-simtrans-f" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--from"></span><code class="descname">-f</code><code class="descclassname"> &lt;format&gt;</code><code class="descclassname">, </code><code class="descname">--from</code><code class="descclassname"> &lt;format&gt;</code><a class="headerlink" href="#cmdoption-simtrans-f" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert from FORMAT (optional)</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-t">
-<span id="cmdoption-simtrans--to"></span><tt class="descname">-t</tt><tt class="descclassname"> &lt;format&gt;</tt><tt class="descclassname">, </tt><tt class="descname">--to</tt><tt class="descclassname"> &lt;format&gt;</tt><a class="headerlink" href="#cmdoption-simtrans-t" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--to"></span><code class="descname">-t</code><code class="descclassname"> &lt;format&gt;</code><code class="descclassname">, </code><code class="descname">--to</code><code class="descclassname"> &lt;format&gt;</code><a class="headerlink" href="#cmdoption-simtrans-t" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert to FORMAT (optional)</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-v">
-<span id="cmdoption-simtrans--verbose"></span><tt class="descname">-v</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--verbose</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-simtrans-v" title="Permalink to this definition">¶</a></dt>
+<span id="cmdoption-simtrans--verbose"></span><code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--verbose</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-v" title="Permalink to this definition">¶</a></dt>
 <dd><p>verbose output</p>
 </dd></dl>
 
@@ -200,7 +207,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="screenshots.html" class="btn btn-neutral float-right" title="Screenshots"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="screenshots.html" class="btn btn-neutral float-right" title="Screenshots">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="install.html" class="btn btn-neutral" title="Install"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -216,7 +223,8 @@
     </p>
   </div>
 
-  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
         </div>
       </div>
@@ -241,7 +249,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
