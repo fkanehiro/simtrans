@@ -6,6 +6,7 @@
 import os
 import sys
 import subprocess
+import shutil
 from argparse import ArgumentParser, ArgumentError
 
 from . import vrml
@@ -21,7 +22,25 @@ parser.add_argument('-t', '--to', dest='toformat', metavar='FORMAT', help='conve
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 
 
+basedir = ''
+
+
+def jpegconverthandler(f):
+    global basedir
+    fname = os.path.join(basedir, os.path.splitext(os.path.basename(f))[0] + '.jpg')
+    subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return os.path.relpath(fname, basedir)
+
+
+def copyhandler(f):
+    global basedir
+    fname = os.path.join(basedir, os.path.basename(f))
+    shutil.copyfile(f, fname)
+    return os.path.relpath(fname, basedir)
+
+
 def main():
+    global basedir
     try:
         options = parser.parse_args()
     except ArgumentError, e:
@@ -52,26 +71,24 @@ def main():
             print >> sys.stderr, 'unable to detect input format (may be not supported?)'
             return 1
 
+    basedir = os.path.dirname(os.path.abspath(options.tofile))
     writer = None
-    handler = None
+    handler = copyhandler
     if options.toformat == "vrml":
         writer = vrml.VRMLWriter()
+        handler = jpegconverthandler
     if options.toformat == "urdf":
         writer = urdf.URDFWriter()
     if options.toformat == "sdf":
         writer = sdf.SDFWriter()
     if options.toformat == "dot":
         writer = graphviz.GraphvizWriter()
+        handler = None
     if writer is None:
         ext = os.path.splitext(options.tofile)[1]
         if ext == '.wrl':
             writer = vrml.VRMLWriter()
-            dirname = os.path.dirname(options.tofile)
-            def jpegconvert(f):
-                fname = os.path.join(dirname, os.path.splitext(os.path.basename(f))[0] + '.jpg')
-                subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                return fname
-            handler = jpegconvert
+            handler = jpegconverthandler
         elif ext == '.urdf':
             writer = urdf.URDFWriter()
         elif ext == '.sdf':
@@ -80,6 +97,7 @@ def main():
             writer = sdf.SDFWriter()
         elif ext == '.dot':
             writer = graphviz.GraphvizWriter()
+            handler = None
         else:
             print >> sys.stderr, 'unable to detect output format (may be not supported?)'
             return 1

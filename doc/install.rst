@@ -7,7 +7,8 @@ First, install required binary packages:
 .. code-block:: bash
 
    $ sudo add-apt-repository ppa:hrg/daily
-   $ sudo apt-get install openhrp meshlab imagemagick omniorb-python
+   $ sudo apt-get update
+   $ sudo apt-get install openhrp meshlab imagemagick python-omniorb openrtm-aist-python
 
 Clone most recent source from github:
 
@@ -19,6 +20,7 @@ Next, install pip and install required package using pip:
 
 .. code-block:: bash
 
+   $ sudo apt-get install python-setuptools
    $ sudo easy_install pip
    $ cd simtrans
    $ sudo pip install -r requirements.txt
