@@ -241,6 +241,26 @@ class MeshTransformData(TransformationModel):
         center = minv + half
         return center[0:3]
 
+    def pretranslate(self, trans=None):
+        '''
+        Apply translation to vertex and normals to make translation matrix diagonal
+        '''
+        if trans is None:
+            trans = numpy.identity(4)
+        trans2 = numpy.dot(trans, self.getmatrix())
+        for c in self.children:
+            if type(c) == MeshTransformData:
+                c.pretranslate(trans2)
+            elif type(c) == MeshData:
+                c.vertex = c.vertex.copy()
+                for i in range(0, c.vertex.shape[0]):
+                    c.vertex[i] = numpy.dot(trans2[:3,:3], c.vertex[i]) + trans2[:3,3]
+                if c.normal is not None:
+                    c.normal = c.normal.copy()
+                    for i in range(0, c.normal.shape[0]):
+                        c.normal[i] = numpy.dot(trans2[:3,:3], c.normal[i])
+        self.matrix = numpy.identity(4)
+
 
 class MeshData(object):
     """

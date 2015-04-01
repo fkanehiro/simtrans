@@ -119,6 +119,6 @@ Shape {
     {%- endif %}
   }
 }
-  {%- endif %}
-  {%- endif %}
-  {%- endfor %}
+{%- endif %}
+{%- endif %}
+{%- endfor %}

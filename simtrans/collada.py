@@ -144,6 +144,7 @@ class ColladaReader(object):
                     m.children.append(cc)
         elif type(d) == collada.scene.GeometryNode:
             m = model.MeshTransformData()
+            m.matrix = numpy.identity(4)
             materialmap = {}
             for mm in d.materials:
                 materialmap[mm.symbol] = self._materials[mm.target.id]
@@ -173,6 +174,8 @@ class ColladaReader(object):
                 except KeyError:
                     sm.material = model.MaterialModel()
                 m.children.append(sm)
+        else:
+            print "unsupported collada node type: " + type(d).__name__
         return m
 
 
