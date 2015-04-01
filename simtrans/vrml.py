@@ -403,6 +403,7 @@ class VRMLWriter(object):
         for l in mdata.links:
             for v in l.visuals:
                 if v.shapeType == model.ShapeModel.SP_MESH:
+                    v.data.pretranslate()
                     m = {}
                     m['children'] = [v.data]
                     with open(os.path.join(dirname, mdata.name + "-" + v.name + ".wrl"), 'w') as ofile:
