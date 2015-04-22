@@ -2,7 +2,7 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2014-12-15 14:48+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 1.5.4\n"
 
@@ -27,47 +27,41 @@ msgstr "インストール"
 msgid "First, install required binary packages:"
 msgstr "まず、依存するライブラリをインストールします:"
 
-#: ../../install.rst:12
+#: ../../install.rst:13
 msgid "Clone most recent source from github:"
 msgstr "githubから最新のソースをクローンします:"
 
-#: ../../install.rst:18
+#: ../../install.rst:19
 msgid "Next, install pip and install required package using pip:"
-msgstr ""
-"pipコマンドをインストールし、pipを使って依存するライブラリをインストールしま"
-"す:"
+msgstr "pipコマンドをインストールし、pipを使って依存するライブラリをインストールします:"
 
-#: ../../install.rst:26
+#: ../../install.rst:28
 msgid "Finally, install simtrans:"
 msgstr "simtransをインストールします:"
 
-#: ../../install.rst:34
-msgid "Install most recent version of gazebo (optional)"
-msgstr "最新バージョンのgazeboのインストール（オプション）"
-
 #: ../../install.rst:36
-msgid ""
-"If you want to convert SDF1.5 based models (most of models for DRC tasks are "
-"SDF1.5 based), you have to install most recent version of gazebo simulator."
-msgstr ""
-"SDF1.5で記述されたモデルを変換したい場合（DRCタスクのほとんどのモデルはSDF1.5"
-"で記述されています）、最新バージョンのgazeboシミュレータをインストールしてく"
-"ださい。"
+msgid "Install most recent version of gazebo"
+msgstr "最新バージョンのgazeboのインストール"
 
 #: ../../install.rst:38
+msgid ""
+"To convert SDF1.5 based models (most of models for DRC tasks are SDF1.5 "
+"based), you have to install most recent version of gazebo simulator."
+msgstr ""
+"SDF1.5で記述されたモデルを変換するため（DRCタスクのほとんどのモデルはSDF1.5で記述されています）、最新バージョンのgazeboシミュレータをインストールしてください。"
+
+#: ../../install.rst:40
 msgid "Please refer to following page for installation of gazebo itself:"
 msgstr "gazeboのみをインストールする場合は以下のページを参照してください:"
 
-#: ../../install.rst:40
+#: ../../install.rst:42
 msgid "http://gazebosim.org/tutorials?tut=install_ubuntu&cat=installation"
 msgstr "http://gazebosim.org/tutorials?tut=install_ubuntu&cat=installation"
 
-#: ../../install.rst:42
-msgid "Or refer to this page to install gazebo with DRC plugins and models:"
-msgstr ""
-"gazeboとDRC関連のプラグインとモデルを両方インストールする場合は以下のページを"
-"参照してください:"
-
 #: ../../install.rst:44
+msgid "Or refer to this page to install gazebo with DRC plugins and models:"
+msgstr "gazeboとDRC関連のプラグインとモデルを両方インストールする場合は以下のページを参照してください:"
+
+#: ../../install.rst:46
 msgid "https://bitbucket.org/osrf/drcsim/wiki/DRC/Install"
 msgstr "https://bitbucket.org/osrf/drcsim/wiki/DRC/Install"

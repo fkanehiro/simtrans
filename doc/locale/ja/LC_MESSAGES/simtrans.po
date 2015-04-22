@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2014-11-19 12:04+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 # 113c3285e58d4bbaa00488492f22f9c2
@@ -40,50 +40,42 @@ msgid "simtrans.model"
 msgstr ""
 
 # 0a06ef6a73ff4d30888e3897bf8d782a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model:1
+#: ../../../simtrans/model.pydocstring of simtrans.model:1
 msgid "Common data structure for model converter"
 msgstr ""
 
 # 71c4c71d2bed4c4c927e6a58a03287c3
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel:1
 msgid "Body model"
 msgstr ""
 
 # 2f6bb948b5974a6eb0bbc6a3d2c2afc8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel.joints:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel.joints:1
 msgid "List of joints"
 msgstr ""
 
 # 5d5dc2601b00412293f5297bd32f3135
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel.links:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel.links:1
 msgid "List of links"
 msgstr ""
 
 # 3613b4f9895843c2bd31c0b4952d7f48
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel.materials:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel.materials:1
 msgid "List of materials"
 msgstr ""
 
 # a1d53453afbc4eb4af59bf07f350b5f9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel.name:1
 msgid "Name of the body"
 msgstr ""
 
 # 99cc8b8dd542454ba77dc2ec3f426e5a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BodyModel.sensors:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel.sensors:1
 msgid "List of sensors"
 msgstr ""
 
 # edfef0fe5a80417eaa147db80c61ec9e
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BoxData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData:1
 msgid "Box shape data"
 msgstr ""
 
@@ -91,189 +83,160 @@ msgstr ""
 # 067479893e854a8eb1c56b2389726a3e
 # 5a4447e2ec524df49dd8dc021f02d3a3
 # 3a215f210b1847d6beab637b97667e85
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BoxData.material:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CylinderData.material:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.material:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData.material:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.CylinderData.material:1 ../../../simtrans/model.pydocstring
+#: of simtrans.model.MeshData.material:1 ../../../simtrans/model.pydocstring
 #: of simtrans.model.SphereData.material:1
 msgid "Name of material"
 msgstr ""
 
 # a069b162168d4fa4a414917751c3da6d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BoxData.x:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.width:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData.x:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData.width:1
 msgid "Width"
 msgstr ""
 
 # 1288e66080ea4563a38b2f99ab68cf7d
 # cecf873a581e4e5abef716b1f83db54c
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BoxData.y:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.height:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CylinderData.height:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData.y:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData.height:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CylinderData.height:1
 msgid "Height"
 msgstr ""
 
 # 2009f05891fd4a0ba870665e2d6c9c18
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.BoxData.z:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData.z:1
 msgid "Depth"
 msgstr ""
 
 # 8d78835ac02f4a57b04aa449f932e410
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CylinderData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CylinderData:1
 msgid "Cylinder shape data"
 msgstr ""
 
 # cfe8519a115b49dcb3545666084691a1
 # 16d666af7bfe413b8b2e46e3bd5f8b9d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CylinderData.radius:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SphereData.radius:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CylinderData.radius:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SphereData.radius:1
 msgid "Radius"
 msgstr ""
 
 # 8b37fb8ebc6642219be2b8352f6b292c
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel:1
 msgid "Joint model"
 msgstr ""
 
 # 1f0287d657474d6d9159f6b5b74a15fc
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.J_CONTINUOUS:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.J_CONTINUOUS:1
 msgid "Continuous type"
 msgstr ""
 
 # 358a02020bb240d095407b3c8e1ff863
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.J_FIXED:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.J_FIXED:1
 msgid "Fixed type"
 msgstr ""
 
 # 113c3285e58d4bbaa00488492f22f9c2
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.J_PRISMATIC:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.J_PRISMATIC:1
 msgid "Prismatic type"
 msgstr ""
 
 # ef81001ce88248208f220d6184e1077e
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.J_REVOLUTE:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.J_REVOLUTE:1
 msgid "Revolute type"
 msgstr ""
 
 # 2c0ff6b947a14e6dad4c2bf621de5e03
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.J_SCREW:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.J_SCREW:1
 msgid "Screw type"
 msgstr ""
 
 # 1b153440028f4cd9b6b4bf602ddedc62
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.axis:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.axis:1
 msgid "Joint axis (relative to parent link)"
 msgstr ""
 
 # 693a853b1b6a4c32832922bd45a78cdf
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.child:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.child:1
 msgid "Name of child link"
 msgstr ""
 
 # b962e256dc574b74ae097ddfdbe318a9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.damping:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.damping:1
 msgid "Damping factor"
 msgstr ""
 
 # c384cac12a4e4ac8b06d54d96dc3b6d9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.friction:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.friction:1
 msgid "Friction factor"
 msgstr ""
 
 # f71156bae7a344b9891438e57df1cc36
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.jointType:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.jointType:1
 msgid "Joint type"
 msgstr ""
 
 # 88cd79ea777243bc8f89ba0c2ca7150f
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.limit:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.limit:1
 msgid "Joint limits (upper and lower limits in 2-dim array)"
 msgstr ""
 
 # 168a0ee26bbf4d73b3b7c3bdfa4e1d8b
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.name:1
 msgid "Joint name"
 msgstr ""
 
 # 06815f56f42642b7af53dbcdc4911ac6
 # 559550e5bb2944108dccbba7ddfcc91a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.parent:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.parent:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.parent:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel.parent:1
 msgid "Name of parent link"
 msgstr ""
 
 # bafd351a34b04ff499355bd608681f88
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel:1
 msgid "Link model"
 msgstr ""
 
 # 3ac18f7a0ada4068a8609b8b9368b1ef
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.centerofmass:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.LinkModel.centerofmass:1
 msgid "Center of mass (3-dim array)"
 msgstr ""
 
 # d6b8d2c8b8bc4329b04d33c0264136a2
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.collisions:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.LinkModel.collisions:1
 msgid "List of shape information used for collision detection"
 msgstr ""
 
 # 1c0bf5f641a74bcd8868616ccd8295de
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.inertia:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel.inertia:1
 msgid "Inertia (3x3 numpy matrix)"
 msgstr ""
 
 # eec37ee32f894dae9cb01617d922681a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.mass:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel.mass:1
 msgid "Mass of the link"
 msgstr ""
 
 # ab040f60a7d24ba1bb59cb69199add05
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel.name:1
 msgid "Name of the link"
 msgstr ""
 
 # 51c3d8ae8c024a74bb49968b4d17c458
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.LinkModel.visuals:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel.visuals:1
 msgid "List of shape information used for rendering"
 msgstr ""
 
 # 9c28725dfb474c5293e7eb2d9639693d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MaterialModel:1
 msgid "Material model"
 msgstr ""
 
@@ -281,242 +244,217 @@ msgstr ""
 # 5bc52e97a2804e8fb8fe5f3fec89b4a2
 # dbb49212cf564f568714f39f6e96bdfb
 # 8357b4b3c03f4c5a848bd0eb54f6e901
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.ambient:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MaterialModel.ambient:1 ../../../simtrans/model.pydocstring
 #: of simtrans.model.MaterialModel.diffuse:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.emission:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MaterialModel.emission:1 ../../../simtrans/model.pydocstring
 #: of simtrans.model.MaterialModel.specular:1
 msgid "[r,g,b,a] array"
 msgstr ""
 
 # 03b026a4bad14b128837d783696cf533
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MaterialModel.name:1
 msgid "Name of the material"
 msgstr ""
 
 # fce327250a474c72b86a112f36f2ebd3
 # 0805698e6078486989d73d938a4b91f4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.shininess:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.transparency:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MaterialModel.shininess:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MaterialModel.transparency:1
 msgid "float value or path string of texture image"
 msgstr ""
 
 # 536e62695d77468fac0243f060e2d52e
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MaterialModel.texture:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MaterialModel.texture:1
 msgid "path string of texture image"
 msgstr ""
 
 # ad5fd3dc846f4bb6a5bb3fe7b78c4d13
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData:1
 msgid "Mesh data"
 msgstr ""
 
 # 1e2b136e9c2b4d5e89c69ede4b8989d5
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.color:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData.color:1
 msgid "Color ([R,G,B,A] * N numpy matrix)"
 msgstr ""
 
 # 0127c9dafada474ea87ed1e2a6dab473
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.color_index:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MeshData.color_index:1
 msgid "Color index  ([p1,p2,p3] * N numpy matrix)"
 msgstr ""
 
 # 86ef70248f0f4a02898bfccf7c3c8320
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.normal:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData.normal:1
 msgid "Normal direction ([x,y,z] * N numpy matrix)"
 msgstr ""
 
 # 07e251ad135546b48d9262cfe8e95b1e
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.normal_index:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MeshData.normal_index:1
 msgid "Normal index  ([p1,p2,p3] * N numpy matrix)"
 msgstr ""
 
 # 027ee2a9bdec4c1ea6381f0ff10e0139
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.uvmap:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData.uvmap:1
 msgid "UV mapping ([u,v] * N numpy matrix)"
 msgstr ""
 
 # ca1a0defcc7a41369641311778efd35e
 # ce7d5ac91d83493da1148dfabaf6fda4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.uvmap_index:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MeshData.uvmap_index:1 ../../../simtrans/model.pydocstring
 #: of simtrans.model.MeshData.vertex_index:1
 msgid "Vertex index  ([p1,p2,p3] * N numpy matrix)"
 msgstr ""
 
 # 857a393144464c07882309d3e8c42db7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshData.vertex:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData.vertex:1
 msgid "Vertex position ([x,y,z] * N numpy matrix)"
 msgstr ""
 
 # e4cd0145acc9474284a663b24defe25a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshTransformData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshTransformData:1
 msgid "Mesh transform data"
 msgstr ""
 
 # 8c94049ab67f41919033a66cdc433f75
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshTransformData:3
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshTransformData:3
 msgid "Intended to store scenegraph structure inside collada or vrml"
 msgstr ""
 
 # c698cd0ca77a42608310247bd02cd317
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.MeshTransformData.children:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MeshTransformData.children:1
 msgid "Children (store MeshData or MeshTransformData)"
 msgstr ""
 
 # 2cbb6b35377e4606ab243ca0877172c8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ProjectModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ProjectModel:1
 msgid "Project model"
 msgstr ""
 
 # a7c619ef4ed44a28b92ebc1eaf0b80de
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ProjectModel.bodies:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ProjectModel.bodies:1
 msgid "List of body models"
 msgstr ""
 
 # 6cb82564adba46c6ac3482c22e502662
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ProjectModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ProjectModel.name:1
 msgid "Name of the simulation"
 msgstr ""
 
 # f1a04327d32e473da8b4645833d44ac6
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel:1
 msgid "Sensor model"
 msgstr ""
 
 # eb49a91695b048848447a626dd1cf747
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.SS_CAMERA:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.SensorModel.SS_CAMERA:1
 msgid "Camera (color, mono, depth)"
 msgstr ""
 
 # c9ca98fa7cae473d9c01c15914106953
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.SS_IMU:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel.SS_IMU:1
 msgid "IMU sensor"
 msgstr ""
 
 # 761a92ee2abf47a6906236acc2713d3b
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.SS_RAY:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel.SS_RAY:1
 msgid "Laser range finder"
 msgstr ""
 
 # 7a6755e03a5c42ec9fdee67fe00b98c5
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.sensorType:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.SensorModel.sensorType:1
 msgid "Type of sensor"
 msgstr ""
 
 # 64dc876d574d4b64a644561aabe872f4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel:1
 msgid "Shape model"
 msgstr ""
 
 # a566a28746db4388a0818f8125d09033
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.SP_BOX:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel.SP_BOX:1
 msgid "Box shape"
 msgstr ""
 
 # 63321fb72304483ea34f401bc6b021c4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.SP_CYLINDER:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.ShapeModel.SP_CYLINDER:1
 msgid "Cylinder shape"
 msgstr ""
 
 # 3250596f07fc46328e978d8a45ee9a47
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.SP_MESH:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel.SP_MESH:1
 msgid "Mesh shape"
 msgstr ""
 
 # 326d19d724f643a3915c7ffee7520908
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.SP_SPHERE:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.ShapeModel.SP_SPHERE:1
 msgid "Sphere shape"
 msgstr ""
 
 # 7e8a3b0cce4646208fa026fd94c3bd6d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.data:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel.data:1
 msgid "Store properties for each specific type of shape"
 msgstr ""
 
 # 4281e9c4d6bb42d3b2f7ffa80c939091
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel.name:1
 msgid "Shape name"
 msgstr ""
 
 # c158823b8a8440809f62e28c1e0a8cab
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.ShapeModel.shapeType:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.ShapeModel.shapeType:1
 msgid "Shape type"
 msgstr ""
 
 # 6405dacaa7374c0c87e2a75dd916c185
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SphereData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SphereData:1
 msgid "Sphere shape data"
 msgstr ""
 
 # 2529d319c6254befa99b357bc5640374
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.TransformationModel:1
 msgid "Transformation model with utility methods"
 msgstr ""
 
 # 84a030491d6348d5ab661e9cda60048a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel:3
+#: ../../../simtrans/model.pydocstring of simtrans.model.TransformationModel:3
 msgid "Used as a base class for each models"
 msgstr ""
 
 # 950f9c51b1fc4c529177172c7296c471
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel.matrix:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.TransformationModel.matrix:1
 msgid "Transformation matrix (4x4 numpy matrix)"
 msgstr ""
 
 # 0b46cafbfbe64b7697a6832ab2c4aeef
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel.rot:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.TransformationModel.rot:1
 msgid "Rotation (4-dim numpy array in quaternion representation)"
 msgstr ""
 
 # f918e3e16d9f45419d45e7a2b0edffbe
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel.scale:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.TransformationModel.scale:1
 msgid "Scale vector (3-dim numpy array)"
 msgstr ""
 
 # 678564ef468d44e5b44ed4e5aee6e957
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.TransformationModel.trans:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.TransformationModel.trans:1
 msgid "Translation vector (3-dim numpy array)"
 msgstr ""
 
@@ -551,34 +489,30 @@ msgid "simtrans.collada"
 msgstr ""
 
 # cd328a2e978f4678a7d92f0e13a9a11a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:1
 msgid "Reader and writer for collada format"
 msgstr ""
 
 # 8acb8155bef74744a60d5434b8756878
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada.ColladaReader:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada.ColladaReader:1
 msgid "Collada reader class"
 msgstr ""
 
 # 3a24533d672e4aa9a8a4d0ff29dba78a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:15
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada.ColladaReader.read:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:15
+#: ../../../simtrans/collada.pydocstring of
+#: simtrans.collada.ColladaReader.read:1
 msgid "Read collada model data given the file path"
 msgstr ""
 
 # 29efb830e98648aab1f785e6daad701d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada.ColladaWriter:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada.ColladaWriter:1
 msgid "Collada writer class"
 msgstr ""
 
 # 8251e7a72c864cdcbc9c258b9a0aa14e
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada.ColladaWriter.write:1
+#: ../../../simtrans/collada.pydocstring of
+#: simtrans.collada.ColladaWriter.write:1
 msgid "Write simulation model in collada format"
 msgstr ""
 
@@ -588,22 +522,20 @@ msgid "simtrans.graphviz"
 msgstr ""
 
 # 9462f535faa94b2db28d3e3cd01cf683
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz:1
+#: ../../../simtrans/graphviz.pydocstring of simtrans.graphviz:1
 msgid "Writer for graphviz dot format"
 msgstr ""
 
 # 9668edda638443f3b0b6de61501d1fec
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz.GraphvizWriter:1
+#: ../../../simtrans/graphviz.pydocstring of
+#: simtrans.graphviz.GraphvizWriter:1
 msgid "Graphviz writer class"
 msgstr ""
 
 # bee1d2ba6f164fb3af93d00ddd91987d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz:9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz.GraphvizWriter.write:1
+#: ../../../simtrans/graphviz.pydocstring of simtrans.graphviz:9
+#: ../../../simtrans/graphviz.pydocstring of
+#: simtrans.graphviz.GraphvizWriter.write:1
 msgid "Write simulation model in graphviz dot format"
 msgstr ""
 
@@ -613,37 +545,30 @@ msgid "simtrans.sdf"
 msgstr ""
 
 # c947ec2bd96046668219ffb116364ccd
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:1
 msgid "Reader and writer for SDF format"
 msgstr ""
 
 # e0d70acb78b54c1289902bfbf9cd5fa7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf.SDFReader:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFReader:1
 msgid "SDF reader class"
 msgstr ""
 
 # 7792e2b0336c413d89b4e7115a8db28a
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:15
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf.SDFReader.read:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:15
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFReader.read:1
 msgid "Read SDF model data given the model file"
 msgstr ""
 
 # ae8e1fbad8014bffa840cf490d2df1d8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf.SDFWriter:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFWriter:1
 msgid "SDF writer class"
 msgstr ""
 
 # 8f12a7e5547e4e948755f72e0754897d
 # aedeb2a5715441bf8ce82b8616cb0c5c
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:20
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf.SDFWriter.write:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:20
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFWriter.write:1
 msgid "Write simulation model in SDF format"
 msgstr ""
 
@@ -653,32 +578,27 @@ msgid "simtrans.stl"
 msgstr ""
 
 # 204522c634834eaea0c50a990321b9ee
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:1
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:1
 msgid "Reader and writer for stl format"
 msgstr ""
 
 # 6c42de9f3188433d95b6b59c9489b257
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl.STLReader:1
+#: ../../../simtrans/stl.pydocstring of simtrans.stl.STLReader:1
 msgid "STL reader class"
 msgstr ""
 
 # c62e476afe474633b40cec89a76fc1b9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl.STLReader.read:1
+#: ../../../simtrans/stl.pydocstring of simtrans.stl.STLReader.read:1
 msgid "Read mesh model in STL format"
 msgstr ""
 
 # fd72f185086a47cc93d971d68ca846ca
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl.STLWriter:1
+#: ../../../simtrans/stl.pydocstring of simtrans.stl.STLWriter:1
 msgid "STL writer class"
 msgstr ""
 
 # e0fe27b8e0cc4411a1f6f53bfd2993d6
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl.STLWriter.write:1
+#: ../../../simtrans/stl.pydocstring of simtrans.stl.STLWriter.write:1
 msgid ""
 "Write mesh model in STL format This method first generates collada and use "
 "meshlab to output stl"
@@ -690,114 +610,80 @@ msgid "simtrans.urdf"
 msgstr ""
 
 # 7f8e68f303bb4f5599184cb585969049
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:1
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:1
 msgid "Reader and writer for URDF format"
 msgstr ""
 
 # ed9ff3caae4d45ddac04f5f52cbbcb54
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:4
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:4
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:4
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:4
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:4
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:4
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:4
 msgid "AIST"
 msgstr ""
 
 # ec460aa874894fd98f40b0f53448dcac
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:7
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:7
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:7
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:7
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:7
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:7
 msgid "Requirements"
 msgstr ""
 
 # ddf76d53ee0d4acc89c3637133404de5
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:8
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:8
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:8
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:8
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:8
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:8
 msgid "numpy"
 msgstr ""
 
 # 572722b87d34442ca44f2b1edbc079a8
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:9
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:9
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:9
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:9
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:9
 msgid "lxml xml parser"
 msgstr ""
 
 # a51c7c8c650e45bf97dce11296000869
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:10
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:10
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:10
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:10
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:10
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:10
 msgid "jinja2 template engine"
 msgstr ""
 
 # a214271247b94189a530f6cf16a1e5c2
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:13
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz:7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf:13
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:13
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:13
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:13
+#: ../../../simtrans/graphviz.pydocstring of simtrans.graphviz:7
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf:13
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:13
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:13
 msgid "Examples"
 msgstr ""
 
 # b1340b1b5080494bb0a563553c68311f
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:15
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader.read:1
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:15
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:1
 msgid "Read URDF model data given the model file"
 msgstr ""
 
 # 1b3a86f0508b44b0adcce42cc35d0fee
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf:20
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter.write:1
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:20
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf:20
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:20
 msgid "Write simulation model in URDF format"
 msgstr ""
 
 # 42203196f27d4eef91d98dbfbf961ef2
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader:1
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader:1
 msgid "URDF reader class"
 msgstr ""
 
 # 75daa172eabd4b50ab3579711a5e8327
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter:1
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter:1
 msgid "URDF writer class"
 msgstr ""
 
@@ -807,50 +693,41 @@ msgid "simtrans.vrml"
 msgstr ""
 
 # d91bf9e76de6452dae8f8ae4346621ab
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:1
 msgid "Reader and writer for VRML format"
 msgstr ""
 
 # 16e4d92d4b9a4b228d113c3bbdc18a6d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml.VRMLReader:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLReader:1
 msgid "VRML reader class"
 msgstr ""
 
 # 43aaff15eca243878be9a236e94e48a6
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:15
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml.VRMLReader.read:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:15
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLReader.read:1
 msgid "Read vrml model data given the file path"
 msgstr ""
 
 # 142a30fb707d4ba5baf274cfd561d2de
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml.VRMLWriter:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLWriter:1
 msgid "VRML writer class"
 msgstr ""
 
 # 231b0a7b132a4f608f97d385cb9bc61d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/utils.pydocstring
-#: of simtrans.utils.findchildren:1
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.findchildren:1
 msgid "Find child joints connected to specified link"
 msgstr ""
 
 # fcc544a6787e4de4ae08496da8b1e123
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/utils.pydocstring
-#: of simtrans.utils.findroot:1
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.findroot:1
 msgid ""
 "Find root link from parent to child relationships. Currently based on "
 "following simple principle: - Link with no parent will be the root."
 msgstr ""
 
 # ef5ee7dbb05f4f679532d75b2ad411f7
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:31
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml.VRMLWriter.write:1
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:31
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLWriter.write:1
 msgid "Write simulation model in VRML format"
 msgstr ""
 
@@ -865,14 +742,12 @@ msgid "simtrans.utils"
 msgstr ""
 
 # 6dc5236ca391494aa8e0e49b7e2b8e0d
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/utils.pydocstring
-#: of simtrans.utils:1
+#: ../../../simtrans/utils.pydocstring of simtrans.utils:1
 msgid "Miscellaneous utility functions"
 msgstr ""
 
 # e207b0031fb2439cb30b66222934c5e6
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/utils.pydocstring
-#: of simtrans.utils.resolveFile:1
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.resolveFile:1
 msgid "Resolve file by replacing file path heading \"package://\" or \"model://\""
 msgstr ""
 
@@ -894,135 +769,117 @@ msgstr ""
 msgid "Bases: :class:`object`"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData:1
 msgid "Camera sensor data"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.cameraType:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.CameraData.cameraType:1
 msgid "Camera type"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.far:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData.far:1
 msgid "Far clip distance"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.fov:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData.fov:1
 msgid "Field of view (horizontal)"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.CameraData.near:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData.near:1
 msgid "Near clip distance"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.offsetPosition:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.offsetPosition:1
 msgid "Whether offset joint position or not"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.JointModel.velocitylimit:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.velocitylimit:1
 msgid "Velocity limits (upper and lower limits in 2-dim array)"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.RayData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.RayData:1
 msgid "Ray sensor data"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.name:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel.name:1
 msgid "Name"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/model.pydocstring
-#: of simtrans.model.SensorModel.rate:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel.rate:1
 msgid "Update rate of sensor"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/cli.pydocstring
-#: of simtrans.cli:1
+#: ../../../simtrans/cli.pydocstring of simtrans.cli:1
 msgid "simtrans command line interface"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/catxml.pydocstring
-#: of simtrans.catxml:1
+#: ../../../simtrans/catxml.pydocstring of simtrans.catxml:1
 msgid "Utility command to concatinate two or more xml files to one"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/gzfetch.pydocstring
-#: of simtrans.gzfetch:1
+#: ../../../simtrans/gzfetch.pydocstring of simtrans.gzfetch:1
 msgid "Utility command to fetch simulation model from gazebo's model database"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/collada.pydocstring
-#: of simtrans.collada:10
+#: ../../../simtrans/collada.pydocstring of simtrans.collada:10
 msgid "pycollada"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/graphviz.pydocstring
-#: of simtrans.graphviz:4
+#: ../../../simtrans/graphviz.pydocstring of simtrans.graphviz:4
 msgid "MID"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/sdf.pydocstring
-#: of simtrans.sdf.SDFWriter.write2:1
+#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFWriter.write2:1
 msgid ""
 "Write simulation model in SDF format (internally use urdf and convert to sdf"
 " using gz sdf utility)"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:9
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:9
 msgid "numpy-stl"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/stl.pydocstring
-#: of simtrans.stl:10
+#: ../../../simtrans/stl.pydocstring of simtrans.stl:10
 msgid "meshlab"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader.read:3
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:3
 msgid "path of the file to read"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader.read:4
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:4
 msgid "asset handler (optional)"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader.read:5
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter.write:3
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:5
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:3
 msgid "model data"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFReader.read:6
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:6
 msgid "model.Model"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter.write:4
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:4
 msgid "path of the file to save"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter.write:5
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/urdf.pydocstring
-#: of simtrans.urdf.URDFWriter.write:6
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:5
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:6
 msgid "None"
 msgstr ""
 
-#: ../../../../../../usr/local/lib/python2.7/dist-packages/simtrans-a07f3fe_dirty-py2.7.egg/simtrans/vrml.pydocstring
-#: of simtrans.vrml:9
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:9
 msgid "omniorb-python"
+msgstr ""
+
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.MeshTransformData.pretranslate:1
+msgid ""
+"Apply translation to vertex and normals to make translation matrix diagonal"
 msgstr ""
 
 #~ msgid "ベースクラス: :class:`simtrans.model.TransformationModel`"
