@@ -32,10 +32,10 @@ Finally, install simtrans:
    $ sudo python setup.py install
 
 
-Install most recent version of gazebo (optional)
-================================================
+Install most recent version of gazebo
+=====================================
 
-If you want to convert SDF1.5 based models (most of models for DRC tasks are SDF1.5 based), you have to install most recent version of gazebo simulator.
+To convert SDF1.5 based models (most of models for DRC tasks are SDF1.5 based), you have to install most recent version of gazebo simulator.
 
 Please refer to following page for installation of gazebo itself:
 
