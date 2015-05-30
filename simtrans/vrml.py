@@ -406,7 +406,7 @@ class VRMLWriter(object):
                     v.data.pretranslate()
                     m = {}
                     m['children'] = [v.data]
-                    with open(os.path.join(dirname, mdata.name + "-" + v.name + ".wrl"), 'w') as ofile:
+                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl"), 'w') as ofile:
                         ofile.write(template.render({
                             'name': v.name,
                             'ShapeModel': model.ShapeModel,
