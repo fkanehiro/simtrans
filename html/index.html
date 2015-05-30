@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Welcome to simtrans’s documentation! &mdash; simtrans 0.0.1 documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -34,7 +34,7 @@
         <link rel="next" title="Features" href="features.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -46,8 +46,14 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-nav-search">
         
-          <a href="#" class="fa fa-home"> simtrans</a>
+
         
+          <a href="#" class="icon icon-home"> simtrans
+        
+
+        
+        </a>
+
         
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -56,6 +62,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+
+        
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
@@ -69,7 +77,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#commandline-options">Commandline options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#commandline-options">Commandline options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#simtrans">simtrans</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
@@ -78,11 +89,59 @@
 <li class="toctree-l1"><a class="reference internal" href="screenshots.html">Screenshots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="simtrans.html">Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simtrans.html#common-data-structure">Common data structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simtrans.html#command-line-interface">Command-line interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simtrans.html#reader-and-writer">Reader and writer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simtrans.html#utility-functions">Utility functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simtrans.html#thirdparty-library">Thirdparty library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.html#common-data-structure">Common data structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.model">simtrans.model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.html#command-line-interface">Command-line interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.cli">simtrans.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.catxml">simtrans.catxml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.gzfetch">simtrans.gzfetch</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.html#reader-and-writer">Reader and writer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.collada">simtrans.collada</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.graphviz">simtrans.graphviz</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id1">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.sdf">simtrans.sdf</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id2">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id3">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.stl">simtrans.stl</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id4">Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.urdf">simtrans.urdf</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id5">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id6">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.vrml">simtrans.vrml</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id7">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.html#id8">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.html#utility-functions">Utility functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.html#module-simtrans.utils">simtrans.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simtrans.html#thirdparty-library">Thirdparty library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simtrans.thirdparty.html">simtrans.thirdparty package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.thirdparty.html#module-simtrans.thirdparty.hrputil">simtrans.thirdparty.hrputil</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simtrans.thirdparty.html#module-simtrans.thirdparty.transformations">simtrans.thirdparty.transformations</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,7 +171,9 @@
     <li>Welcome to simtrans&#8217;s documentation!</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
@@ -165,7 +226,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="features.html" class="btn btn-neutral float-right" title="Features">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="features.html" class="btn btn-neutral float-right" title="Features" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -178,10 +239,10 @@
         &copy; Copyright 2014, AIST.
     </p>
   </div>
-
   Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
+
 </footer>
+
         </div>
       </div>
 
