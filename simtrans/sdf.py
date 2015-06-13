@@ -288,6 +288,7 @@ class SDFReader(object):
                 m.data = model.CylinderData()
                 m.data.radius = float(g.find('radius').text)
                 m.data.height = float(g.find('length').text)
+                m.rot = tf.quaternion_multiply(m.rot, tf.quaternion_about_axis(numpy.pi/2, [1,0,0]))
             elif g.tag == 'sphere':
                 m.shapeType = model.ShapeModel.SP_SPHERE
                 m.data = model.SphereData()
