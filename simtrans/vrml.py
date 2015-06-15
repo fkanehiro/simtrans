@@ -352,6 +352,7 @@ class VRMLWriter(object):
                 rootjoint = model.JointModel()
                 rootjoint.name = root
                 rootjoint.jointType = "free"
+                rootjoint.matrix = rootlink.getmatrix()
         else:
             if len(joints) > 0:
                 root = joints[0]
@@ -361,6 +362,7 @@ class VRMLWriter(object):
             rootjoint = model.JointModel()
             rootjoint.name = root
             rootjoint.jointType = "free"
+            rootjoint.matrix = rootlink.getmatrix()
 
         if len(joints) == 0:
             joints = [root]
