@@ -332,12 +332,12 @@ class VRMLWriter(object):
         joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._ignore]
 
         # first convert data structure (VRML uses tree structure)
-        nmodel = {}
+        rmodel = {}
+        rmodel['children'] = []
         self._linkmap['world'] = model.LinkModel()
         for m in mdata.links:
             self._linkmap[m.name] = m
-        if len(self._roots) > 0:
-            root = self._roots[0]
+        for root in self._roots:
             if root == 'world':
                 roots = utils.findchildren(mdata, root)
                 if len(roots) == 1:
@@ -353,34 +353,22 @@ class VRMLWriter(object):
                 rootjoint.name = root
                 rootjoint.jointType = "free"
                 rootjoint.matrix = rootlink.getmatrix()
-        else:
-            if len(joints) > 0:
-                root = joints[0]
-            else:
-                root = 'waist'
-            rootlink = mdata.links[0]
-            rootjoint = model.JointModel()
-            rootjoint.name = root
-            rootjoint.jointType = "free"
-            rootjoint.matrix = rootlink.getmatrix()
-
-        if len(joints) == 0:
-            joints = [root]
-
-        nmodel['link'] = rootlink
-        nmodel['joint'] = rootjoint
-        nmodel['jointtype'] = rootjoint.jointType
-        nmodel['children'] = self.convertchildren(mdata, root)
-        rmodel = {}
-        rmodel['children'] = [nmodel]
+            if root not in joints:
+                joints.append(root)
+            nmodel = {}
+            nmodel['link'] = rootlink
+            nmodel['joint'] = rootjoint
+            nmodel['jointtype'] = rootjoint.jointType
+            nmodel['children'] = self.convertchildren(mdata, root)
+            rmodel['children'].append(nmodel)
 
         # assign jointId
         jointmap = {root: 0}
-        for j in mdata.joints:
-            jointmap[j.name] = 0
+        for j in joints:
+            jointmap[j] = 0
         jointcount = 1
-        for j in mdata.joints:
-            jointmap[j.name] = jointcount
+        for j in joints:
+            jointmap[j] = jointcount
             jointcount = jointcount + 1
 
         # render the data structure using template
