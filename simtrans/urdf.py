@@ -77,7 +77,7 @@ class URDFReader(object):
             inertial = l.find('inertial')
             if inertial is not None:
                 lm.mass = float(inertial.find('mass').attrib['value'])
-                lm.centerofmass = [float(v) for v in inertial.find('origin').attrib['xyz'].split(' ')]
+                lm.centerofmass = [float(v) for v in re.split(' +', inertial.find('origin').attrib['xyz'].strip(' '))]
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             lm.visuals = []
@@ -99,7 +99,7 @@ class URDFReader(object):
                 self.readOrigin(jm, origin)
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = [float(v) for v in axis.attrib['xyz'].split(' ')]
+                jm.axis = [float(v) for v in re.split(' +', axis.attrib['xyz'].strip(' '))]
             jm.parent = j.find('parent').attrib['link']
             jm.child = j.find('child').attrib['link']
             # phisical property
@@ -174,7 +174,7 @@ class URDFReader(object):
                     reader = stl.STLReader()
                 sm.data = reader.read(filename, assethandler=self._assethandler)
                 try:
-                    scales = [float(v) for v in g.attrib['scale'].split(' ')]
+                    scales = [float(v) for v in re.split(' +', g.attrib['scale'].strip(' '))]
                     if scales[0] != 0.0:
                         d = model.MeshTransformData()
                         d.matrix = tf.scale_matrix(scales[0])
@@ -185,7 +185,7 @@ class URDFReader(object):
             elif g.tag == 'box':
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()
-                boxsize = [float(s) for s in g.attrib['size'].split(' ')]
+                boxsize = [float(s) for s in re.split(' +', g.attrib['size'].strip(' '))]
                 sm.data.x = boxsize[0]
                 sm.data.y = boxsize[1]
                 sm.data.z = boxsize[2]

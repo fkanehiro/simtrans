@@ -43,6 +43,7 @@ with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
 import jinja2
+import re
 from . import model
 from . import urdf
 from . import collada
@@ -105,7 +106,7 @@ class SDFReader(object):
                 lm.mass = float(inertial.find('mass').text)
                 pose = inertial.find('pose')
                 if pose is not None:
-                    lm.centerofmass = [float(v) for v in pose.text.strip(' ').split(' ')][0:3]
+                    lm.centerofmass = [float(v) for v in re.split(' +', pose.text.strip(' '))][0:3]
                 lm.inertia = self.readInertia(inertial.find('inertia'))
             # visual property
             lm.visuals = []
@@ -139,7 +140,7 @@ class SDFReader(object):
                     pass
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = [float(v) for v in axis.find('xyz').text.split(' ')]
+                jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
                     damping = dynamics.find('damping')
@@ -207,7 +208,7 @@ class SDFReader(object):
             self.convertchildren(mdata, cjoint)
 
     def readPose(self, m, doc):
-        pose = numpy.array([float(v) for v in doc.text.split(' ')])
+        pose = numpy.array([float(v) for v in re.split(' +', doc.text.strip(' '))])
         m.trans = pose[0:3]
         m.rot = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
 
@@ -254,7 +255,7 @@ class SDFReader(object):
                     raise Exception('unsupported mesh format: %s' % fileext)
                 scale = g.find('scale')
                 if scale is not None:
-                    m.scale = numpy.array([float(v) for v in scale.text.split(' ')])
+                    m.scale = numpy.array([float(v) for v in re.split(' +', scale.text.strip(' '))])
                 submesh = g.find('submesh')
                 if submesh is not None:
                     submeshname = submesh.find('name').text
@@ -278,7 +279,7 @@ class SDFReader(object):
                     m.data = reader.read(filename, assethandler=self._assethandler)
             elif g.tag == 'box':
                 m.shapeType = model.ShapeModel.SP_BOX
-                boxsize = [float(v) for v in g.find('size').text.split(' ')]
+                boxsize = [float(v) for v in re.split(' +', g.find('size').text.strip(' '))]
                 m.data = model.BoxData()
                 m.data.x = boxsize[0]
                 m.data.y = boxsize[1]
