@@ -69,18 +69,25 @@ def findroot(mdata):
     >>> findroot(m)[0]
     'base_footprint'
     '''
-    joints = {}
+    links = {}
+    usedlinks = {}
     for j in mdata.joints:
         try:
-            joints[j.parent] = joints[j.parent] + 1
+            links[j.parent] = links[j.parent] + 1
         except KeyError:
-            joints[j.parent] = 1
+            links[j.parent] = 1
+        usedlinks[j.parent] = True
+        usedlinks[j.child] = True
     for j in mdata.joints:
         try:
-            del joints[j.child]
+            del links[j.child]
         except KeyError:
             pass
-    return [j[0] for j in sorted(joints.items(), key=lambda x: x[1], reverse=True)]
+    ret = [l[0] for l in sorted(links.items(), key=lambda x: x[1], reverse=True)]
+    for l in mdata.links:
+        if not usedlinks.has_key(l.name):
+            ret.append(l.name)
+    return ret
 
 
 def findchildren(mdata, linkname):
