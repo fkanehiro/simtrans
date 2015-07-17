@@ -516,12 +516,12 @@
         <span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="ow">in</span> <span class="n">links</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="p">]</span>
 
         <span class="c"># first convert data structure (VRML uses tree structure)</span>
-        <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rmodel</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
                 <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -537,34 +537,22 @@
                 <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
                 <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;free&quot;</span>
                 <span class="n">rootjoint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">root</span> <span class="o">=</span> <span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">root</span> <span class="o">=</span> <span class="s">&#39;waist&#39;</span>
-            <span class="n">rootlink</span> <span class="o">=</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
-            <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
-            <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;free&quot;</span>
-            <span class="n">rootjoint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">root</span><span class="p">]</span>
-
-        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
-        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span>
-        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span>
-        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
-        <span class="n">rmodel</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">nmodel</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">root</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+                <span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+            <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmodel</span><span class="p">)</span>
 
         <span class="c"># assign jointId</span>
         <span class="n">jointmap</span> <span class="o">=</span> <span class="p">{</span><span class="n">root</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">jointcount</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jointcount</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">jointcount</span>
             <span class="n">jointcount</span> <span class="o">=</span> <span class="n">jointcount</span> <span class="o">+</span> <span class="mi">1</span>
 
         <span class="c"># render the data structure using template</span>
