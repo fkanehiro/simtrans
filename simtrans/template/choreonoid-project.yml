@@ -1,0 +1,69 @@
+items: 
+  id: 0
+  name: "Root"
+  plugin: Base
+  class: RootItem
+  children: 
+    - 
+      id: 1
+      name: "World"
+      plugin: Body
+      class: WorldItem
+      data: 
+        collisionDetection: false
+        collisionDetector: AISTCollisionDetector
+      children:
+        - 
+          id: 2
+          name: "AISTSimulator"
+          plugin: Body
+          class: AISTSimulatorItem
+          data: 
+            realtimeSync: false
+            recording: true
+            timeRangeMode: TimeBar range
+            onlyActiveControlPeriod: true
+            timeLength: 3
+            allLinkPositionOutputMode: false
+            deviceStateOutput: true
+            dynamicsMode: Forward dynamics
+            integrationMode: Runge Kutta
+            gravity: [ 0, 0, -9.80665 ]
+            staticFriction: 0.5
+            slipFriction: 0.5
+            cullingThresh: 0.01
+            contactCullingDepth: 0.05
+            errorCriterion: 0.001
+            maxNumIterations: 1000
+            contactCorrectionDepth: 0.0001
+            contactCorrectionVelocityRatio: 30
+            kinematicWalking: false
+            2Dmode: false
+      {%- set id = 2 %}
+      {%- for fname, link in models.items() %}
+      {%- set id = id + 1 %}
+      {%- set trans = link.gettranslation() %}
+      {%- set angle = link.getangle() %}
+        - 
+          id: {{id}}
+          name: "{{link.name}}"
+          plugin: Body
+          class: BodyItem
+          data:
+            modelFile: "{{fname}}"
+            currentBaseLink: "BASE"
+            rootPosition: [ {{trans[0]}}, {{trans[1]}}, {{trans[2]}} ]
+            rootAttitude: [
+              1, 0, 0,
+              0, 1, 0,
+              0, 0, 1 ]
+            jointPositions: [  ]
+            initialRootPosition: [ {{trans[0]}}, {{trans[1]}}, {{trans[2]}} ]
+            initialRootAttitude: [
+              1, 0, 0,
+              0, 1, 0,
+              0, 0, 1 ]
+            zmp: [ 0, 0, 0 ]
+            selfCollisionDetection: false
+            isEditable: true
+      {%- endfor %}
