@@ -373,16 +373,17 @@ class VRMLWriter(object):
             }))
 
         # render choreonoid project
-        template = env.get_template('choreonoid-project.yml')
-        with open(fname.replace('.wrl', '-project.yml'), 'w') as ofile:
+        template = env.get_template('choreonoid-project.yaml')
+        with open(fname.replace('.wrl', '-project.cnoid'), 'w') as ofile:
             ofile.write(template.render({
                 'models': modelfiles,
             }))
 
     def convertchildren(self, mdata, linkname):
+        return self.convertchildrensub(mdata, linkname, [], [])
+
+    def convertchildrensub(self, mdata, linkname, joints, links):
         children = []
-        joints = []
-        links = []
         for cjoint in utils.findchildren(mdata, linkname):
             nmodel = {}
             nmodel['joint'] = cjoint
@@ -392,10 +393,10 @@ class VRMLWriter(object):
             except KeyError:
                 #print "warning: unable to find child link %s" % cjoint.child
                 pass
-            (children, cjoints, clinks) = self.convertchildren(mdata, cjoint.child)
-            nmodel['children'] = children
+            (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
+            nmodel['children'] = cchildren
             children.append(nmodel)
-            joints.append(cjoint)
+            joints.append(cjoint.name)
             links.append(cjoint.child)
         return (children, joints, links)
 
@@ -423,7 +424,7 @@ class VRMLWriter(object):
 
         with open(fname, 'w') as ofile:
             ofile.write(template.render({
-                'model': nmodel,
+                'model': {'name':rootlink.name, 'children':[nmodel]},
                 'body': mdata,
                 'links': links,
                 'joints': joints,

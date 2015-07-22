@@ -43,7 +43,7 @@ items:
       {%- for fname, link in models.items() %}
       {%- set id = id + 1 %}
       {%- set trans = link.gettranslation() %}
-      {%- set angle = link.getangle() %}
+      {%- set angle = link.getmatrix() %}
         - 
           id: {{id}}
           name: "{{link.name}}"
@@ -51,18 +51,18 @@ items:
           class: BodyItem
           data:
             modelFile: "{{fname}}"
-            currentBaseLink: "BASE"
+            currentBaseLink: ""
             rootPosition: [ {{trans[0]}}, {{trans[1]}}, {{trans[2]}} ]
             rootAttitude: [
-              1, 0, 0,
-              0, 1, 0,
-              0, 0, 1 ]
+              {{angle[0][0]}}, {{angle[0][1]}}, {{angle[0][2]}},
+              {{angle[1][0]}}, {{angle[1][1]}}, {{angle[1][2]}},
+              {{angle[2][0]}}, {{angle[2][1]}}, {{angle[2][2]}} ]
             jointPositions: [  ]
             initialRootPosition: [ {{trans[0]}}, {{trans[1]}}, {{trans[2]}} ]
             initialRootAttitude: [
-              1, 0, 0,
-              0, 1, 0,
-              0, 0, 1 ]
+              {{angle[0][0]}}, {{angle[0][1]}}, {{angle[0][2]}},
+              {{angle[1][0]}}, {{angle[1][1]}}, {{angle[1][2]}},
+              {{angle[2][0]}}, {{angle[2][1]}}, {{angle[2][2]}} ]
             zmp: [ 0, 0, 0 ]
             selfCollisionDetection: false
             isEditable: true
