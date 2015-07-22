@@ -318,78 +318,40 @@ class VRMLWriter(object):
         '''
         fpath, fext = os.path.splitext(fname)
         basename = os.path.basename(fpath)
+        dirname = os.path.dirname(fname)
         if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
         # find root joint (including local peaks)
         self._roots = utils.findroot(mdata)
-        self._ignore = self._roots[1:]
-        self._ignore.append('world')
-
-        # list non empty link
-        links = [l.name for l in mdata.links if len(l.visuals) > 0 and l.name not in self._ignore]
-        # list joint with parent
-        joints = [j.name for j in mdata.joints if j.child in links and j.parent not in self._ignore]
-
-        # first convert data structure (VRML uses tree structure)
-        rmodel = {}
-        rmodel['children'] = []
-        self._linkmap['world'] = model.LinkModel()
-        for m in mdata.links:
-            self._linkmap[m.name] = m
-        for root in self._roots:
-            if root == 'world':
-                roots = utils.findchildren(mdata, root)
-                if len(roots) == 1:
-                    root = utils.findchildren(mdata, root)[0].child
-                rootlink = self._linkmap[root]
-                # print("root joint is world. using %s as root" % root)
-                rootjoint = model.JointModel()
-                rootjoint.name = root
-                rootjoint.jointType = "fixed"
-            else:
-                rootlink = self._linkmap[root]
-                rootjoint = model.JointModel()
-                rootjoint.name = root
-                rootjoint.jointType = "free"
-                rootjoint.matrix = rootlink.getmatrix()
-            if root not in joints:
-                joints.append(root)
-            nmodel = {}
-            nmodel['link'] = rootlink
-            nmodel['joint'] = rootjoint
-            nmodel['jointtype'] = rootjoint.jointType
-            nmodel['children'] = self.convertchildren(mdata, root)
-            rmodel['children'].append(nmodel)
-
-        # assign jointId
-        jointmap = {root: 0}
-        for j in joints:
-            jointmap[j] = 0
-        jointcount = 1
-        for j in joints:
-            jointmap[j] = jointcount
-            jointcount = jointcount + 1
 
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
         env = jinja2.Environment(loader=loader)
 
-        # render main vrml file
-        template = env.get_template('vrml.wrl')
-        with open(fname, 'w') as ofile:
-            ofile.write(template.render({
-                'model': rmodel,
-                'body': mdata,
-                'links': links,
-                'joints': joints,
-                'jointmap': jointmap,
-                'ShapeModel': model.ShapeModel
-            }))
+        self._linkmap['world'] = model.LinkModel()
+        for m in mdata.links:
+            self._linkmap[m.name] = m
 
+        # render main vrml file for each bodies
+        template = env.get_template('vrml.wrl')
+        modelfiles = {}
+        for root in self._roots:
+            # first convert data structure (VRML uses tree structure)
+            if root == 'world':
+                roots = utils.findchildren(mdata, root)
+                for r in roots:
+                    # print("root joint is world. using %s as root" % root)
+                    mfname = os.path.join(dirname, mdata.name + "-" + r.child + ".wrl")
+                    self.renderchildren(mdata, r.child, "fixed", mfname, template)
+                    modelfiles[mfname] = self._linkmap[r.child]
+            else:
+                mfname = os.path.join(dirname, mdata.name + "-" + root + ".wrl")
+                self.renderchildren(mdata, root, "free", mfname, template)
+                modelfiles[mfname] = self._linkmap[root]
+        
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
-        dirname = os.path.dirname(fname)
         for l in mdata.links:
             for v in l.visuals:
                 if v.shapeType == model.ShapeModel.SP_MESH:
@@ -407,12 +369,20 @@ class VRMLWriter(object):
         template = env.get_template('openhrp-project.xml')
         with open(fname.replace('.wrl', '-project.xml'), 'w') as ofile:
             ofile.write(template.render({
-                'model': mdata,
-                'root': root,
-                'fname': fname
+                'models': modelfiles,
+            }))
+
+        # render choreonoid project
+        template = env.get_template('choreonoid-project.yaml')
+        with open(fname.replace('.wrl', '-project.cnoid'), 'w') as ofile:
+            ofile.write(template.render({
+                'models': modelfiles,
             }))
 
     def convertchildren(self, mdata, linkname):
+        return self.convertchildrensub(mdata, linkname, [], [])
+
+    def convertchildrensub(self, mdata, linkname, joints, links):
         children = []
         for cjoint in utils.findchildren(mdata, linkname):
             nmodel = {}
@@ -423,9 +393,44 @@ class VRMLWriter(object):
             except KeyError:
                 #print "warning: unable to find child link %s" % cjoint.child
                 pass
-            nmodel['children'] = self.convertchildren(mdata, cjoint.child)
+            (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
+            nmodel['children'] = cchildren
             children.append(nmodel)
-        return children
+            joints.append(cjoint.name)
+            links.append(cjoint.child)
+        return (children, joints, links)
+
+    def renderchildren(self, mdata, root, jointtype, fname, template):
+        (children, joints, links) = self.convertchildren(mdata, root)
+        nmodel = {}
+        rootlink = self._linkmap[root]
+        rootjoint = model.JointModel()
+        rootjoint.name = root
+        rootjoint.jointType = jointtype
+        rootjoint.matrix = rootlink.getmatrix()
+        nmodel['link'] = rootlink
+        nmodel['joint'] = rootjoint
+        nmodel['jointtype'] = rootjoint.jointType
+        nmodel['children'] = children
+
+        # assign jointId
+        jointmap = {root: 0}
+        for j in joints:
+            jointmap[j] = 0
+        jointcount = 1
+        for j in joints:
+            jointmap[j] = jointcount
+            jointcount = jointcount + 1
+
+        with open(fname, 'w') as ofile:
+            ofile.write(template.render({
+                'model': {'name':rootlink.name, 'children':[nmodel]},
+                'body': mdata,
+                'links': links,
+                'joints': joints,
+                'jointmap': jointmap,
+                'ShapeModel': model.ShapeModel
+            }))
 
     def convertjointtype(self, t):
         if t == model.JointModel.J_FIXED:

@@ -154,6 +154,7 @@ class JointModel(TransformationModel):
     """
     J_FIXED = 'fixed'            #: Fixed type
     J_REVOLUTE = 'revolute'      #: Revolute type
+    J_REVOLUTE2 = 'revolute2'    #: Revolute (2-axis) type
     J_PRISMATIC = 'prismatic'    #: Prismatic type
     J_SCREW = 'screw'            #: Screw type
     J_CONTINUOUS = 'continuous'  #: Continuous type

@@ -114,7 +114,7 @@ DEF {{j.name}} ExtraJoint {
 }
 {%- endfor %}
 
-DEF {{body.name}} Humanoid {
+DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
     {%- if l.link and (l.link.visuals|length or l.children|length) %}
@@ -196,6 +196,6 @@ DEF {{body.name}} Humanoid {
     USE {{l}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
-  name "{{body.name}}"
+  name "{{model.name}}"
   version "1.0"
 }
