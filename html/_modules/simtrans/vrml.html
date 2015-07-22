@@ -502,78 +502,40 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">fpath</span><span class="p">,</span> <span class="n">fext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">basename</span>
 
         <span class="c"># find root joint (including local peaks)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">mdata</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;world&#39;</span><span class="p">)</span>
-
-        <span class="c"># list non empty link</span>
-        <span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="p">]</span>
-        <span class="c"># list joint with parent</span>
-        <span class="n">joints</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span> <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="ow">in</span> <span class="n">links</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span><span class="p">]</span>
-
-        <span class="c"># first convert data structure (VRML uses tree structure)</span>
-        <span class="n">rmodel</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
-        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
-                <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">root</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">child</span>
-                <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
-                <span class="c"># print(&quot;root joint is world. using %s as root&quot; % root)</span>
-                <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
-                <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
-                <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;fixed&quot;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
-                <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
-                <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
-                <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="s">&quot;free&quot;</span>
-                <span class="n">rootjoint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">root</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
-                <span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-            <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
-            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span>
-            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span>
-            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
-            <span class="n">rmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmodel</span><span class="p">)</span>
-
-        <span class="c"># assign jointId</span>
-        <span class="n">jointmap</span> <span class="o">=</span> <span class="p">{</span><span class="n">root</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
-            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">jointcount</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
-            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">jointcount</span>
-            <span class="n">jointcount</span> <span class="o">=</span> <span class="n">jointcount</span> <span class="o">+</span> <span class="mi">1</span>
 
         <span class="c"># render the data structure using template</span>
         <span class="n">loader</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span> <span class="s">&#39;template&#39;</span><span class="p">)</span>
         <span class="n">env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">loader</span><span class="p">)</span>
 
-        <span class="c"># render main vrml file</span>
-        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;vrml.wrl&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
-                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">rmodel</span><span class="p">,</span>
-                <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="n">mdata</span><span class="p">,</span>
-                <span class="s">&#39;links&#39;</span><span class="p">:</span> <span class="n">links</span><span class="p">,</span>
-                <span class="s">&#39;joints&#39;</span><span class="p">:</span> <span class="n">joints</span><span class="p">,</span>
-                <span class="s">&#39;jointmap&#39;</span><span class="p">:</span> <span class="n">jointmap</span><span class="p">,</span>
-                <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span>
-            <span class="p">}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="s">&#39;world&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
 
+        <span class="c"># render main vrml file for each bodies</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;vrml.wrl&#39;</span><span class="p">)</span>
+        <span class="n">modelfiles</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span><span class="p">:</span>
+            <span class="c"># first convert data structure (VRML uses tree structure)</span>
+            <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="s">&#39;world&#39;</span><span class="p">:</span>
+                <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+                    <span class="c"># print(&quot;root joint is world. using %s as root&quot; % root)</span>
+                    <span class="n">mfname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">child</span> <span class="o">+</span> <span class="s">&quot;.wrl&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">renderchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">child</span><span class="p">,</span> <span class="s">&quot;fixed&quot;</span><span class="p">,</span> <span class="n">mfname</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+                    <span class="n">modelfiles</span><span class="p">[</span><span class="n">mfname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mfname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">mdata</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">+</span> <span class="n">root</span> <span class="o">+</span> <span class="s">&quot;.wrl&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">renderchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s">&quot;free&quot;</span><span class="p">,</span> <span class="n">mfname</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+                <span class="n">modelfiles</span><span class="p">[</span><span class="n">mfname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+        
         <span class="c"># render mesh vrml file for each links</span>
         <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;vrml-mesh.wrl&#39;</span><span class="p">)</span>
-        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span><span class="p">:</span>
@@ -591,12 +553,20 @@
         <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;openhrp-project.xml&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.wrl&#39;</span><span class="p">,</span> <span class="s">&#39;-project.xml&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
             <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
-                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="n">mdata</span><span class="p">,</span>
-                <span class="s">&#39;root&#39;</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span>
-                <span class="s">&#39;fname&#39;</span><span class="p">:</span> <span class="n">fname</span>
+                <span class="s">&#39;models&#39;</span><span class="p">:</span> <span class="n">modelfiles</span><span class="p">,</span>
+            <span class="p">}))</span>
+
+        <span class="c"># render choreonoid project</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&#39;choreonoid-project.yaml&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.wrl&#39;</span><span class="p">,</span> <span class="s">&#39;-project.cnoid&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                <span class="s">&#39;models&#39;</span><span class="p">:</span> <span class="n">modelfiles</span><span class="p">,</span>
             <span class="p">}))</span>
 </div>
 <div class="viewcode-block" id="VRMLWriter.convertchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertchildren">[docs]</a>    <span class="k">def</span> <span class="nf">convertchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildrensub</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+</div>
+<div class="viewcode-block" id="VRMLWriter.convertchildrensub"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertchildrensub">[docs]</a>    <span class="k">def</span> <span class="nf">convertchildrensub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
         <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cjoint</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
             <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
@@ -607,9 +577,44 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="c">#print &quot;warning: unable to find child link %s&quot; % cjoint.child</span>
                 <span class="k">pass</span>
-            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">cchildren</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildrensub</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+            <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cchildren</span>
             <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmodel</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">children</span>
+            <span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cjoint</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="VRMLWriter.renderchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.renderchildren">[docs]</a>    <span class="k">def</span> <span class="nf">renderchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">jointtype</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+        <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+        <span class="n">rootjoint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
+        <span class="n">rootjoint</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">jointtype</span>
+        <span class="n">rootjoint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">rootlink</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootlink</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;joint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;jointtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootjoint</span><span class="o">.</span><span class="n">jointType</span>
+        <span class="n">nmodel</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">children</span>
+
+        <span class="c"># assign jointId</span>
+        <span class="n">jointmap</span> <span class="o">=</span> <span class="p">{</span><span class="n">root</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">jointcount</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">:</span>
+            <span class="n">jointmap</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">jointcount</span>
+            <span class="n">jointcount</span> <span class="o">=</span> <span class="n">jointcount</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+            <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
+                <span class="s">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">rootlink</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;children&#39;</span><span class="p">:[</span><span class="n">nmodel</span><span class="p">]},</span>
+                <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="n">mdata</span><span class="p">,</span>
+                <span class="s">&#39;links&#39;</span><span class="p">:</span> <span class="n">links</span><span class="p">,</span>
+                <span class="s">&#39;joints&#39;</span><span class="p">:</span> <span class="n">joints</span><span class="p">,</span>
+                <span class="s">&#39;jointmap&#39;</span><span class="p">:</span> <span class="n">jointmap</span><span class="p">,</span>
+                <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span>
+            <span class="p">}))</span>
 </div>
 <div class="viewcode-block" id="VRMLWriter.convertjointtype"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertjointtype">[docs]</a>    <span class="k">def</span> <span class="nf">convertjointtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span><span class="p">:</span>
