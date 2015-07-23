@@ -147,6 +147,39 @@ class LinkModel(TransformationModel):
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
 
+    def translate(self, mat):
+        self.matrix = numpy.dot(self.getmatrix(), mat)
+        self.trans = None
+        self.rot = None
+        for v in self.visuals:
+            v.matrix = numpy.dot(v.getmatrix(), mat)
+            v.trans = None
+            v.rot = None
+        for c in self.collisions:
+            c.matrix = numpy.dot(c.getmatrix(), mat)
+            c.trans = None
+            c.rot = None
+        if self.centerofmass is not None:
+            self.centerofmass[0] += mat[0, 3]
+            self.centerofmass[1] += mat[1, 3]
+            self.centerofmass[2] += mat[2, 3]
+        if self.inertia is not None:
+            # same as dMassTranslate function of ODE
+            chat = self.crossmat(self.centerofmass)
+            ahat = self.crossmat(self.centerofmass + mat[:3, 3])
+            t1 = numpy.dot(ahat, ahat)
+            t2 = numpy.dot(chat, chat)
+            self.inertia += self.mass * (t1 - t2)
+
+    def crossmat(self, c):
+        chat = numpy.zeros([3, 3])
+        chat[1][2] = c[0]
+        chat[2][1] = -c[0]
+        chat[2][0] = c[1]
+        chat[0][2] = -c[1]
+        chat[0][1] = c[2]
+        chat[1][0] = -c[2]
+        return chat
 
 class JointModel(TransformationModel):
     """
