@@ -318,12 +318,24 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">readPose</span><span class="p">(</span><span class="n">jm</span><span class="p">,</span> <span class="n">pose</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">jm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">trans</span>
-                    <span class="n">jm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">rot</span>
+                    <span class="n">jm</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">child</span><span class="p">]</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
+                    <span class="n">jm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="n">jm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
+            <span class="c"># pose is relative to parent link</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">parentinv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">jm</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">())</span>
+                <span class="n">jm</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">jm</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(),</span> <span class="n">parentinv</span><span class="p">)</span>
+                <span class="n">jm</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">jm</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
             <span class="n">axis</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;axis&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;use_parent_model_frame&#39;</span><span class="p">):</span>
+                    <span class="c"># TODO: have to implement this option</span>
+                    <span class="k">pass</span>
                 <span class="n">jm</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; +&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;xyz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))]</span>
                 <span class="n">dynamics</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;dynamics&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">dynamics</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -351,6 +363,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">bm</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jm</span><span class="p">)</span>
 
+        <span class="c"># convert all link position to relative</span>
         <span class="n">roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">bm</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">root</span> <span class="o">=</span> <span class="n">roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -375,10 +388,12 @@
         <span class="n">absparent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span>
         <span class="n">abschild</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">joint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
         <span class="n">parentmat</span> <span class="o">=</span> <span class="n">absparent</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
+        <span class="n">jointmat</span> <span class="o">=</span> <span class="n">joint</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
         <span class="n">childmat</span> <span class="o">=</span> <span class="n">abschild</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">()</span>
         <span class="n">parentinv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">parentmat</span><span class="p">)</span>
         <span class="c">#childinv = numpy.linalg.pinv(childmat)</span>
-        <span class="n">joint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">parentinv</span><span class="p">,</span> <span class="n">childmat</span><span class="p">)</span>
+        <span class="c"># position of joint is relative to parent frame (same as URDF)</span>
+        <span class="n">joint</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">parentinv</span><span class="p">,</span> <span class="n">jointmat</span><span class="p">)</span>
         <span class="n">joint</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">joint</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">joint</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
