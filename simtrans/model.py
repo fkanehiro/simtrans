@@ -147,6 +147,24 @@ class LinkModel(TransformationModel):
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
 
+    def translate(self, mat):
+        self.matrix = numpy.dot(self.getmatrix(), mat)
+        self.trans = None
+        self.rot = None
+        for v in self.visuals:
+            v.matrix = numpy.dot(v.getmatrix(), mat)
+            v.trans = None
+            v.rot = None
+        for c in self.collisions:
+            c.matrix = numpy.dot(c.getmatrix(), mat)
+            c.trans = None
+            c.rot = None
+        if self.centerofmass is not None:
+            #self.centerofmass = numpy.dot(self.centerofmass, mat)
+            pass
+        if self.inertia is not None:
+            pass
+
 
 class JointModel(TransformationModel):
     """

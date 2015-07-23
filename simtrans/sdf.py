@@ -134,12 +134,24 @@ class SDFReader(object):
                 self.readPose(jm, pose)
             else:
                 try:
-                    jm.trans = self._linkmap[jm.parent].trans
-                    jm.rot = self._linkmap[jm.parent].rot
+                    jm.matrix = self._linkmap[jm.child].getmatrix()
+                    jm.trans = None
+                    jm.rot = None
                 except KeyError:
                     pass
+            # pose is relative to parent link
+            try:
+                parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
+                jm.matrix = numpy.dot(jm.getmatrix(), parentinv)
+                jm.trans = None
+                jm.rot = None
+            except KeyError:
+                pass
             axis = j.find('axis')
             if axis is not None:
+                if axis.find('use_parent_model_frame'):
+                    # TODO: have to implement this option
+                    pass
                 jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
@@ -167,6 +179,7 @@ class SDFReader(object):
             else:
                 bm.joints.append(jm)
 
+        # convert all link position to relative
         roots = utils.findroot(bm)
         if len(roots) > 0:
             root = roots[0]
@@ -191,10 +204,12 @@ class SDFReader(object):
         absparent = self._linkmap[joint.parent]
         abschild = self._linkmap[joint.child]
         parentmat = absparent.getmatrix()
+        jointmat = joint.getmatrix()
         childmat = abschild.getmatrix()
         parentinv = numpy.linalg.pinv(parentmat)
         #childinv = numpy.linalg.pinv(childmat)
-        joint.matrix = numpy.dot(parentinv, childmat)
+        # position of joint is relative to parent frame (same as URDF)
+        joint.matrix = numpy.dot(parentinv, jointmat)
         joint.trans = None
         joint.rot = None
         if joint.axis is not None:

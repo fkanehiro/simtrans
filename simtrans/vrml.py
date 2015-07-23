@@ -389,11 +389,14 @@ class VRMLWriter(object):
             nmodel['joint'] = cjoint
             nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
             try:
-                nmodel['link'] = self._linkmap[cjoint.child]
+                link = self._linkmap[cjoint.child]
             except KeyError:
                 #print "warning: unable to find child link %s" % cjoint.child
                 pass
+            if not numpy.allclose(cjoint.getmatrix(), link.getmatrix()):
+                link.translate(numpy.linalg.pinv(cjoint.getmatrix()))
             (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
+            nmodel['link'] = link
             nmodel['children'] = cchildren
             children.append(nmodel)
             joints.append(cjoint.name)
