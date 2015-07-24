@@ -40,10 +40,12 @@ items:
             kinematicWalking: false
             2Dmode: false
       {%- set id = 2 %}
+      {%- set ids = [] %}
       {%- for fname, link in models.items() %}
       {%- set id = id + 1 %}
       {%- set trans = link.gettranslation() %}
       {%- set angle = link.getmatrix() %}
+      {%- do ids.append(id) %}
         - 
           id: {{id}}
           name: "{{link.name}}"
@@ -67,3 +69,14 @@ items:
             selfCollisionDetection: false
             isEditable: true
       {%- endfor %}
+views:
+  -
+    id: 0
+    plugin: Base
+    class: ItemTreeView
+    mounted: true
+    state:
+      checked: [ {{ids|join(',')}} ]
+toolbars:
+  "TimeBar":
+    frameRate: 1000
