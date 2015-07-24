@@ -327,7 +327,7 @@ class VRMLWriter(object):
 
         # render the data structure using template
         loader = jinja2.PackageLoader(self.__module__, 'template')
-        env = jinja2.Environment(loader=loader)
+        env = jinja2.Environment(loader=loader, extensions=['jinja2.ext.do'])
 
         self._linkmap['world'] = model.LinkModel()
         for m in mdata.links:

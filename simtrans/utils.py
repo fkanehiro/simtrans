@@ -26,7 +26,7 @@ def resolveFile(f):
     try:
         if f.count('model://') > 0:
             fn = f.replace('model://', '')
-            paths = ['~/.gazebo/models']
+            paths = ['.', '~/.gazebo/models']
             for env in ['GAZEBO_MODEL_PATH', 'OPENHRP_MODEL_PATH']:
                 try:
                     paths.extend(os.environ[env].split(':'))
