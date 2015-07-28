@@ -133,20 +133,14 @@ class SDFReader(object):
             # pose is relative to parent link
             if pose is not None:
                 self.readPose(jm, pose)
+            try:
                 parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
                 jmatrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
                 jm.matrix = numpy.dot(jmatrix, parentinv)
                 jm.trans = None
                 jm.rot = None
-            else:
-                try:
-                    parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
-                    jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), parentinv)
-                    jm.trans = None
-                    jm.rot = None
-                except KeyError:
-                    print "cannot find link info"
-                    pass
+            except KeyError:
+                print "cannot find link info"
             axis = j.find('axis')
             if axis is not None:
                 if axis.find('use_parent_model_frame'):
@@ -204,20 +198,17 @@ class SDFReader(object):
         absparent = self._linkmap[joint.parent]
         abschild = self._linkmap[joint.child]
         parentmat = absparent.getmatrix()
-        jointmat = joint.getmatrix()
         childmat = abschild.getmatrix()
         parentinv = numpy.linalg.pinv(parentmat)
-        #childinv = numpy.linalg.pinv(childmat)
-        # position of joint is relative to parent frame (same as URDF)
-        #joint.matrix = numpy.dot(parentinv, jointmat)
-        #joint.trans = None
-        #joint.rot = None
         if joint.axis is not None:
             axismat = tf.quaternion_matrix(joint.getrotation())
             axisinv = numpy.linalg.pinv(axismat)
             joint.axis = numpy.dot(axisinv, numpy.hstack((joint.axis, [1])))[0:3]
             joint.axis = (joint.axis / numpy.linalg.norm(joint.axis)).tolist()
         relchild = model.TransformationModel()
+        relchild.matrix = numpy.dot(childmat, parentinv)
+        relchild.trans = None
+        relchild.rot = None
         self._relpositionmap[joint.child] = relchild
         for cjoint in utils.findchildren(mdata, joint.child):
             self.convertchildren(mdata, cjoint)

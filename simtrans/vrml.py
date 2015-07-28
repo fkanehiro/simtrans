@@ -391,10 +391,14 @@ class VRMLWriter(object):
             try:
                 link = self._linkmap[cjoint.child]
             except KeyError:
-                #print "warning: unable to find child link %s" % cjoint.child
-                pass
+                print "warning: unable to find child link %s" % cjoint.child
+            print cjoint.name
             if not numpy.allclose(cjoint.getmatrix(), link.getmatrix()):
-                link.translate(numpy.linalg.pinv(cjoint.getmatrix()))
+                print "not close"
+                parentinv = numpy.linalg.pinv(cjoint.getmatrix())
+                link.translate(numpy.dot(link.getmatrix(), parentinv))
+                print cjoint.getmatrix()
+                print link.getmatrix()
             (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
             nmodel['link'] = link
             nmodel['children'] = cchildren
