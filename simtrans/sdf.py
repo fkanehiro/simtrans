@@ -130,23 +130,23 @@ class SDFReader(object):
             jm.child = j.find('child').text
             jm.jointType = self.readJointType(j.attrib['type'])
             pose = j.find('pose')
+            # pose is relative to parent link
             if pose is not None:
                 self.readPose(jm, pose)
+                parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
+                jmatrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
+                jm.matrix = numpy.dot(jmatrix, parentinv)
+                jm.trans = None
+                jm.rot = None
             else:
                 try:
-                    jm.matrix = self._linkmap[jm.child].getmatrix()
+                    parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
+                    jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), parentinv)
                     jm.trans = None
                     jm.rot = None
                 except KeyError:
+                    print "cannot find link info"
                     pass
-            # pose is relative to parent link
-            try:
-                parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
-                jm.matrix = numpy.dot(jm.getmatrix(), parentinv)
-                jm.trans = None
-                jm.rot = None
-            except KeyError:
-                pass
             axis = j.find('axis')
             if axis is not None:
                 if axis.find('use_parent_model_frame'):
@@ -209,9 +209,9 @@ class SDFReader(object):
         parentinv = numpy.linalg.pinv(parentmat)
         #childinv = numpy.linalg.pinv(childmat)
         # position of joint is relative to parent frame (same as URDF)
-        joint.matrix = numpy.dot(parentinv, jointmat)
-        joint.trans = None
-        joint.rot = None
+        #joint.matrix = numpy.dot(parentinv, jointmat)
+        #joint.trans = None
+        #joint.rot = None
         if joint.axis is not None:
             axismat = tf.quaternion_matrix(joint.getrotation())
             axisinv = numpy.linalg.pinv(axismat)
