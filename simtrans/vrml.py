@@ -348,7 +348,7 @@ class VRMLWriter(object):
             else:
                 mfname = os.path.join(dirname, mdata.name + "-" + root + ".wrl")
                 self.renderchildren(mdata, root, "free", mfname, template)
-                modelfiles[mfname] = self._linkmap[root]
+                modelfiles[os.path.basename(mfname)] = self._linkmap[root]
         
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
