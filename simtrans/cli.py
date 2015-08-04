@@ -28,7 +28,13 @@ basedir = ''
 def jpegconverthandler(f):
     global basedir
     fname = os.path.join(basedir, os.path.splitext(os.path.basename(f))[0] + '.jpg')
-    subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except OSError:
+        print 'Unable to find imagemagick "convert" command.'
+        print 'Please install imagemagick package by:'
+        print '$ sudo apt-get install imagemagick'
+        raise
     return os.path.relpath(fname, basedir)
 
 
