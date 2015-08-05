@@ -130,23 +130,23 @@ class SDFReader(object):
             jm.child = j.find('child').text
             jm.jointType = self.readJointType(j.attrib['type'])
             pose = j.find('pose')
-            # pose is relative to parent link
+            # pose is relative to child link (and stored as absolute position)
             if pose is not None:
                 self.readPose(jm, pose)
             try:
-                parentinv = numpy.linalg.pinv(self._linkmap[jm.parent].getmatrix())
-                jmatrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
-                jm.matrix = numpy.dot(jmatrix, parentinv)
+                jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
                 jm.trans = None
                 jm.rot = None
             except KeyError:
                 print "cannot find link info"
             axis = j.find('axis')
             if axis is not None:
-                if axis.find('use_parent_model_frame'):
-                    # TODO: have to implement this option
-                    pass
-                jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
+                if not axis.find('use_parent_model_frame'):
+                    jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
+                    axismat = tf.quaternion_matrix(jm.getrotation())
+                    axisinv = numpy.linalg.pinv(axismat)
+                    jm.axis = numpy.dot(axisinv, numpy.hstack((jm.axis, [1])))[0:3]
+                    jm.axis = (jm.axis / numpy.linalg.norm(jm.axis)).tolist()
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
                     damping = dynamics.find('damping')
@@ -172,46 +172,7 @@ class SDFReader(object):
                 print "warning: link %s referenced by joint %s does not exist (ignoring)" % (jm.child, jm.name)
             else:
                 bm.joints.append(jm)
-
-        # convert all link position to relative
-        roots = utils.findroot(bm)
-        if len(roots) > 0:
-            root = roots[0]
-            rootlink = self._linkmap[root]
-            self._relpositionmap[root] = rootlink
-            bm.trans = rootlink.gettranslation()
-            bm.rot = rootlink.getrotation()
-            for c in utils.findchildren(bm, root):
-                self.convertchildren(bm, c)
-
-        for l in bm.links:
-            try:
-                relpos = self._relpositionmap[l.name]
-                l.trans = relpos.gettranslation()
-                l.rot = relpos.getrotation()
-            except KeyError:
-                pass
-
         return bm
-
-    def convertchildren(self, mdata, joint):
-        absparent = self._linkmap[joint.parent]
-        abschild = self._linkmap[joint.child]
-        parentmat = absparent.getmatrix()
-        childmat = abschild.getmatrix()
-        parentinv = numpy.linalg.pinv(parentmat)
-        if joint.axis is not None:
-            axismat = tf.quaternion_matrix(joint.getrotation())
-            axisinv = numpy.linalg.pinv(axismat)
-            joint.axis = numpy.dot(axisinv, numpy.hstack((joint.axis, [1])))[0:3]
-            joint.axis = (joint.axis / numpy.linalg.norm(joint.axis)).tolist()
-        relchild = model.TransformationModel()
-        relchild.matrix = numpy.dot(childmat, parentinv)
-        relchild.trans = None
-        relchild.rot = None
-        self._relpositionmap[joint.child] = relchild
-        for cjoint in utils.findchildren(mdata, joint.child):
-            self.convertchildren(mdata, cjoint)
 
     def readPose(self, m, doc):
         pose = numpy.array([float(v) for v in re.split(' +', doc.text.strip(' '))])

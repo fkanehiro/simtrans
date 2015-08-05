@@ -55,6 +55,7 @@ with warnings.catch_warnings():
     from .thirdparty import transformations as tf
 import math
 import numpy
+import copy
 import jinja2
 try:
     import CORBA
@@ -386,28 +387,36 @@ class VRMLWriter(object):
                 'models': modelfiles,
             }))
 
-    def convertchildren(self, mdata, linkname):
-        return self.convertchildrensub(mdata, linkname, [], [])
-
-    def convertchildrensub(self, mdata, linkname, joints, links):
+    def convertchildren(self, mdata, pjoint, joints, links):
         children = []
-        for cjoint in utils.findchildren(mdata, linkname):
+        plink = self._linkmap[pjoint.child]
+        for cjoint in utils.findchildren(mdata, pjoint.child):
             nmodel = {}
-            nmodel['joint'] = cjoint
-            nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
             try:
-                link = self._linkmap[cjoint.child]
+                clink = self._linkmap[cjoint.child]
             except KeyError:
                 print "warning: unable to find child link %s" % cjoint.child
-            print cjoint.name
-            if not numpy.allclose(cjoint.getmatrix(), link.getmatrix()):
+            (cchildren, joints, links) = self.convertchildren(mdata, cjoint, joints, links)
+            pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
+            cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
+            cjoint2 = copy.deepcopy(cjoint)
+            cjoint2.matrix = numpy.dot(cjoint.getmatrix(), pjointinv)
+            cjoint2.trans = None
+            cjoint2.rot = None
+            clink2 = copy.deepcopy(clink)
+            #clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
+            clink2.matrix = numpy.dot(clink.getmatrix(), cjoint.getmatrix())
+            clink2.trans = None
+            clink2.rot = None
+            print cjoint.child
+            print clink2.getmatrix()
+            if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
                 print "not close"
-                parentinv = numpy.linalg.pinv(cjoint.getmatrix())
-                link.translate(numpy.dot(link.getmatrix(), parentinv))
-                print cjoint.getmatrix()
-                print link.getmatrix()
-            (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
-            nmodel['link'] = link
+                clink2.translate(numpy.linalg.pinv(clink2.getmatrix()))
+                print clink2.getmatrix()
+            nmodel['joint'] = cjoint2
+            nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
+            nmodel['link'] = clink2
             nmodel['children'] = cchildren
             children.append(nmodel)
             joints.append(cjoint.name)
@@ -415,13 +424,16 @@ class VRMLWriter(object):
         return (children, joints, links)
 
     def renderchildren(self, mdata, root, jointtype, fname, template):
-        (children, joints, links) = self.convertchildren(mdata, root)
         nmodel = {}
         rootlink = self._linkmap[root]
         rootjoint = model.JointModel()
         rootjoint.name = root
         rootjoint.jointType = jointtype
         rootjoint.matrix = rootlink.getmatrix()
+        rootjoint.trans = None
+        rootjoint.rot = None
+        rootjoint.child = root
+        (children, joints, links) = self.convertchildren(mdata, rootjoint, [], [])
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
         nmodel['jointtype'] = rootjoint.jointType
