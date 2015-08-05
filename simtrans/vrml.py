@@ -404,16 +404,11 @@ class VRMLWriter(object):
             cjoint2.trans = None
             cjoint2.rot = None
             clink2 = copy.deepcopy(clink)
-            #clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
-            clink2.matrix = numpy.dot(clink.getmatrix(), cjoint.getmatrix())
+            clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
             clink2.trans = None
             clink2.rot = None
-            print cjoint.child
-            print clink2.getmatrix()
             if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
-                print "not close"
-                clink2.translate(numpy.linalg.pinv(clink2.getmatrix()))
-                print clink2.getmatrix()
+                clink2.translate(clink2.getmatrix())
             nmodel['joint'] = cjoint2
             nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
             nmodel['link'] = clink2
