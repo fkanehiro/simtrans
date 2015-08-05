@@ -135,12 +135,12 @@ class SDFReader(object):
                 self.readPose(jm, pose)
             if not numpy.allclose(jm.getmatrix(), numpy.identity(4)):
                 print "[warning] detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)"
-                try:
-                    jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
-                    jm.trans = None
-                    jm.rot = None
-                except KeyError:
-                    print "cannot find link info"
+            try:
+                jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
+                jm.trans = None
+                jm.rot = None
+            except KeyError:
+                print "cannot find link info"
             axis = j.find('axis')
             if axis is not None:
                 if not axis.find('use_parent_model_frame'):
@@ -178,6 +178,7 @@ class SDFReader(object):
 
     def readPose(self, m, doc):
         pose = numpy.array([float(v) for v in re.split(' +', doc.text.strip(' '))])
+        m.matrix = None
         m.trans = pose[0:3]
         m.rot = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
 
