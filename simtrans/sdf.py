@@ -133,12 +133,14 @@ class SDFReader(object):
             # pose is relative to child link (and stored as absolute position)
             if pose is not None:
                 self.readPose(jm, pose)
-            try:
-                jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
-                jm.trans = None
-                jm.rot = None
-            except KeyError:
-                print "cannot find link info"
+            if not numpy.allclose(self.getmatrix(), numpy.identity(4)):
+                print "[warning] detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)"
+                try:
+                    jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
+                    jm.trans = None
+                    jm.rot = None
+                except KeyError:
+                    print "cannot find link info"
             axis = j.find('axis')
             if axis is not None:
                 if not axis.find('use_parent_model_frame'):
