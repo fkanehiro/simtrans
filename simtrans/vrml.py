@@ -407,6 +407,9 @@ class VRMLWriter(object):
             clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
             clink2.trans = None
             clink2.rot = None
+            if clink2.mass == 0:
+                print "[warning] detect link with mass zero, assigning small (0.001) mass."
+                clink2.mass = 0.001
             if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
                 clink2.translate(clink2.getmatrix())
             nmodel['joint'] = cjoint2
