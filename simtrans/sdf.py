@@ -45,7 +45,6 @@ with warnings.catch_warnings():
 import jinja2
 import re
 from . import model
-from . import urdf
 from . import collada
 from . import stl
 from . import utils
@@ -135,6 +134,9 @@ class SDFReader(object):
                 self.readPose(jm, pose)
             if not numpy.allclose(jm.getmatrix(), numpy.identity(4)):
                 print "[warning] detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)"
+                jm.offsetPosition = True
+            # store joint in absolute position (SDF is still relative to
+            # child link)
             try:
                 jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
                 jm.trans = None
@@ -143,7 +145,7 @@ class SDFReader(object):
                 print "cannot find link info"
             axis = j.find('axis')
             if axis is not None:
-                if not axis.find('use_parent_model_frame'):
+                if axis.find('use_parent_model_frame') is not None:
                     jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
                     axismat = tf.quaternion_matrix(jm.getrotation())
                     axisinv = numpy.linalg.pinv(axismat)
@@ -277,8 +279,6 @@ class SDFWriter(object):
         self._jointparentmap = {}
         self._linkmap = {}
         self._sensorparentmap = {}
-        self._absolutepositionmap = {}
-        self._root = None
 
     def write(self, m, f):
         '''
@@ -313,42 +313,30 @@ class SDFWriter(object):
             f = os.path.join(dirname, 'model.sdf')
 
         # render mesh collada file for each links
-        for j in m.joints:
-            self._jointparentmap[j.child] = j
+        self._linkmap['world'] = model.LinkModel()
         for l in m.links:
             self._linkmap[l.name] = l
-        self._linkmap['world'] = model.LinkModel()
+        for j in m.joints:
+            self._jointparentmap[j.child] = j
+            if j.jointType == model.JointModel.J_FIXED:
+                j.jointType = model.JointModel.J_REVOLUTE
+                j.limits = [0, 0]
+            childinv = numpy.linalg.pinv(self._linkmap[j.child].getmatrix())
+            j.matrix = numpy.dot(j.getmatrix(), childinv)
+            j.trans = None
+            j.rot = None
         for s in m.sensors:
             if s.parent in self._sensorparentmap:
                 self._sensorparentmap[s.parent].append(s)
             else:
                 self._sensorparentmap[s.parent] = [s]
-        try:
-            self._root = utils.findroot(m)[0]
-        except IndexError:
-            if len(m.joints) == 0:
-                self._root = m.links[0].name
-        if m.joints[0].jointType == model.JointModel.J_FIXED:
-            m.joints[0].jointType = model.JointModel.J_REVOLUTE
-            m.joints[0].limits = [0, 0]
 
-        rootposition = self._linkmap[self._root]
-
-        # add offset to the root joint
-        rootposition.trans = rootposition.gettranslation() + m.gettranslation()
-        rootposition.rot = rootposition.getrotation()
-        rootposition.matrix = None
-
-        self._absolutepositionmap[self._root] = rootposition
-        for cjoint in utils.findchildren(m, self._root):
-            self.convertchildren(m, cjoint)
         template = env.get_template('sdf.xml')
         with open(f, 'w') as ofile:
             ofile.write(template.render({
                 'model': m,
                 'jointparentmap': self._jointparentmap,
                 'sensorparentmap': self._sensorparentmap,
-                'absolutepositionmap': self._absolutepositionmap,
                 'ShapeModel': model.ShapeModel
             }))
 
@@ -357,53 +345,4 @@ class SDFWriter(object):
                 if v.shapeType == model.ShapeModel.SP_MESH:
                     cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
                     swriter.write(v, os.path.join(dirname, v.name + ".stl"))
-
-    def convertchildren(self, mdata, joint):
-        absparent = self._absolutepositionmap[joint.parent]
-        abschild = model.TransformationModel()
-        trans = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.gettranslation(), [1])))
-        abschild.trans = absparent.trans + trans[0:3]
-        abschild.rot = tf.quaternion_multiply(absparent.rot, joint.getrotation())
-        joint.axis = numpy.dot(tf.quaternion_matrix(absparent.rot), numpy.hstack((joint.axis, [1])))[0:3]
-        self._absolutepositionmap[joint.child] = abschild
-        for cjoint in utils.findchildren(mdata, joint.child):
-            self.convertchildren(mdata, cjoint)
-
-    def write2(self, m, f):
-        '''
-        Write simulation model in SDF format
-        (internally use urdf and convert to sdf using gz sdf utility)
-        '''
-        # render the data structure using template
-        loader = jinja2.PackageLoader(self.__module__, 'template')
-        env = jinja2.Environment(loader=loader)
-
-        # render mesh data to each separate collada file
-        dirname = os.path.dirname(f)
-        fpath, ext = os.path.splitext(f)
-        if ext == '.world':
-            m.name = os.path.basename(fpath)
-            dirname = fpath
-            try:
-                os.mkdir(fpath)
-            except OSError:
-                pass
-            template = env.get_template('sdf-model-config.xml')
-            with open(os.path.join(dirname, 'model.config'), 'w') as ofile:
-                ofile.write(template.render({
-                    'model': m
-                }))
-            template = env.get_template('sdf-world.xml')
-            with open(f, 'w') as ofile:
-                ofile.write(template.render({
-                    'model': m
-                }))
-            f = os.path.join(dirname, 'model.sdf')
-
-        uwriter = urdf.URDFWriter()
-        urdffile = f.replace('.sdf', '.urdf')
-        uwriter.write(m, urdffile)
-        d = subprocess.check_output(['gz', 'sdf', '-p', urdffile])
-        with open(f, 'w') as of:
-            of.write(d)
 

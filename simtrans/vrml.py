@@ -266,10 +266,7 @@ class VRMLReader(object):
         return data
 
     def readChild(self, parent, child):
-        # first convert link shape information
-        lm = self.readLink(child)
-        self._links.append(lm)
-        # then create joint pairs
+        # first, create joint pairs
         jm = model.JointModel()
         if parent.name != 'world':
             jm.parent = parent.name + '_LINK'
@@ -296,7 +293,23 @@ class VRMLReader(object):
         jm.axis = child.jointAxis
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
+        # convert to absolute position
+        if isinstance(parent, model.JointModel):
+            pm = parent
+        else:
+            pm = model.JointModel()
+            pm.trans = numpy.array(parent.translation)
+            pm.rot = tf.quaternion_about_axis(parent.rotation[3], parent.rotation[0:3])
+        jm.matrix = numpy.dot(pm.getmatrix(), jm.getmatrix())
+        jm.trans = None
+        jm.rot = None
         self._joints.append(jm)
+        # then, convert link shape information
+        lm = self.readLink(child)
+        lm.matrix = jm.getmatrix()
+        lm.trans = None
+        lm.rot = None
+        self._links.append(lm)
         for c in child.childIndices:
             self.readChild(child, self._hrplinks[c])
 

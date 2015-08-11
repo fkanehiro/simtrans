@@ -41,10 +41,13 @@ with warnings.catch_warnings():
     from .thirdparty import transformations as tf
 import jinja2
 import uuid
+import tempfile
+import subprocess
 from . import model
 from . import collada
 from . import stl
 from . import utils
+from . import sdf
 
 
 class URDFReader(object):
@@ -55,7 +58,24 @@ class URDFReader(object):
         self._assethandler = None
 
     def read(self, fname, assethandler=None):
+        '''
+        Read simulation model in urdf format
+        (internally convert to sdf using gz sdf utility)
+        '''
+        with tempfile.NamedTemporaryFile() as of:
+            try:
+                d = subprocess.check_output(['gz', 'sdf', '-p', fname])
+                of.write(d)
+                reader = sdf.SDFReader()
+                return reader.read(of.name, assethandler)
+            finally:
+                of.close()
+            
+
+    def read2(self, fname, assethandler=None):
         """Read URDF model data given the model file
+        TODO: this function is still use relative position representation
+        (need to migrate to current absolute representation)
 
         :param fname: path of the file to read
         :param assethandler: asset handler (optional)
@@ -68,26 +88,7 @@ class URDFReader(object):
 
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
-
-        for l in d.findall('link'):
-            # general information
-            lm = model.LinkModel()
-            lm.name = l.attrib['name']
-            # phisical property
-            inertial = l.find('inertial')
-            if inertial is not None:
-                lm.mass = float(inertial.find('mass').attrib['value'])
-                lm.centerofmass = [float(v) for v in re.split(' +', inertial.find('origin').attrib['xyz'].strip(' '))]
-                lm.inertia = self.readInertia(inertial.find('inertia'))
-            # visual property
-            lm.visuals = []
-            for v in l.findall('visual'):
-                lm.visuals.append(self.readShape(v))
-            # contact property
-            lm.collisions = []
-            for c in l.findall('collision'):
-                lm.collisions.append(self.readShape(c))
-            bm.links.append(lm)
+        jointparentmap = {}
 
         for j in d.findall('joint'):
             jm = model.JointModel()
@@ -118,7 +119,28 @@ class URDFReader(object):
                     jm.velocitylimit = [velocity, -velocity]
                 except KeyError:
                     pass
+            jointparentmap[jm.child] = jm
             bm.joints.append(jm)
+
+        for l in d.findall('link'):
+            # general information
+            lm = model.LinkModel()
+            lm.name = l.attrib['name']
+            # phisical property
+            inertial = l.find('inertial')
+            if inertial is not None:
+                lm.mass = float(inertial.find('mass').attrib['value'])
+                lm.centerofmass = [float(v) for v in re.split(' +', inertial.find('origin').attrib['xyz'].strip(' '))]
+                lm.inertia = self.readInertia(inertial.find('inertia'))
+            # visual property
+            lm.visuals = []
+            for v in l.findall('visual'):
+                lm.visuals.append(self.readShape(v))
+            # contact property
+            lm.collisions = []
+            for c in l.findall('collision'):
+                lm.collisions.append(self.readShape(c))
+            bm.links.append(lm)
 
         return bm
 
@@ -230,7 +252,15 @@ class URDFWriter(object):
                     cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
                     swriter.write(v, os.path.join(dirname, v.name + ".stl"))
 
-        # render mesh collada file for each links
+        # render model urdf file
+        self._convertedjoints = []
+        self._convertedlinks = []
+        self._roots = utils.findroot(m)
+        self._linkmap['world'] = model.LinkModel()
+        for l in m.links:
+            self._linkmap[l.name] = l
+        for root in self._roots:
+            self.convertchildren(m, root)
         template = env.get_template('urdf.xml')
         with open(f, 'w') as ofile:
             ofile.write(template.render({
@@ -239,3 +269,28 @@ class URDFWriter(object):
                 'JointModel': model.JointModel,
                 'tf': tf
             }))
+
+    def convertchildren(self, mdata, pjoint):
+        children = []
+        plink = self._linkmap[pjoint.child]
+        for cjoint in utils.findchildren(mdata, pjoint.child):
+            nmodel = {}
+            try:
+                clink = self._linkmap[cjoint.child]
+            except KeyError:
+                print "warning: unable to find child link %s" % cjoint.child
+            pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
+            cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
+            cjoint2 = copy.deepcopy(cjoint)
+            cjoint2.matrix = numpy.dot(cjoint.getmatrix(), pjointinv)
+            cjoint2.trans = None
+            cjoint2.rot = None
+            clink2 = copy.deepcopy(clink)
+            clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
+            clink2.trans = None
+            clink2.rot = None
+            if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
+                clink2.translate(clink2.getmatrix())
+            self._convertedjoints.append(cjoint2)
+            self._convertedlinks.append(clink2)
+            self.convertchildren(mdata, cjoint)
