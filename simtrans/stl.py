@@ -53,5 +53,10 @@ class STLWriter(object):
         os.close(fd)
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
-        subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            print "command meshlabserver not found. please install by:"
+            print "$ sudo apt-get install meshlab"
+            raise
         os.unlink(daefile)
