@@ -375,7 +375,10 @@ class VRMLWriter(object):
         # render mesh vrml file for each links
         template = env.get_template('vrml-mesh.wrl')
         for l in mdata.links:
-            for v in l.visuals:
+            shapes = l.visuals
+            if options.usecollision:
+                shapes = l.collisions
+            for v in shapes:
                 if v.shapeType == model.ShapeModel.SP_MESH:
                     if isinstance(v.data, model.MeshTransformData):
                         v.data.pretranslate()

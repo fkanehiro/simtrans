@@ -110,9 +110,9 @@ class SDFReader(object):
             for v in l.findall('visual'):
                 lm.visuals.append(self.readShape(v))
             # contact property
-            #collision = l.find('collision')
-            #if collision is not None:
-            #    lm.collision = self.readShape(collision)
+            lm.collisions = []
+            for c in l.findall('collision'):
+                lm.collisions.append(self.readShape(c))
             bm.links.append(lm)
 
         for lm in bm.links:
