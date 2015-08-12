@@ -88,7 +88,7 @@ class VRMLReader(object):
         self._sensors = []
         self._assethandler = None
 
-    def read(self, f, assethandler=None):
+    def read(self, f, assethandler=None, options=None):
         '''
         Read vrml model data given the file path
         '''
@@ -334,7 +334,7 @@ class VRMLWriter(object):
         self._roots = []
         self._ignore = []
 
-    def write(self, mdata, fname):
+    def write(self, mdata, fname, options=None):
         '''
         Write simulation model in VRML format
         '''
@@ -484,3 +484,36 @@ class VRMLWriter(object):
             return "rotate"
         else:
             raise Exception('unsupported joint type: %s' % t)
+
+class VRMLMeshWriter(object):
+    '''
+    VRML mesh writer class
+    '''
+    def __init__(self):
+        self._linkmap = {}
+        self._roots = []
+        self._ignore = []
+
+    def write(self, m, fname, options=None):
+        '''
+        Write mesh in VRML format
+        '''
+        fpath, fext = os.path.splitext(fname)
+        basename = os.path.basename(fpath)
+        dirname = os.path.dirname(fname)
+
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader, extensions=['jinja2.ext.do'])
+        template = env.get_template('vrml-mesh.wrl')
+        if m.shapeType == model.ShapeModel.SP_MESH:
+            if isinstance(m.data, model.MeshTransformData):
+                m.data.pretranslate()
+            nm = {}
+            nm['children'] = [m.data]
+            with open(fname, 'w') as ofile:
+                ofile.write(template.render({
+                    'name': basename,
+                    'ShapeModel': model.ShapeModel,
+                    'mesh': nm
+                }))

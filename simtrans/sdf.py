@@ -58,7 +58,7 @@ class SDFReader(object):
         self._relpositionmap = {}
         self._rootname = None
 
-    def read(self, fname, assethandler=None):
+    def read(self, fname, assethandler=None, options=None):
         '''
         Read SDF model data given the model file
         '''
@@ -278,7 +278,7 @@ class SDFWriter(object):
         self._linkmap = {}
         self._sensorparentmap = {}
 
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         '''
         Write simulation model in SDF format
         '''

@@ -58,7 +58,7 @@ class URDFReader(object):
     def __init__(self):
         self._assethandler = None
 
-    def read(self, fname, assethandler=None):
+    def read(self, fname, assethandler=None, options=None):
         '''
         Read simulation model in urdf format
         (internally convert to sdf using gz sdf utility)
@@ -233,7 +233,7 @@ class URDFWriter(object):
     '''
     URDF writer class
     '''
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         """Write simulation model in URDF format
 
         :param m: model data

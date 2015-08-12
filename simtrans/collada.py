@@ -45,7 +45,7 @@ class ColladaReader(object):
         self._assethandler = None
         self._materials = {}
 
-    def read(self, f, assethandler=None, submesh=None):
+    def read(self, f, assethandler=None, submesh=None, options=None):
         '''
         Read collada model data given the file path
         '''
@@ -188,7 +188,7 @@ class ColladaWriter(object):
         self._mesh = None
         self._matnode = None
 
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         '''
         Write simulation model in collada format
         '''

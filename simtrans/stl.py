@@ -26,7 +26,7 @@ class STLReader(object):
     '''
     STL reader class
     '''
-    def read(self, f, assethandler=None):
+    def read(self, f, assethandler=None, options=None):
         '''
         Read mesh model in STL format
         '''
@@ -44,7 +44,7 @@ class STLWriter(object):
     '''
     STL writer class
     '''
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         '''
         Write mesh model in STL format
         This method first generates collada and use meshlab to output stl
