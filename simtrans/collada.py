@@ -23,6 +23,7 @@ Read collada model data given the file path
 
 from __future__ import absolute_import
 from . import model
+import logging
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -61,7 +62,7 @@ class ColladaReader(object):
             try:
                 d = collada.Collada(StringIO(lxml.etree.tostring(xdoc)))
             except:
-                print "error while processing %s" % f
+                logging.error("error while processing %s" % f)
                 raise
         for m in d.materials:
             mm = model.MaterialModel()
@@ -175,7 +176,7 @@ class ColladaReader(object):
                     sm.material = model.MaterialModel()
                 m.children.append(sm)
         else:
-            print "unsupported collada node type: " + type(d).__name__
+            logging.info("skipping unsupported collada node type: " + type(d).__name__)
         return m
 
 

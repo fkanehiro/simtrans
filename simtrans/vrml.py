@@ -49,6 +49,7 @@ from . import model
 from . import utils
 import os
 import sys
+import logging
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -96,7 +97,7 @@ class VRMLReader(object):
         try:
             self._model = self._loader.loadBodyInfo(f)
         except CORBA.TRANSIENT:
-            print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
+            logging.error('unable to connect to model loader corba service (is "openhrp-model-loader" running?)')
             raise
         bm = model.BodyModel()
         self._joints = []
@@ -320,7 +321,7 @@ class VRMLReader(object):
             obj = self._ns.resolve([CosNaming.NameComponent("ModelLoader", "")])
             self._loader = obj._narrow(OpenHRP.ModelLoader)
         except CosNaming.NamingContext.NotFound:
-            print "unable to resolve OpenHRP model loader on CORBA name service"
+            logging.error("unable to resolve OpenHRP model loader on CORBA name service")
             raise
 
 
@@ -376,7 +377,8 @@ class VRMLWriter(object):
         for l in mdata.links:
             for v in l.visuals:
                 if v.shapeType == model.ShapeModel.SP_MESH:
-                    v.data.pretranslate()
+                    if isinstance(v.data, model.MeshTransformData):
+                        v.data.pretranslate()
                     m = {}
                     m['children'] = [v.data]
                     with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl"), 'w') as ofile:
@@ -408,7 +410,7 @@ class VRMLWriter(object):
             try:
                 clink = self._linkmap[cjoint.child]
             except KeyError:
-                print "warning: unable to find child link %s" % cjoint.child
+                logging.warning("unable to find child link %s" % cjoint.child)
             (cchildren, joints, links) = self.convertchildren(mdata, cjoint, joints, links)
             pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
             cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
@@ -421,7 +423,7 @@ class VRMLWriter(object):
             clink2.trans = None
             clink2.rot = None
             if clink2.mass == 0:
-                print "[warning] detect link with mass zero, assigning small (0.001) mass."
+                logging.warning("detect link with mass zero, assigning small (0.001) mass.")
                 clink2.mass = 0.001
             if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
                 clink2.translate(clink2.getmatrix())

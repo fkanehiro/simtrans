@@ -7,6 +7,16 @@ import os
 import sys
 import subprocess
 import shutil
+import logging
+try:
+    import coloredlogs
+    coloredlogs.install(show_hostname=False, show_name=False)
+except ImportError:
+    print 'unable to find python coloredlogs library.'
+    print 'please install by following command to get fancy output:'
+    print '$ sudo pip install coloredlogs'
+    pass
+
 from argparse import ArgumentParser, ArgumentError
 
 from . import vrml
@@ -31,9 +41,9 @@ def jpegconverthandler(f):
     try:
         subprocess.check_call(['convert', f, fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except OSError:
-        print 'Unable to find imagemagick "convert" command.'
-        print 'Please install imagemagick package by:'
-        print '$ sudo apt-get install imagemagick'
+        logging.error('Unable to find imagemagick "convert" command.')
+        logging.error('Please install imagemagick package by:')
+        logging.error('$ sudo apt-get install imagemagick')
         raise
     return os.path.relpath(fname, basedir)
 
@@ -50,7 +60,7 @@ def main():
     try:
         options = parser.parse_args()
     except ArgumentError, e:
-        print >> sys.stderr, 'OptionError: ', e
+        logging.error('OptionError: ', e)
         print >> sys.stderr, parser.print_help()
         return 1
 
@@ -74,7 +84,7 @@ def main():
         elif ext == '.sdf':
             reader = sdf.SDFReader()
         else:
-            print >> sys.stderr, 'unable to detect input format (may be not supported?)'
+            logging.error('unable to detect input format (may be not supported?)')
             return 1
 
     basedir = os.path.dirname(os.path.abspath(options.tofile))
@@ -105,15 +115,15 @@ def main():
             writer = graphviz.GraphvizWriter()
             handler = None
         else:
-            print >> sys.stderr, 'unable to detect output format (may be not supported?)'
+            logging.error('unable to detect output format (may be not supported?)')
             return 1
 
-    print "converting from: %s" % options.fromfile
-    print "             to: %s" % options.tofile
+    logging.info("converting from: %s" % options.fromfile)
+    logging.info("             to: %s" % options.tofile)
 
     model = reader.read(options.fromfile, assethandler=handler)
     if len(model.links) == 0:
-        print "cannot read links at all (probably the model refers to another model by <include> tag)"
+        logging.error("cannot read links at all (probably the model refers to another model by <include> tag)")
         return 1
     writer.write(model, options.tofile)
 

@@ -43,6 +43,7 @@ import jinja2
 import uuid
 import tempfile
 import subprocess
+import logging
 from . import model
 from . import collada
 from . import stl
@@ -62,15 +63,18 @@ class URDFReader(object):
         Read simulation model in urdf format
         (internally convert to sdf using gz sdf utility)
         '''
-        with tempfile.NamedTemporaryFile() as of:
-            try:
-                d = subprocess.check_output(['gz', 'sdf', '-p', fname])
-                of.write(d)
-                reader = sdf.SDFReader()
-                return reader.read(of.name, assethandler)
-            finally:
-                of.close()
-            
+        fd, sdffile = tempfile.mkstemp(suffix='.sdf')
+        try:
+            d = subprocess.check_output(['gz', 'sdf', '-p', fname])
+            os.write(fd, d)
+        finally:
+            os.close(fd)
+        try:
+            reader = sdf.SDFReader()
+            m = reader.read(sdffile, assethandler)
+        finally:
+            os.unlink(sdffile)
+        return m
 
     def read2(self, fname, assethandler=None):
         """Read URDF model data given the model file
@@ -278,7 +282,7 @@ class URDFWriter(object):
             try:
                 clink = self._linkmap[cjoint.child]
             except KeyError:
-                print "warning: unable to find child link %s" % cjoint.child
+                logging.warn("unable to find child link %s" % cjoint.child)
             pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
             cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
             cjoint2 = copy.deepcopy(cjoint)

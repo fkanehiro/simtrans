@@ -31,14 +31,12 @@ Write simulation model in SDF format
 0
 """
 
-from logging import getLogger
-logger = getLogger(__name__)
-
 import os
 import subprocess
 import lxml.etree
 import numpy
 import warnings
+import logging
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
@@ -133,7 +131,7 @@ class SDFReader(object):
             if pose is not None:
                 self.readPose(jm, pose)
             if not numpy.allclose(jm.getmatrix(), numpy.identity(4)):
-                print "[warning] detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)"
+                logging.warn("detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)")
                 jm.offsetPosition = True
             # store joint in absolute position (SDF is still relative to
             # child link)
@@ -171,9 +169,9 @@ class SDFReader(object):
                         pass
             # check if each links really exist
             if jm.parent not in self._linkmap:
-                print "warning: link %s referenced by joint %s does not exist (ignoring)" % (jm.parent, jm.name)
+                logging.warn("link %s referenced by joint %s does not exist (ignoring)" % (jm.parent, jm.name))
             elif jm.child not in self._linkmap:
-                print "warning: link %s referenced by joint %s does not exist (ignoring)" % (jm.child, jm.name)
+                logging.warn("link %s referenced by joint %s does not exist (ignoring)" % (jm.child, jm.name))
             else:
                 bm.joints.append(jm)
         return bm

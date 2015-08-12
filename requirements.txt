@@ -3,4 +3,4 @@ numpy
 numpy-stl
 pycollada
 jinja2
-
+coloredlogs
