@@ -12,7 +12,7 @@ https://github.com/fkanehiro/openhrp3/blob/master/server/ModelLoader/VrmlWriter.
 
 import math
 import numpy
-
+import logging
 
 def omegaFromRot(m):
     '''
@@ -25,7 +25,7 @@ def omegaFromRot(m):
         try:
             th = math.acos(alpha)
         except ValueError:
-            print "acos value error: %f" % alpha
+            logging.warn("acos value error: %f" % alpha)
             if alpha > 0:
                 th = 0
             else:

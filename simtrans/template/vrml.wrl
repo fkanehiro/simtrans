@@ -117,24 +117,30 @@ DEF {{j.name}} ExtraJoint {
 DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
-    {%- if l.link and (l.link.visuals|length or l.children|length) %}
+    {%- if l.link and (l.link.visuals|length or l.link.collisions|length or l.children|length) %}
+    {%- set shapes = l.link.visuals %}
+    {%- if options.usecollision %}
+    {%- set shapes = l.link.collisions %}
+    {%- endif %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
-      {%- if l.joint.axis %}
-      jointAxis {{l.joint.axis[0]}} {{l.joint.axis[1]}} {{l.joint.axis[2]}}
+      {%- if l.joint.axis.axis %}
+      jointAxis {{l.joint.axis.axis[0]}} {{l.joint.axis.axis[1]}} {{l.joint.axis.axis[2]}}
       {%- endif %}
+      {%- if l.joint.name in jointmap %}
       jointId {{jointmap[l.joint.name]}}
+      {%- endif %}
       {%- set trans = l.joint.gettranslation() %}
       translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
       {%- set angle = l.joint.getangle() %}
       rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
-      {%- if l.joint.limit %}
-      ulimit {{l.joint.limit[0]}}
-      llimit {{l.joint.limit[1]}}
+      {%- if l.joint.axis.limit %}
+      ulimit {{l.joint.axis.limit[0]}}
+      llimit {{l.joint.axis.limit[1]}}
       {%- endif %}
-      {%- if l.joint.velocitylimit %}
-      uvlimit {{l.joint.velocitylimit[0]}}
-      lvlimit {{l.joint.velocitylimit[1]}}
+      {%- if l.joint.axis.velocitylimit %}
+      uvlimit {{l.joint.axis.velocitylimit[0]}}
+      lvlimit {{l.joint.axis.velocitylimit[1]}}
       {%- endif %}
       children [
         DEF {{l.link.name}} Segment {
@@ -142,7 +148,7 @@ DEF {{model.name}} Humanoid {
           centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
           momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
           children [
-            {%- for v in l.link.visuals %}
+            {%- for v in shapes %}
             Transform {
               {%- set scale = v.getscale() %}
               scale {{scale[0]}} {{scale[1]}} {{scale[2]}}
@@ -153,7 +159,7 @@ DEF {{model.name}} Humanoid {
               children [
                 {%- if v.shapeType == ShapeModel.SP_MESH %}
                 Inline {
-                  url "{{body.name}}-{{l.link.name}}-{{v.name}}.wrl"
+                  url "{{body.name}}-{{l.link.name|replace('::', '_')}}-{{v.name|replace('::', '_')}}.wrl"
                 }
                 {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
                 Shape {

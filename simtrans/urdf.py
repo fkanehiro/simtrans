@@ -35,16 +35,21 @@ import os
 import lxml.etree
 import numpy
 import re
+import copy
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
 import jinja2
 import uuid
+import tempfile
+import subprocess
+import logging
 from . import model
 from . import collada
 from . import stl
 from . import utils
+from . import sdf
 
 
 class URDFReader(object):
@@ -54,7 +59,25 @@ class URDFReader(object):
     def __init__(self):
         self._assethandler = None
 
-    def read(self, fname, assethandler=None):
+    def read(self, fname, assethandler=None, options=None):
+        '''
+        Read simulation model in urdf format
+        (internally convert to sdf using gz sdf utility)
+        '''
+        fd, sdffile = tempfile.mkstemp(suffix='.sdf')
+        try:
+            d = subprocess.check_output(['gz', 'sdf', '-p', fname])
+            os.write(fd, d)
+        finally:
+            os.close(fd)
+        try:
+            reader = sdf.SDFReader()
+            m = reader.read(sdffile, assethandler)
+        finally:
+            os.unlink(sdffile)
+        return m
+
+    def read2(self, fname, assethandler=None, options=None):
         """Read URDF model data given the model file
 
         :param fname: path of the file to read
@@ -68,26 +91,6 @@ class URDFReader(object):
 
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
-
-        for l in d.findall('link'):
-            # general information
-            lm = model.LinkModel()
-            lm.name = l.attrib['name']
-            # phisical property
-            inertial = l.find('inertial')
-            if inertial is not None:
-                lm.mass = float(inertial.find('mass').attrib['value'])
-                lm.centerofmass = [float(v) for v in re.split(' +', inertial.find('origin').attrib['xyz'].strip(' '))]
-                lm.inertia = self.readInertia(inertial.find('inertia'))
-            # visual property
-            lm.visuals = []
-            for v in l.findall('visual'):
-                lm.visuals.append(self.readShape(v))
-            # contact property
-            lm.collisions = []
-            for c in l.findall('collision'):
-                lm.collisions.append(self.readShape(c))
-            bm.links.append(lm)
 
         for j in d.findall('joint'):
             jm = model.JointModel()
@@ -120,8 +123,54 @@ class URDFReader(object):
                     pass
             bm.joints.append(jm)
 
+        for l in d.findall('link'):
+            # general information
+            lm = model.LinkModel()
+            lm.name = l.attrib['name']
+            # phisical property
+            inertial = l.find('inertial')
+            if inertial is not None:
+                lm.mass = float(inertial.find('mass').attrib['value'])
+                lm.centerofmass = [float(v) for v in re.split(' +', inertial.find('origin').attrib['xyz'].strip(' '))]
+                lm.inertia = self.readInertia(inertial.find('inertia'))
+            # visual property
+            lm.visuals = []
+            for v in l.findall('visual'):
+                lm.visuals.append(self.readShape(v))
+            # contact property
+            lm.collisions = []
+            for c in l.findall('collision'):
+                lm.collisions.append(self.readShape(c))
+            bm.links.append(lm)
+
+        self._linkmap = {}
+        for l in bm.links:
+            self._linkmap[l.name] = l
+
+        for r in utils.findroot(bm):
+            self._abslinks = {}
+            for c in utils.findchildren(bm, r):
+                logging.info("constructing tree from root joint: %s - > %s" % (c.parent, c.child))
+                self._abslinks[c.parent] = self._linkmap[c.parent]
+                self.convertChild(bm, c)
+            bm.links.extend(self._abslinks.values())
+        
         return bm
 
+    def convertChild(self, bm, l):
+        parent = self._abslinks[l.parent]
+        child = self._linkmap[l.child]
+        abschild = copy.deepcopy(child)
+        abschild.matrix = numpy.dot(parent.getmatrix(), child.getmatrix())
+        abschild.trans = None
+        abschild.rot = None
+        self._abslinks[l.child] = abschild
+        l.matrix = abschild.getmatrix()
+        l.trans = None
+        l.rot = None
+        for c in utils.findchildren(bm, l.child):
+            self.convertChild(bm, c)
+    
     def readOrigin(self, m, doc):
         try:
             m.trans = numpy.array([float(v) for v in re.split(' +', doc.attrib['xyz'].strip(' '))])
@@ -138,6 +187,8 @@ class URDFReader(object):
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
+        elif d == "revolute2":
+            return model.JointModel.J_REVOLUTE2
         elif d == 'prismatic':
             return model.JointModel.J_PRISMATIC
         elif d == 'screw':
@@ -207,7 +258,7 @@ class URDFWriter(object):
     '''
     URDF writer class
     '''
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         """Write simulation model in URDF format
 
         :param m: model data
@@ -230,7 +281,15 @@ class URDFWriter(object):
                     cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
                     swriter.write(v, os.path.join(dirname, v.name + ".stl"))
 
-        # render mesh collada file for each links
+        # render model urdf file
+        self._convertedjoints = []
+        self._convertedlinks = []
+        self._roots = utils.findroot(m)
+        self._linkmap['world'] = model.LinkModel()
+        for l in m.links:
+            self._linkmap[l.name] = l
+        for root in self._roots:
+            self.convertchildren(m, root)
         template = env.get_template('urdf.xml')
         with open(f, 'w') as ofile:
             ofile.write(template.render({
@@ -239,3 +298,28 @@ class URDFWriter(object):
                 'JointModel': model.JointModel,
                 'tf': tf
             }))
+
+    def convertchildren(self, mdata, pjoint):
+        children = []
+        plink = self._linkmap[pjoint.child]
+        for cjoint in utils.findchildren(mdata, pjoint.child):
+            nmodel = {}
+            try:
+                clink = self._linkmap[cjoint.child]
+            except KeyError:
+                logging.warn("unable to find child link %s" % cjoint.child)
+            pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
+            cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
+            cjoint2 = copy.deepcopy(cjoint)
+            cjoint2.matrix = numpy.dot(pjointinv, cjoint.getmatrix())
+            cjoint2.trans = None
+            cjoint2.rot = None
+            clink2 = copy.deepcopy(clink)
+            clink2.matrix = numpy.dot(cjointinv, clink.getmatrix())
+            clink2.trans = None
+            clink2.rot = None
+            if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
+                clink2.translate(clink2.getmatrix())
+            self._convertedjoints.append(cjoint2)
+            self._convertedlinks.append(clink2)
+            self.convertchildren(mdata, cjoint)

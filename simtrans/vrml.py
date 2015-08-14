@@ -49,17 +49,26 @@ from . import model
 from . import utils
 import os
 import sys
+import logging
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
     from .thirdparty import transformations as tf
 import math
 import numpy
+import copy
 import jinja2
-import CORBA
-import CosNaming
-import OpenHRP
-
+try:
+    import CORBA
+    import CosNaming
+    import OpenHRP
+except ImportError:
+    print "Unable to find CORBA and OpenHRP library."
+    print "You can install the library by:"
+    print "$ sudo add-apt-repository ppa:hrg/daily"
+    print "$ sudo apt-get update"
+    print "$ sudo apt-get install openhrp openrtm-aist-python"
+    raise
 
 class VRMLReader(object):
     '''
@@ -79,7 +88,7 @@ class VRMLReader(object):
         self._sensors = []
         self._assethandler = None
 
-    def read(self, f, assethandler=None):
+    def read(self, f, assethandler=None, options=None):
         '''
         Read vrml model data given the file path
         '''
@@ -88,7 +97,7 @@ class VRMLReader(object):
         try:
             self._model = self._loader.loadBodyInfo(f)
         except CORBA.TRANSIENT:
-            print 'unable to connect to model loader corba service (is "openhrp-model-loader" running?)'
+            logging.error('unable to connect to model loader corba service (is "openhrp-model-loader" running?)')
             raise
         bm = model.BodyModel()
         self._joints = []
@@ -122,8 +131,10 @@ class VRMLReader(object):
         else:
             lm = self.readLink(root)
             self._links.append(lm)
+            jm = model.JointModel()
+            jm.name = root.name
             for c in root.childIndices:
-                self.readChild(root, self._hrplinks[c])
+                self.readChild(jm, self._hrplinks[c])
         for j in self._hrpextrajoints:
             # extra joint for closed link models
             m = model.JointModel()
@@ -258,10 +269,7 @@ class VRMLReader(object):
         return data
 
     def readChild(self, parent, child):
-        # first convert link shape information
-        lm = self.readLink(child)
-        self._links.append(lm)
-        # then create joint pairs
+        # first, create joint pairs
         jm = model.JointModel()
         if parent.name != 'world':
             jm.parent = parent.name + '_LINK'
@@ -269,28 +277,39 @@ class VRMLReader(object):
             jm.parent = parent.name
         jm.child = child.name + '_LINK'
         jm.name = child.name
+        jm.axis = model.AxisData()
         if child.jointType == 'fixed':
-            jm.jointType = model.JointModel.J_FIXED
+            jm.axis.jointType = model.JointModel.J_FIXED
         elif child.jointType == 'rotate':
-            jm.jointType = model.JointModel.J_REVOLUTE
+            jm.axis.jointType = model.JointModel.J_REVOLUTE
         elif child.jointType == 'slide':
-            jm.jointType = model.JointModel.J_PRISMATIC
+            jm.axis.jointType = model.JointModel.J_PRISMATIC
         else:
             raise Exception('unsupported joint type: %s' % child.jointType)
         try:
-            jm.limit = [child.ulimit[0], child.llimit[0]]
+            jm.axis.limit = [child.ulimit[0], child.llimit[0]]
         except IndexError:
             pass
         try:
-            jm.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
+            jm.axis.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
         except IndexError:
             pass
-        jm.axis = child.jointAxis
+        jm.axis.axis = child.jointAxis
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
+        # convert to absolute position
+        jm.matrix = numpy.dot(parent.getmatrix(), jm.getmatrix())
+        jm.trans = None
+        jm.rot = None
         self._joints.append(jm)
+        # then, convert link shape information
+        lm = self.readLink(child)
+        lm.matrix = jm.getmatrix()
+        lm.trans = None
+        lm.rot = None
+        self._links.append(lm)
         for c in child.childIndices:
-            self.readChild(child, self._hrplinks[c])
+            self.readChild(jm, self._hrplinks[c])
 
     def resolveModelLoader(self):
         nsobj = self._orb.resolve_initial_references("NameService")
@@ -299,7 +318,7 @@ class VRMLReader(object):
             obj = self._ns.resolve([CosNaming.NameComponent("ModelLoader", "")])
             self._loader = obj._narrow(OpenHRP.ModelLoader)
         except CosNaming.NamingContext.NotFound:
-            print "unable to resolve OpenHRP model loader on CORBA name service"
+            logging.error("unable to resolve OpenHRP model loader on CORBA name service")
             raise
 
 
@@ -311,17 +330,41 @@ class VRMLWriter(object):
         self._linkmap = {}
         self._roots = []
         self._ignore = []
+        self._options = None
 
-    def write(self, mdata, fname):
+    def write(self, mdata, fname, options=None):
         '''
         Write simulation model in VRML format
         '''
+        self._options = options
         fpath, fext = os.path.splitext(fname)
         basename = os.path.basename(fpath)
         dirname = os.path.dirname(fname)
         if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
+        # convert revolute2 joint to two revolute joints (with a link
+        # in between)
+        for j in mdata.joints:
+            if j.jointType == model.JointModel.J_REVOLUTE2:
+                logging.info("converting revolute2 joint to two revolute joints")
+                nl = model.LinkModel()
+                nl.name = j.name + "_REVOLUTE2_LINK"
+                nl.matrix = j.getmatrix()
+                nl.trans = None
+                nl.rot = None
+                nl.mass = 0.001 # assign very small mass
+                mdata.links.append(nl)
+                nj = copy.deepcopy(j)
+                nj.name = j.name + "_SECOND"
+                nj.jointType = model.JointModel.J_REVOLUTE
+                nj.parent = nl.name
+                nj.child = j.child
+                nj.axis = j.axis2
+                mdata.joints.append(nj)
+                j.jointType = model.JointModel.J_REVOLUTE
+                j.child = nl.name
+        
         # find root joint (including local peaks)
         self._roots = utils.findroot(mdata)
 
@@ -342,23 +385,28 @@ class VRMLWriter(object):
                 roots = utils.findchildren(mdata, root)
                 for r in roots:
                     # print("root joint is world. using %s as root" % root)
-                    mfname = os.path.join(dirname, mdata.name + "-" + r.child + ".wrl")
-                    self.renderchildren(mdata, r.child, "fixed", mfname, template)
+                    mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
+                    self.renderchildren(mdata, r.child, "fixed", os.path.join(dirname, mfname), template)
                     modelfiles[mfname] = self._linkmap[r.child]
             else:
-                mfname = os.path.join(dirname, mdata.name + "-" + root + ".wrl")
-                self.renderchildren(mdata, root, "free", mfname, template)
+                mfname = (mdata.name + "-" + root + ".wrl").replace('::', '_')
+                self.renderchildren(mdata, root, "free", os.path.join(dirname, mfname), template)
                 modelfiles[mfname] = self._linkmap[root]
         
-        # render mesh vrml file for each links
-        template = env.get_template('vrml-mesh.wrl')
+        # render shape vrml file for each links
         for l in mdata.links:
-            for v in l.visuals:
+            shapes = l.visuals
+            if options.usecollision:
+                shapes = l.collisions
+            for v in shapes:
+                logging.info('writing shape of link: %s, type: %s' % (l.name, v.shapeType))
                 if v.shapeType == model.ShapeModel.SP_MESH:
-                    v.data.pretranslate()
+                    template = env.get_template('vrml-mesh.wrl')
+                    if isinstance(v.data, model.MeshTransformData):
+                        v.data.pretranslate()
                     m = {}
                     m['children'] = [v.data]
-                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl"), 'w') as ofile:
+                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl").replace('::', '_'), 'w') as ofile:
                         ofile.write(template.render({
                             'name': v.name,
                             'ShapeModel': model.ShapeModel,
@@ -379,24 +427,34 @@ class VRMLWriter(object):
                 'models': modelfiles,
             }))
 
-    def convertchildren(self, mdata, linkname):
-        return self.convertchildrensub(mdata, linkname, [], [])
-
-    def convertchildrensub(self, mdata, linkname, joints, links):
+    def convertchildren(self, mdata, pjoint, joints, links):
         children = []
-        for cjoint in utils.findchildren(mdata, linkname):
+        plink = self._linkmap[pjoint.child]
+        for cjoint in utils.findchildren(mdata, pjoint.child):
             nmodel = {}
-            nmodel['joint'] = cjoint
-            nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
             try:
-                link = self._linkmap[cjoint.child]
+                clink = self._linkmap[cjoint.child]
             except KeyError:
-                #print "warning: unable to find child link %s" % cjoint.child
-                pass
-            if not numpy.allclose(cjoint.getmatrix(), link.getmatrix()):
-                link.translate(numpy.linalg.pinv(cjoint.getmatrix()))
-            (cchildren, joints, links) = self.convertchildrensub(mdata, cjoint.child, joints, links)
-            nmodel['link'] = link
+                logging.warning("unable to find child link %s" % cjoint.child)
+            (cchildren, joints, links) = self.convertchildren(mdata, cjoint, joints, links)
+            pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
+            cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
+            cjoint2 = copy.deepcopy(cjoint)
+            cjoint2.matrix = numpy.dot(pjointinv, cjoint.getmatrix())
+            cjoint2.trans = None
+            cjoint2.rot = None
+            clink2 = copy.deepcopy(clink)
+            clink2.matrix = numpy.dot(cjointinv, clink.getmatrix())
+            clink2.trans = None
+            clink2.rot = None
+            if clink2.mass == 0:
+                logging.warning("detect link with mass zero, assigning small (0.001) mass.")
+                clink2.mass = 0.001
+            if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
+                clink2.translate(clink2.getmatrix())
+            nmodel['joint'] = cjoint2
+            nmodel['jointtype'] = self.convertjointtype(cjoint.jointType)
+            nmodel['link'] = clink2
             nmodel['children'] = cchildren
             children.append(nmodel)
             joints.append(cjoint.name)
@@ -404,23 +462,30 @@ class VRMLWriter(object):
         return (children, joints, links)
 
     def renderchildren(self, mdata, root, jointtype, fname, template):
-        (children, joints, links) = self.convertchildren(mdata, root)
         nmodel = {}
         rootlink = self._linkmap[root]
         rootjoint = model.JointModel()
         rootjoint.name = root
         rootjoint.jointType = jointtype
         rootjoint.matrix = rootlink.getmatrix()
+        rootjoint.trans = None
+        rootjoint.rot = None
+        rootjoint.child = root
+        (children, joints, links) = self.convertchildren(mdata, rootjoint, [], [])
         nmodel['link'] = rootlink
         nmodel['joint'] = rootjoint
         nmodel['jointtype'] = rootjoint.jointType
         nmodel['children'] = children
 
         # assign jointId
-        jointmap = {root: 0}
+        if jointtype in ['free', 'fixed']:
+            jointmap = {}
+            jointcount = 0
+        else:
+            jointmap = {root: 0}
+            jointcount = 1
         for j in joints:
             jointmap[j] = 0
-        jointcount = 1
         for j in joints:
             jointmap[j] = jointcount
             jointcount = jointcount + 1
@@ -432,7 +497,8 @@ class VRMLWriter(object):
                 'links': links,
                 'joints': joints,
                 'jointmap': jointmap,
-                'ShapeModel': model.ShapeModel
+                'ShapeModel': model.ShapeModel,
+                'options': self._options
             }))
 
     def convertjointtype(self, t):
@@ -448,3 +514,36 @@ class VRMLWriter(object):
             return "rotate"
         else:
             raise Exception('unsupported joint type: %s' % t)
+
+class VRMLMeshWriter(object):
+    '''
+    VRML mesh writer class
+    '''
+    def __init__(self):
+        self._linkmap = {}
+        self._roots = []
+        self._ignore = []
+
+    def write(self, m, fname, options=None):
+        '''
+        Write mesh in VRML format
+        '''
+        fpath, fext = os.path.splitext(fname)
+        basename = os.path.basename(fpath)
+        dirname = os.path.dirname(fname)
+
+        # render the data structure using template
+        loader = jinja2.PackageLoader(self.__module__, 'template')
+        env = jinja2.Environment(loader=loader, extensions=['jinja2.ext.do'])
+        template = env.get_template('vrml-mesh.wrl')
+        if m.shapeType == model.ShapeModel.SP_MESH:
+            if isinstance(m.data, model.MeshTransformData):
+                m.data.pretranslate()
+            nm = {}
+            nm['children'] = [m.data]
+            with open(fname, 'w') as ofile:
+                ofile.write(template.render({
+                    'name': basename,
+                    'ShapeModel': model.ShapeModel,
+                    'mesh': nm
+                }))

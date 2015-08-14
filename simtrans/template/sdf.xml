@@ -4,10 +4,8 @@
     <static>0</static>
     {%- for l in model.links %}
     <link name="{{l.name}}">
-      {%- set j = jointparentmap[l.name] %}
-      {%- set jabs = absolutepositionmap[l.name] %}
-      {%- set trans = jabs.gettranslation() %}
-      {%- set rpy = jabs.getrpy() %}
+      {%- set trans = l.gettranslation() %}
+      {%- set rpy = l.getrpy() %}
       <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
       <inertial>
         <mass>{{l.mass}}</mass>
@@ -167,7 +165,9 @@
       <parent>{{j.parent}}</parent>
       <child>{{j.child}}</child>
       {%- if j.offsetPosition %}
-      <pose>{{j.trans[0]}} {{j.trans[1]}} {{j.trans[2]}} 0 0 0</pose>
+      {%- set trans = j.gettranslation() %}
+      {%- set rpy = j.getrpy() %}
+      <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
       {%- endif %}
       <axis>
         <xyz>{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}</xyz>

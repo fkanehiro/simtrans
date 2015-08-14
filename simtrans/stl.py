@@ -26,7 +26,7 @@ class STLReader(object):
     '''
     STL reader class
     '''
-    def read(self, f, assethandler=None):
+    def read(self, f, assethandler=None, options=None):
         '''
         Read mesh model in STL format
         '''
@@ -44,7 +44,7 @@ class STLWriter(object):
     '''
     STL writer class
     '''
-    def write(self, m, f):
+    def write(self, m, f, options=None):
         '''
         Write mesh model in STL format
         This method first generates collada and use meshlab to output stl
@@ -53,5 +53,10 @@ class STLWriter(object):
         os.close(fd)
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
-        subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            print "command meshlabserver not found. please install by:"
+            print "$ sudo apt-get install meshlab"
+            raise
         os.unlink(daefile)
