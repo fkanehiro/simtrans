@@ -333,11 +333,13 @@ class VRMLWriter(object):
         self._linkmap = {}
         self._roots = []
         self._ignore = []
+        self._options = None
 
     def write(self, mdata, fname, options=None):
         '''
         Write simulation model in VRML format
         '''
+        self._options = options
         fpath, fext = os.path.splitext(fname)
         basename = os.path.basename(fpath)
         dirname = os.path.dirname(fname)
@@ -372,14 +374,15 @@ class VRMLWriter(object):
                 self.renderchildren(mdata, root, "free", mfname, template)
                 modelfiles[os.path.basename(mfname)] = self._linkmap[root]
         
-        # render mesh vrml file for each links
-        template = env.get_template('vrml-mesh.wrl')
+        # render shape vrml file for each links
         for l in mdata.links:
             shapes = l.visuals
             if options.usecollision:
                 shapes = l.collisions
             for v in shapes:
+                logging.info('writing shape of link: %s, type: %s' % (l.name, v.shapeType))
                 if v.shapeType == model.ShapeModel.SP_MESH:
+                    template = env.get_template('vrml-mesh.wrl')
                     if isinstance(v.data, model.MeshTransformData):
                         v.data.pretranslate()
                     m = {}
@@ -471,7 +474,8 @@ class VRMLWriter(object):
                 'links': links,
                 'joints': joints,
                 'jointmap': jointmap,
-                'ShapeModel': model.ShapeModel
+                'ShapeModel': model.ShapeModel,
+                'options': self._options
             }))
 
     def convertjointtype(self, t):

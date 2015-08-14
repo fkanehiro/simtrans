@@ -117,7 +117,11 @@ DEF {{j.name}} ExtraJoint {
 DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
-    {%- if l.link and (l.link.visuals|length or l.children|length) %}
+    {%- if l.link and (l.link.visuals|length or l.link.collisions|length or l.children|length) %}
+    {%- set shapes = l.link.visuals %}
+    {%- if options.usecollision %}
+    {%- set shapes = l.link.collisions %}
+    {%- endif %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
       {%- if l.joint.axis %}
@@ -142,7 +146,7 @@ DEF {{model.name}} Humanoid {
           centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
           momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
           children [
-            {%- for v in l.link.visuals %}
+            {%- for v in shapes %}
             Transform {
               {%- set scale = v.getscale() %}
               scale {{scale[0]}} {{scale[1]}} {{scale[2]}}
