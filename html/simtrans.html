@@ -211,6 +211,43 @@ Reader and writer for each formats will read and write the common data structure
 <span id="simtrans-model"></span><h2>simtrans.model<a class="headerlink" href="#module-simtrans.model" title="Permalink to this headline">¶</a></h2>
 <p>Common data structure for model converter</p>
 <dl class="class">
+<dt id="simtrans.model.AxisData">
+<em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">AxisData</code><a class="reference internal" href="_modules/simtrans/model.html#AxisData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.AxisData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Joint axis data</p>
+<dl class="attribute">
+<dt id="simtrans.model.AxisData.axis">
+<code class="descname">axis</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.AxisData.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joint axis (relative to parent link)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.AxisData.damping">
+<code class="descname">damping</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.AxisData.damping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Damping factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.AxisData.friction">
+<code class="descname">friction</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.AxisData.friction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Friction factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.AxisData.limit">
+<code class="descname">limit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.AxisData.limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joint limits (upper and lower limits in 2-dim array)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.AxisData.velocitylimit">
+<code class="descname">velocitylimit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.AxisData.velocitylimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Velocity limits (upper and lower limits in 2-dim array)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="simtrans.model.BodyModel">
 <em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">BodyModel</code><a class="reference internal" href="_modules/simtrans/model.html#BodyModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.BodyModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
@@ -409,33 +446,21 @@ Reader and writer for each formats will read and write the common data structure
 </dd></dl>
 
 <dl class="attribute">
+<dt id="simtrans.model.JointModel.axis2">
+<code class="descname">axis2</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.axis2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joint axis (used the joint type is revolute2)</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="simtrans.model.JointModel.child">
 <code class="descname">child</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of child link</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="simtrans.model.JointModel.damping">
-<code class="descname">damping</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.damping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Damping factor</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="simtrans.model.JointModel.friction">
-<code class="descname">friction</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.friction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Friction factor</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="simtrans.model.JointModel.jointType">
 <code class="descname">jointType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.jointType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joint type</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="simtrans.model.JointModel.limit">
-<code class="descname">limit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.limit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Joint limits (upper and lower limits in 2-dim array)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -454,12 +479,6 @@ Reader and writer for each formats will read and write the common data structure
 <dt id="simtrans.model.JointModel.parent">
 <code class="descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of parent link</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="simtrans.model.JointModel.velocitylimit">
-<code class="descname">velocitylimit</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.velocitylimit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Velocity limits (upper and lower limits in 2-dim array)</p>
 </dd></dl>
 
 </dd></dl>
@@ -901,6 +920,11 @@ Reader and writer for each formats will read and write the common data structure
 <dd><p>Scale vector (3-dim numpy array)</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.setmatrix">
+<code class="descname">setmatrix</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.setmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.setmatrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.trans">
 <code class="descname">trans</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.trans" title="Permalink to this definition">¶</a></dt>
@@ -1006,7 +1030,7 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaReader.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em>, <em>submesh=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em>, <em>submesh=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read collada model data given the file path</p>
 </dd></dl>
 
@@ -1024,7 +1048,7 @@ Reader and writer for each formats will read and write the common data structure
 
 <dl class="method">
 <dt id="simtrans.collada.ColladaWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/collada.html#ColladaWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.collada.ColladaWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in collada format</p>
 </dd></dl>
 
@@ -1125,15 +1149,15 @@ Reader and writer for each formats will read and write the common data structure
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>SDF reader class</p>
 <dl class="method">
-<dt id="simtrans.sdf.SDFReader.convertchildren">
-<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.convertchildren" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="simtrans.sdf.SDFReader.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read SDF model data given the model file</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="simtrans.sdf.SDFReader.readAxis">
+<code class="descname">readAxis</code><span class="sig-paren">(</span><em>jm</em>, <em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFReader.readAxis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFReader.readAxis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.sdf.SDFReader.readInertia">
@@ -1163,21 +1187,9 @@ Reader and writer for each formats will read and write the common data structure
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>SDF writer class</p>
 <dl class="method">
-<dt id="simtrans.sdf.SDFWriter.convertchildren">
-<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>joint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="simtrans.sdf.SDFWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in SDF format</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="simtrans.sdf.SDFWriter.write2">
-<code class="descname">write2</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/sdf.html#SDFWriter.write2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.sdf.SDFWriter.write2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write simulation model in SDF format
-(internally use urdf and convert to sdf using gz sdf utility)</p>
 </dd></dl>
 
 </dd></dl>
@@ -1209,7 +1221,7 @@ Reader and writer for each formats will read and write the common data structure
 <p>STL reader class</p>
 <dl class="method">
 <dt id="simtrans.stl.STLReader.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read mesh model in STL format</p>
 </dd></dl>
 
@@ -1222,7 +1234,7 @@ Reader and writer for each formats will read and write the common data structure
 <p>STL writer class</p>
 <dl class="method">
 <dt id="simtrans.stl.STLWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/stl.html#STLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.stl.STLWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write mesh model in STL format
 This method first generates collada and use meshlab to output stl</p>
 </dd></dl>
@@ -1274,8 +1286,20 @@ This method first generates collada and use meshlab to output stl</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>URDF reader class</p>
 <dl class="method">
+<dt id="simtrans.urdf.URDFReader.convertChild">
+<code class="descname">convertChild</code><span class="sig-paren">(</span><em>bm</em>, <em>l</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.convertChild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.convertChild" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="simtrans.urdf.URDFReader.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read simulation model in urdf format
+(internally convert to sdf using gz sdf utility)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFReader.read2">
+<code class="descname">read2</code><span class="sig-paren">(</span><em>fname</em>, <em>assethandler=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFReader.read2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFReader.read2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read URDF model data given the model file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1325,8 +1349,13 @@ This method first generates collada and use meshlab to output stl</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>URDF writer class</p>
 <dl class="method">
+<dt id="simtrans.urdf.URDFWriter.convertchildren">
+<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>pjoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="simtrans.urdf.URDFWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>f</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in URDF format</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1405,13 +1434,26 @@ This method first generates collada and use meshlab to output stl</p>
 </pre></div>
 </div>
 <dl class="class">
+<dt id="simtrans.vrml.VRMLMeshWriter">
+<em class="property">class </em><code class="descclassname">simtrans.vrml.</code><code class="descname">VRMLMeshWriter</code><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLMeshWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLMeshWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>VRML mesh writer class</p>
+<dl class="method">
+<dt id="simtrans.vrml.VRMLMeshWriter.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>m</em>, <em>fname</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLMeshWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLMeshWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write mesh in VRML format</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="simtrans.vrml.VRMLReader">
 <em class="property">class </em><code class="descclassname">simtrans.vrml.</code><code class="descname">VRMLReader</code><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>VRML reader class</p>
 <dl class="method">
 <dt id="simtrans.vrml.VRMLReader.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.read" title="Permalink to this definition">¶</a></dt>
+<code class="descname">read</code><span class="sig-paren">(</span><em>f</em>, <em>assethandler=None</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read vrml model data given the file path</p>
 </dd></dl>
 
@@ -1444,12 +1486,7 @@ This method first generates collada and use meshlab to output stl</p>
 <p>VRML writer class</p>
 <dl class="method">
 <dt id="simtrans.vrml.VRMLWriter.convertchildren">
-<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="simtrans.vrml.VRMLWriter.convertchildrensub">
-<code class="descname">convertchildrensub</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em>, <em>joints</em>, <em>links</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildrensub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildrensub" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>pjoint</em>, <em>joints</em>, <em>links</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1464,7 +1501,7 @@ This method first generates collada and use meshlab to output stl</p>
 
 <dl class="method">
 <dt id="simtrans.vrml.VRMLWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>mdata</em>, <em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>mdata</em>, <em>fname</em>, <em>options=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/vrml.html#VRMLWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.vrml.VRMLWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write simulation model in VRML format</p>
 </dd></dl>
 

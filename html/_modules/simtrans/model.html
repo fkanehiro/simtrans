@@ -295,6 +295,11 @@
                 <span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
             <span class="n">M</span> <span class="o">/=</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">M</span>
+</div>
+<div class="viewcode-block" id="TransformationModel.setmatrix"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.setmatrix">[docs]</a>    <span class="k">def</span> <span class="nf">setmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
 
 </div></div>
 <div class="viewcode-block" id="BodyModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BodyModel">[docs]</a><span class="k">class</span> <span class="nc">BodyModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
@@ -379,17 +384,23 @@
     <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint name</span>
     <span class="n">jointType</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Joint type</span>
     <span class="n">axis</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint axis (relative to parent link)</span>
+    <span class="n">axis2</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Joint axis (used the joint type is revolute2)</span>
     <span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>           <span class="c">#: Name of parent link</span>
     <span class="n">child</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Name of child link</span>
-    <span class="n">damping</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Damping factor</span>
-    <span class="n">friction</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Friction factor</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
-    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="bp">None</span>    <span class="c">#: Velocity limits (upper and lower limits in 2-dim array)</span>
     <span class="n">offsetPosition</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c">#: Whether offset joint position or not</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
+</div>
+<div class="viewcode-block" id="AxisData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.AxisData">[docs]</a><span class="k">class</span> <span class="nc">AxisData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Joint axis data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint axis (relative to parent link)</span>
+    <span class="n">damping</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Damping factor</span>
+    <span class="n">friction</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Friction factor</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
+    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="bp">None</span>    <span class="c">#: Velocity limits (upper and lower limits in 2-dim array)</span>
 </div>
 <div class="viewcode-block" id="ShapeModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ShapeModel">[docs]</a><span class="k">class</span> <span class="nc">ShapeModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

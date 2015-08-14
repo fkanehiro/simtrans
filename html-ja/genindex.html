@@ -215,6 +215,17 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt>
+    -c, --use-collision
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="usage.html#cmdoption-simtrans-c">simtrans コマンドラインオプション</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -f &lt;format&gt;, --from &lt;format&gt;
   </dt>
 
@@ -291,10 +302,24 @@
   <dt><a href="simtrans.html#simtrans.model.MaterialModel.ambient">ambient (simtrans.model.MaterialModel の属性)</a>
   </dt>
 
+      
+  <dt><a href="simtrans.html#simtrans.model.AxisData.axis">axis (simtrans.model.AxisData の属性)</a>
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="simtrans.html#simtrans.model.JointModel.axis">(simtrans.model.JointModel の属性)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="simtrans.html#simtrans.model.JointModel.axis">axis (simtrans.model.JointModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.model.JointModel.axis2">axis2 (simtrans.model.JointModel の属性)</a>
+  </dt>
+
+      
+  <dt><a href="simtrans.html#simtrans.model.AxisData">AxisData (simtrans.model のクラス)</a>
   </dt>
 
   </dl></td>
@@ -376,23 +401,19 @@
 
       </dl></dd>
       
-  <dt><a href="simtrans.html#simtrans.sdf.SDFReader.convertchildren">convertchildren() (simtrans.sdf.SDFReader のメソッド)</a>
+  <dt><a href="simtrans.html#simtrans.urdf.URDFReader.convertChild">convertChild() (simtrans.urdf.URDFReader のメソッド)</a>
+  </dt>
+
+      
+  <dt><a href="simtrans.html#simtrans.urdf.URDFWriter.convertchildren">convertchildren() (simtrans.urdf.URDFWriter のメソッド)</a>
   </dt>
 
       <dd><dl>
-        
-  <dt><a href="simtrans.html#simtrans.sdf.SDFWriter.convertchildren">(simtrans.sdf.SDFWriter のメソッド)</a>
-  </dt>
-
         
   <dt><a href="simtrans.html#simtrans.vrml.VRMLWriter.convertchildren">(simtrans.vrml.VRMLWriter のメソッド)</a>
   </dt>
 
       </dl></dd>
-      
-  <dt><a href="simtrans.html#simtrans.vrml.VRMLWriter.convertchildrensub">convertchildrensub() (simtrans.vrml.VRMLWriter のメソッド)</a>
-  </dt>
-
       
   <dt><a href="simtrans.html#simtrans.vrml.VRMLWriter.convertjointtype">convertjointtype() (simtrans.vrml.VRMLWriter のメソッド)</a>
   </dt>
@@ -428,7 +449,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="simtrans.html#simtrans.model.JointModel.damping">damping (simtrans.model.JointModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.model.AxisData.damping">damping (simtrans.model.AxisData の属性)</a>
   </dt>
 
       
@@ -494,7 +515,7 @@
   </dt>
 
       
-  <dt><a href="simtrans.html#simtrans.model.JointModel.friction">friction (simtrans.model.JointModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.model.AxisData.friction">friction (simtrans.model.AxisData の属性)</a>
   </dt>
 
   </dl></td>
@@ -618,7 +639,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="simtrans.html#simtrans.model.JointModel.limit">limit (simtrans.model.JointModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.model.AxisData.limit">limit (simtrans.model.AxisData の属性)</a>
   </dt>
 
       
@@ -858,6 +879,14 @@
 
       </dl></dd>
       
+  <dt><a href="simtrans.html#simtrans.urdf.URDFReader.read2">read2() (simtrans.urdf.URDFReader のメソッド)</a>
+  </dt>
+
+      
+  <dt><a href="simtrans.html#simtrans.sdf.SDFReader.readAxis">readAxis() (simtrans.sdf.SDFReader のメソッド)</a>
+  </dt>
+
+      
   <dt><a href="simtrans.html#simtrans.vrml.VRMLReader.readChild">readChild() (simtrans.vrml.VRMLReader のメソッド)</a>
   </dt>
 
@@ -885,12 +914,12 @@
   <dt><a href="simtrans.html#simtrans.vrml.VRMLReader.readLink">readLink() (simtrans.vrml.VRMLReader のメソッド)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="simtrans.html#simtrans.vrml.VRMLReader.readMesh">readMesh() (simtrans.vrml.VRMLReader のメソッド)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="simtrans.html#simtrans.urdf.URDFReader.readOrigin">readOrigin() (simtrans.urdf.URDFReader のメソッド)</a>
   </dt>
@@ -960,6 +989,10 @@
   </dt>
 
       
+  <dt><a href="simtrans.html#simtrans.model.TransformationModel.setmatrix">setmatrix() (simtrans.model.TransformationModel のメソッド)</a>
+  </dt>
+
+      
   <dt><a href="simtrans.html#simtrans.model.ShapeModel">ShapeModel (simtrans.model のクラス)</a>
   </dt>
 
@@ -977,6 +1010,10 @@
   </dt>
 
       <dd><dl>
+        
+  <dt><a href="usage.html#cmdoption-simtrans-c">-c, --use-collision</a>
+  </dt>
+
         
   <dt><a href="usage.html#cmdoption-simtrans-f">-f &lt;format&gt;, --from &lt;format&gt;</a>
   </dt>
@@ -1159,7 +1196,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="simtrans.html#simtrans.model.JointModel.velocitylimit">velocitylimit (simtrans.model.JointModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.model.AxisData.velocitylimit">velocitylimit (simtrans.model.AxisData の属性)</a>
   </dt>
 
       
@@ -1170,10 +1207,14 @@
   <dt><a href="simtrans.html#simtrans.model.MeshData.vertex_index">vertex_index (simtrans.model.MeshData の属性)</a>
   </dt>
 
+      
+  <dt><a href="simtrans.html#simtrans.model.LinkModel.visuals">visuals (simtrans.model.LinkModel の属性)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="simtrans.html#simtrans.model.LinkModel.visuals">visuals (simtrans.model.LinkModel の属性)</a>
+  <dt><a href="simtrans.html#simtrans.vrml.VRMLMeshWriter">VRMLMeshWriter (simtrans.vrml のクラス)</a>
   </dt>
 
       
@@ -1194,6 +1235,8 @@
   <dt><a href="simtrans.html#simtrans.model.CameraData.width">width (simtrans.model.CameraData の属性)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="simtrans.html#simtrans.collada.ColladaWriter.write">write() (simtrans.collada.ColladaWriter のメソッド)</a>
   </dt>
@@ -1216,16 +1259,14 @@
   </dt>
 
         
+  <dt><a href="simtrans.html#simtrans.vrml.VRMLMeshWriter.write">(simtrans.vrml.VRMLMeshWriter のメソッド)</a>
+  </dt>
+
+        
   <dt><a href="simtrans.html#simtrans.vrml.VRMLWriter.write">(simtrans.vrml.VRMLWriter のメソッド)</a>
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="simtrans.html#simtrans.sdf.SDFWriter.write2">write2() (simtrans.sdf.SDFWriter のメソッド)</a>
-  </dt>
-
   </dl></td>
 </tr></table>
 

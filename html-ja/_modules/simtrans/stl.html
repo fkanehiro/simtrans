@@ -210,7 +210,7 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    STL reader class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="STLReader.read"><a class="viewcode-back" href="../../simtrans.html#simtrans.stl.STLReader.read">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="STLReader.read"><a class="viewcode-back" href="../../simtrans.html#simtrans.stl.STLReader.read">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Read mesh model in STL format</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -228,7 +228,7 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    STL writer class</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-<div class="viewcode-block" id="STLWriter.write"><a class="viewcode-back" href="../../simtrans.html#simtrans.stl.STLWriter.write">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="STLWriter.write"><a class="viewcode-back" href="../../simtrans.html#simtrans.stl.STLWriter.write">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Write mesh model in STL format</span>
 <span class="sd">        This method first generates collada and use meshlab to output stl</span>
@@ -237,7 +237,12 @@
         <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
         <span class="n">cwriter</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">ColladaWriter</span><span class="p">()</span>
         <span class="n">cwriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">daefile</span><span class="p">)</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">&#39;meshlabserver&#39;</span><span class="p">,</span> <span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="n">daefile</span><span class="p">,</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">&#39;meshlabserver&#39;</span><span class="p">,</span> <span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="n">daefile</span><span class="p">,</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;command meshlabserver not found. please install by:&quot;</span>
+            <span class="k">print</span> <span class="s">&quot;$ sudo apt-get install meshlab&quot;</span>
+            <span class="k">raise</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">daefile</span><span class="p">)</span></div></div>
 </pre></div>
 
