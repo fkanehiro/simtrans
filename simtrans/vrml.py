@@ -417,11 +417,11 @@ class VRMLWriter(object):
             pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
             cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
             cjoint2 = copy.deepcopy(cjoint)
-            cjoint2.matrix = numpy.dot(cjoint.getmatrix(), pjointinv)
+            cjoint2.matrix = numpy.dot(pjointinv, cjoint.getmatrix())
             cjoint2.trans = None
             cjoint2.rot = None
             clink2 = copy.deepcopy(clink)
-            clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
+            clink2.matrix = numpy.dot(cjointinv, clink.getmatrix())
             clink2.trans = None
             clink2.rot = None
             if clink2.mass == 0:

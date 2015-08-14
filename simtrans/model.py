@@ -112,6 +112,11 @@ class TransformationModel(object):
             M /= M[3, 3]
             return M
 
+    def setmatrix(self, m):
+        self.matrix = m
+        self.trans = None
+        self.rot = None
+
 
 class BodyModel(TransformationModel):
     """

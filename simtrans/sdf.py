@@ -130,25 +130,35 @@ class SDFReader(object):
             # pose is relative to child link (and stored as absolute position)
             if pose is not None:
                 self.readPose(jm, pose)
-            if not numpy.allclose(jm.getmatrix(), numpy.identity(4)):
-                logging.warn("detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)")
                 jm.offsetPosition = True
-            # store joint in absolute position (SDF is still relative to
-            # child link)
-            try:
-                jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
-                jm.trans = None
-                jm.rot = None
-            except KeyError:
-                print "cannot find link info"
+                logging.warn("detect <pose> tag under <joint>, apply transformation of CoM and inertia matrix (may affect to simulation result)")
+                # store joint in absolute position (SDF is still relative to
+                # child link)
+                try:
+                    jm.matrix = numpy.dot(self._linkmap[jm.child].getmatrix(), jm.getmatrix())
+                    jm.trans = None
+                    jm.rot = None
+                except KeyError:
+                    logging.error("cannot find link info")
+            else:
+                try:
+                    jm.matrix = self._linkmap[jm.child].getmatrix()
+                    jm.trans = None
+                    jm.rot = None
+                except KeyError:
+                    logging.error("cannot find link info")
             axis = j.find('axis')
             if axis is not None:
-                if axis.find('use_parent_model_frame') is not None:
-                    jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
-                    axismat = tf.quaternion_matrix(jm.getrotation())
-                    axisinv = numpy.linalg.pinv(axismat)
-                    jm.axis = numpy.dot(axisinv, numpy.hstack((jm.axis, [1])))[0:3]
-                    jm.axis = (jm.axis / numpy.linalg.norm(jm.axis)).tolist()
+                jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
+                #if axis.find('use_parent_model_frame') is not None:
+                #    baseframe = self._linkmap[jm.parent]
+                #else:
+                #    baseframe = self._linkmap[jm.child]
+                baseframe = self._linkmap[jm.child]
+                axismat = tf.quaternion_matrix(baseframe.getrotation())
+                axisinv = numpy.linalg.pinv(axismat)
+                jm.axis = numpy.dot(axisinv, numpy.hstack((jm.axis, [1])))[0:3]
+                jm.axis = (jm.axis / numpy.linalg.norm(jm.axis)).tolist()
                 dynamics = axis.find('dynamics')
                 if dynamics is not None:
                     damping = dynamics.find('damping')
@@ -178,15 +188,24 @@ class SDFReader(object):
 
     def readPose(self, m, doc):
         pose = numpy.array([float(v) for v in re.split(' +', doc.text.strip(' '))])
-        m.matrix = None
-        m.trans = pose[0:3]
-        m.rot = tf.quaternion_from_euler(pose[3], pose[4], pose[5])
-
+        T = numpy.identity(4)
+        T[:3, 3] = pose[:3]
+        R = tf.euler_matrix(pose[3], pose[4], pose[5])
+        M = numpy.identity(4)
+        M = numpy.dot(M, T)
+        M = numpy.dot(M, R)
+        M /= M[3, 3]
+        m.matrix = M
+        m.trans = None
+        m.rot = None
+        
     def readJointType(self, d):
         if d == "fixed":
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
+        elif d == "revolute2":
+            return model.JointModel.J_REVOLUTE2
         elif d == 'prismatic':
             return model.JointModel.J_PRISMATIC
         elif d == 'screw':
@@ -212,6 +231,8 @@ class SDFReader(object):
         if pose is not None:
             self.readPose(m, pose)
         for g in d.find('geometry').getchildren():
+            if not isinstance(g.tag, basestring):
+                continue
             if g.tag == 'mesh':
                 m.shapeType = model.ShapeModel.SP_MESH
                 # print "reading mesh " + mesh.attrib['filename']
@@ -259,7 +280,7 @@ class SDFReader(object):
                 m.data = model.CylinderData()
                 m.data.radius = float(g.find('radius').text)
                 m.data.height = float(g.find('length').text)
-                m.rot = tf.quaternion_multiply(m.rot, tf.quaternion_about_axis(numpy.pi/2, [1,0,0]))
+                m.rot = tf.quaternion_multiply(m.getrotation(), tf.quaternion_about_axis(numpy.pi/2, [1,0,0]))
             elif g.tag == 'sphere':
                 m.shapeType = model.ShapeModel.SP_SPHERE
                 m.data = model.SphereData()

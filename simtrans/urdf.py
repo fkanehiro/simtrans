@@ -35,6 +35,7 @@ import os
 import lxml.etree
 import numpy
 import re
+import copy
 import warnings
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
@@ -76,10 +77,8 @@ class URDFReader(object):
             os.unlink(sdffile)
         return m
 
-    def read2(self, fname, assethandler=None):
+    def read2(self, fname, assethandler=None, options=None):
         """Read URDF model data given the model file
-        TODO: this function is still use relative position representation
-        (need to migrate to current absolute representation)
 
         :param fname: path of the file to read
         :param assethandler: asset handler (optional)
@@ -92,7 +91,6 @@ class URDFReader(object):
 
         bm = model.BodyModel()
         d = lxml.etree.parse(open(utils.resolveFile(fname)))
-        jointparentmap = {}
 
         for j in d.findall('joint'):
             jm = model.JointModel()
@@ -123,7 +121,6 @@ class URDFReader(object):
                     jm.velocitylimit = [velocity, -velocity]
                 except KeyError:
                     pass
-            jointparentmap[jm.child] = jm
             bm.joints.append(jm)
 
         for l in d.findall('link'):
@@ -146,8 +143,34 @@ class URDFReader(object):
                 lm.collisions.append(self.readShape(c))
             bm.links.append(lm)
 
+        self._linkmap = {}
+        for l in bm.links:
+            self._linkmap[l.name] = l
+
+        for r in utils.findroot(bm):
+            self._abslinks = {}
+            for c in utils.findchildren(bm, r):
+                logging.info("constructing tree from root joint: %s - > %s" % (c.parent, c.child))
+                self._abslinks[c.parent] = self._linkmap[c.parent]
+                self.convertChild(bm, c)
+            bm.links.extend(self._abslinks.values())
+        
         return bm
 
+    def convertChild(self, bm, l):
+        parent = self._abslinks[l.parent]
+        child = self._linkmap[l.child]
+        abschild = copy.deepcopy(child)
+        abschild.matrix = numpy.dot(parent.getmatrix(), child.getmatrix())
+        abschild.trans = None
+        abschild.rot = None
+        self._abslinks[l.child] = abschild
+        l.matrix = abschild.getmatrix()
+        l.trans = None
+        l.rot = None
+        for c in utils.findchildren(bm, l.child):
+            self.convertChild(bm, c)
+    
     def readOrigin(self, m, doc):
         try:
             m.trans = numpy.array([float(v) for v in re.split(' +', doc.attrib['xyz'].strip(' '))])
@@ -164,6 +187,8 @@ class URDFReader(object):
             return model.JointModel.J_FIXED
         elif d == "revolute":
             return model.JointModel.J_REVOLUTE
+        elif d == "revolute2":
+            return model.JointModel.J_REVOLUTE2
         elif d == 'prismatic':
             return model.JointModel.J_PRISMATIC
         elif d == 'screw':
@@ -286,11 +311,11 @@ class URDFWriter(object):
             pjointinv = numpy.linalg.pinv(pjoint.getmatrix())
             cjointinv = numpy.linalg.pinv(cjoint.getmatrix())
             cjoint2 = copy.deepcopy(cjoint)
-            cjoint2.matrix = numpy.dot(cjoint.getmatrix(), pjointinv)
+            cjoint2.matrix = numpy.dot(pjointinv, cjoint.getmatrix())
             cjoint2.trans = None
             cjoint2.rot = None
             clink2 = copy.deepcopy(clink)
-            clink2.matrix = numpy.dot(clink.getmatrix(), cjointinv)
+            clink2.matrix = numpy.dot(cjointinv, clink.getmatrix())
             clink2.trans = None
             clink2.rot = None
             if not numpy.allclose(clink2.getmatrix(), numpy.identity(4)):
