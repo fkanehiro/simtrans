@@ -159,7 +159,7 @@ DEF {{model.name}} Humanoid {
               children [
                 {%- if v.shapeType == ShapeModel.SP_MESH %}
                 Inline {
-                  url "{{body.name}}-{{l.link.name}}-{{v.name}}.wrl"
+                  url "{{body.name}}-{{l.link.name|replace('::', '_')}}-{{v.name|replace('::', '_')}}.wrl"
                 }
                 {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
                 Shape {

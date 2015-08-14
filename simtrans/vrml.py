@@ -362,13 +362,13 @@ class VRMLWriter(object):
                 roots = utils.findchildren(mdata, root)
                 for r in roots:
                     # print("root joint is world. using %s as root" % root)
-                    mfname = os.path.join(dirname, mdata.name + "-" + r.child + ".wrl")
-                    self.renderchildren(mdata, r.child, "fixed", mfname, template)
+                    mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
+                    self.renderchildren(mdata, r.child, "fixed", os.path.join(dirname, mfname), template)
                     modelfiles[mfname] = self._linkmap[r.child]
             else:
-                mfname = os.path.join(dirname, mdata.name + "-" + root + ".wrl")
-                self.renderchildren(mdata, root, "free", mfname, template)
-                modelfiles[os.path.basename(mfname)] = self._linkmap[root]
+                mfname = (mdata.name + "-" + root + ".wrl").replace('::', '_')
+                self.renderchildren(mdata, root, "free", os.path.join(dirname, mfname), template)
+                modelfiles[mfname] = self._linkmap[root]
         
         # render shape vrml file for each links
         for l in mdata.links:
@@ -383,7 +383,7 @@ class VRMLWriter(object):
                         v.data.pretranslate()
                     m = {}
                     m['children'] = [v.data]
-                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl"), 'w') as ofile:
+                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl").replace('::', '_'), 'w') as ofile:
                         ofile.write(template.render({
                             'name': v.name,
                             'ShapeModel': model.ShapeModel,
