@@ -342,6 +342,29 @@ class VRMLWriter(object):
         if mdata.name is None or mdata.name == '':
             mdata.name = basename
 
+        # convert revolute2 joint to two revolute joints (with a link
+        # in between)
+        for j in mdata.joints:
+            if j.jointType == model.JointModel.J_REVOLUTE2:
+                logging.info("converting revolute2 joint to two revolute joints")
+                nl = model.LinkModel()
+                nl.name = j.name + "_REVOLUTE2_LINK"
+                nl.matrix = j.getmatrix()
+                nl.trans = None
+                nl.rot = None
+                nl.mass = 0.001 # assign very small mass
+                mdata.links.append(nl)
+                nj = copy.deepcopy(j)
+                nj.name = j.name + "_SECOND"
+                nj.jointType = model.JointModel.J_REVOLUTE
+                nj.parent = nl.name
+                nj.child = j.child
+                nj.axis = numpy.dot(tf.euler_matrix(1,0,0), numpy.hstack((nj.axis, [1])))[0:3]
+                nj.axis = (nj.axis / numpy.linalg.norm(nj.axis)).tolist()
+                mdata.joints.append(nj)
+                j.jointType = model.JointModel.J_REVOLUTE
+                j.child = nl.name
+        
         # find root joint (including local peaks)
         self._roots = utils.findroot(mdata)
 
