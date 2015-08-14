@@ -131,8 +131,10 @@ class VRMLReader(object):
         else:
             lm = self.readLink(root)
             self._links.append(lm)
+            jm = model.JointModel()
+            jm.name = root.name
             for c in root.childIndices:
-                self.readChild(root, self._hrplinks[c])
+                self.readChild(jm, self._hrplinks[c])
         for j in self._hrpextrajoints:
             # extra joint for closed link models
             m = model.JointModel()
@@ -295,13 +297,7 @@ class VRMLReader(object):
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
         # convert to absolute position
-        if isinstance(parent, model.JointModel):
-            pm = parent
-        else:
-            pm = model.JointModel()
-            pm.trans = numpy.array(parent.translation)
-            pm.rot = tf.quaternion_about_axis(parent.rotation[3], parent.rotation[0:3])
-        jm.matrix = numpy.dot(pm.getmatrix(), jm.getmatrix())
+        jm.matrix = numpy.dot(parent.getmatrix(), jm.getmatrix())
         jm.trans = None
         jm.rot = None
         self._joints.append(jm)
@@ -312,7 +308,7 @@ class VRMLReader(object):
         lm.rot = None
         self._links.append(lm)
         for c in child.childIndices:
-            self.readChild(child, self._hrplinks[c])
+            self.readChild(jm, self._hrplinks[c])
 
     def resolveModelLoader(self):
         nsobj = self._orb.resolve_initial_references("NameService")
