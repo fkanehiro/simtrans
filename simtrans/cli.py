@@ -105,8 +105,10 @@ def main():
             reader = sdf.SDFReader()
         elif ext == '.dae':
             reader = collada.ColladaReader()
+            meshinput = True
         elif ext == '.stl':
             reader = stl.STLReader()
+            meshinput = True
         else:
             logging.error('unable to detect input format (may be not supported?)')
             return 1
@@ -171,7 +173,12 @@ def main():
 
     if meshinput:
         nm = model.BodyModel()
-        nm.links = [m]
+        nl = model.LinkModel()
+        ns = model.ShapeModel()
+        ns.shapeType = model.ShapeModel.SP_MESH
+        ns.data = m
+        nl.visuals.append(ns)
+        nm.links.append(nl)
         m = nm
         
     if len(m.links) == 0:
