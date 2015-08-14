@@ -459,10 +459,14 @@ class VRMLWriter(object):
         nmodel['children'] = children
 
         # assign jointId
-        jointmap = {root: 0}
+        if jointtype in ['free', 'fixed']:
+            jointmap = {}
+            jointcount = 0
+        else:
+            jointmap = {root: 0}
+            jointcount = 1
         for j in joints:
             jointmap[j] = 0
-        jointcount = 1
         for j in joints:
             jointmap[j] = jointcount
             jointcount = jointcount + 1
