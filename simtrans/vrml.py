@@ -277,23 +277,24 @@ class VRMLReader(object):
             jm.parent = parent.name
         jm.child = child.name + '_LINK'
         jm.name = child.name
+        jm.axis = model.AxisData()
         if child.jointType == 'fixed':
-            jm.jointType = model.JointModel.J_FIXED
+            jm.axis.jointType = model.JointModel.J_FIXED
         elif child.jointType == 'rotate':
-            jm.jointType = model.JointModel.J_REVOLUTE
+            jm.axis.jointType = model.JointModel.J_REVOLUTE
         elif child.jointType == 'slide':
-            jm.jointType = model.JointModel.J_PRISMATIC
+            jm.axis.jointType = model.JointModel.J_PRISMATIC
         else:
             raise Exception('unsupported joint type: %s' % child.jointType)
         try:
-            jm.limit = [child.ulimit[0], child.llimit[0]]
+            jm.axis.limit = [child.ulimit[0], child.llimit[0]]
         except IndexError:
             pass
         try:
-            jm.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
+            jm.axis.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
         except IndexError:
             pass
-        jm.axis = child.jointAxis
+        jm.axis.axis = child.jointAxis
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
         # convert to absolute position
@@ -359,8 +360,7 @@ class VRMLWriter(object):
                 nj.jointType = model.JointModel.J_REVOLUTE
                 nj.parent = nl.name
                 nj.child = j.child
-                nj.axis = numpy.dot(tf.euler_matrix(1,0,0), numpy.hstack((nj.axis, [1])))[0:3]
-                nj.axis = (nj.axis / numpy.linalg.norm(nj.axis)).tolist()
+                nj.axis = j.axis2
                 mdata.joints.append(nj)
                 j.jointType = model.JointModel.J_REVOLUTE
                 j.child = nl.name

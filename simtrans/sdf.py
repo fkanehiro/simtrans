@@ -104,7 +104,9 @@ class SDFReader(object):
                 pose = inertial.find('pose')
                 if pose is not None:
                     lm.centerofmass = [float(v) for v in re.split(' +', pose.text.strip(' '))][0:3]
-                lm.inertia = self.readInertia(inertial.find('inertia'))
+                inertia = inertial.find('inertia')
+                if inertia is not None:
+                    lm.inertia = self.readInertia(inertia)
             # visual property
             lm.visuals = []
             for v in l.findall('visual'):
@@ -149,34 +151,10 @@ class SDFReader(object):
                     logging.error("cannot find link info")
             axis = j.find('axis')
             if axis is not None:
-                jm.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
-                #if axis.find('use_parent_model_frame') is not None:
-                #    baseframe = self._linkmap[jm.parent]
-                #else:
-                #    baseframe = self._linkmap[jm.child]
-                baseframe = self._linkmap[jm.child]
-                axismat = tf.quaternion_matrix(baseframe.getrotation())
-                axisinv = numpy.linalg.pinv(axismat)
-                jm.axis = numpy.dot(axisinv, numpy.hstack((jm.axis, [1])))[0:3]
-                jm.axis = (jm.axis / numpy.linalg.norm(jm.axis)).tolist()
-                dynamics = axis.find('dynamics')
-                if dynamics is not None:
-                    damping = dynamics.find('damping')
-                    if damping is not None:
-                        jm.damping = float(damping.text)
-                    friction = dynamics.find('friction')
-                    if friction is not None:
-                        jm.friction = float(friction.text)
-                limit = axis.find('limit')
-                if limit is not None:
-                    try:
-                        jm.limit = [float(limit.find('upper').text), float(limit.find('lower').text)]
-                        velocity = limit.find('velocity').text
-                        if type(velocity) in [str, int, float]:
-                            velocity = float(velocity)
-                            jm.velocitylimit = [velocity, -velocity]
-                    except AttributeError:
-                        pass
+                jm.axis = self.readAxis(jm, axis)
+            axis2 = j.find('axis2')
+            if axis2 is not None:
+                jm.axis2 = self.readAxis(jm, axis2)
             # check if each links really exist
             if jm.parent not in self._linkmap:
                 logging.warn("link %s referenced by joint %s does not exist (ignoring)" % (jm.parent, jm.name))
@@ -198,6 +176,38 @@ class SDFReader(object):
         m.matrix = M
         m.trans = None
         m.rot = None
+
+    def readAxis(self, jm, axis):
+        am = model.AxisData()
+        am.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
+        #if axis.find('use_parent_model_frame') is not None:
+        #    baseframe = self._linkmap[jm.parent]
+        #else:
+        #    baseframe = self._linkmap[jm.child]
+        baseframe = self._linkmap[jm.child]
+        axismat = tf.quaternion_matrix(baseframe.getrotation())
+        axisinv = numpy.linalg.pinv(axismat)
+        am.axis = numpy.dot(axisinv, numpy.hstack((am.axis, [1])))[0:3]
+        am.axis = (am.axis / numpy.linalg.norm(am.axis)).tolist()
+        dynamics = axis.find('dynamics')
+        if dynamics is not None:
+            damping = dynamics.find('damping')
+            if damping is not None:
+                am.damping = float(damping.text)
+            friction = dynamics.find('friction')
+            if friction is not None:
+                am.friction = float(friction.text)
+            limit = axis.find('limit')
+            if limit is not None:
+                try:
+                    am.limit = [float(limit.find('upper').text), float(limit.find('lower').text)]
+                    velocity = limit.find('velocity').text
+                    if type(velocity) in [str, int, float]:
+                        velocity = float(velocity)
+                        am.velocitylimit = [velocity, -velocity]
+                except AttributeError:
+                    pass
+        return am
         
     def readJointType(self, d):
         if d == "fixed":

@@ -200,17 +200,23 @@ class JointModel(TransformationModel):
     name = None             #: Joint name
     jointType = None        #: Joint type
     axis = None             #: Joint axis (relative to parent link)
+    axis2 = None            #: Joint axis (used the joint type is revolute2)
     parent = None           #: Name of parent link
     child = None            #: Name of child link
-    damping = None          #: Damping factor
-    friction = None         #: Friction factor
-    limit = None            #: Joint limits (upper and lower limits in 2-dim array)
-    velocitylimit = None    #: Velocity limits (upper and lower limits in 2-dim array)
     offsetPosition = False  #: Whether offset joint position or not
 
     def __init__(self):
         TransformationModel.__init__(self)
 
+class AxisData(object):
+    """
+    Joint axis data
+    """
+    axis = None             #: Joint axis (relative to parent link)
+    damping = None          #: Damping factor
+    friction = None         #: Friction factor
+    limit = None            #: Joint limits (upper and lower limits in 2-dim array)
+    velocitylimit = None    #: Velocity limits (upper and lower limits in 2-dim array)
 
 class ShapeModel(TransformationModel):
     """
