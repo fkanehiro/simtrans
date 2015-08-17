@@ -58,6 +58,24 @@ PROTO Segment [
   }
 }
 
+PROTO Surface [
+ field   SFVec3f bboxCenter 0 0 0
+ field   SFVec3f bboxSize   -1 -1 -1
+ field   MFNode  visual     [ ]
+ field   MFNode  collision  [ ]
+ eventIn MFNode  addChildren
+ eventIn MFNode  removeChildren
+]
+{
+  Group {
+    addChildren    IS addChildren
+    bboxCenter     IS bboxCenter
+    bboxSize       IS bboxSize
+    children       IS visual
+    removeChildren IS removeChildren
+  }
+}
+
 PROTO Humanoid [
   field           SFVec3f    bboxCenter            0 0 0
   field           SFVec3f    bboxSize              -1 -1 -1
@@ -114,14 +132,47 @@ DEF {{j.name}} ExtraJoint {
 }
 {%- endfor %}
 
+{% macro rendershape(v, ShapeModel, shapefilemap) -%}
+Transform {
+  {%- set scale = v.getscale() %}
+  scale {{scale[0]}} {{scale[1]}} {{scale[2]}}
+  {%- set trans = v.gettranslation() %}
+  translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
+  {%- set angle = v.getangle() %}
+  rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
+  children [
+    {%- if v.shapeType == ShapeModel.SP_MESH %}
+    Inline {
+      url "{{shapefilemap[v.name]}}"
+    }
+    {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
+    Shape {
+      geometry Sphere {
+        radius {{v.data.radius}}
+      }
+    }
+    {%- elif v.shapeType == ShapeModel.SP_BOX %}
+    Shape {
+      geometry Box {
+        size {{v.data.x}} {{v.data.y}} {{v.data.z}}
+      }
+    }
+    {%- elif v.shapeType == ShapeModel.SP_CYLINDER %}
+    Shape {
+      geometry Cylinder {
+        radius {{v.data.radius}}
+        height {{v.data.height}}
+      }
+    }
+    {%- endif %}
+  ]
+}
+{%- endmacro %}
+
 DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
     {%- if l.link and (l.link.visuals|length or l.link.collisions|length or l.children|length) %}
-    {%- set shapes = l.link.visuals %}
-    {%- if options.usecollision %}
-    {%- set shapes = l.link.collisions %}
-    {%- endif %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
       {%- if l.joint.axis.axis %}
@@ -148,42 +199,28 @@ DEF {{model.name}} Humanoid {
           centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
           momentsOfInertia [{{l.link.inertia[0][0]}} {{l.link.inertia[0][1]}} {{l.link.inertia[0][2]}} {{l.link.inertia[1][0]}} {{l.link.inertia[1][1]}} {{l.link.inertia[1][2]}} {{l.link.inertia[2][0]}} {{l.link.inertia[2][1]}} {{l.link.inertia[2][2]}}]
           children [
-            {%- for v in shapes %}
-            Transform {
-              {%- set scale = v.getscale() %}
-              scale {{scale[0]}} {{scale[1]}} {{scale[2]}}
-              {%- set trans = v.gettranslation() %}
-              translation {{trans[0]}} {{trans[1]}} {{trans[2]}}
-              {%- set angle = v.getangle() %}
-              rotation {{angle[0][0]}} {{angle[0][1]}} {{angle[0][2]}} {{angle[1]}}
-              children [
-                {%- if v.shapeType == ShapeModel.SP_MESH %}
-                Inline {
-                  url "{{body.name}}-{{l.link.name|replace('::', '_')}}-{{v.name|replace('::', '_')}}.wrl"
-                }
-                {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
-                Shape {
-                  geometry Sphere {
-                    radius {{v.data.radius}}
-                  }
-                }
-                {%- elif v.shapeType == ShapeModel.SP_BOX %}
-                Shape {
-                  geometry Box {
-                    size {{v.data.x}} {{v.data.y}} {{v.data.z}}
-                  }
-                }
-                {%- elif v.shapeType == ShapeModel.SP_CYLINDER %}
-                Shape {
-                  geometry Cylinder {
-                    radius {{v.data.radius}}
-                    height {{v.data.height}}
-                  }
-                }
-                {%- endif %}
+            {%- if options.usecollision %}
+            {%- for c in l.link.collisions %}
+            {{ rendershape(c, ShapeModel, shapefilemap)|indent(loop.depth+11) }}
+            {%- endfor %}
+            {%- elif options.useboth %}
+            Surface {
+              visual [
+                {%- for v in l.link.visuals %}
+                {{ rendershape(v, ShapeModel, shapefilemap)|indent(loop.depth+15) }}
+                {%- endfor %}
+              ]
+              collision [
+                {%- for c in l.link.collisions %}
+                {{ rendershape(c, ShapeModel, shapefilemap)|indent(loop.depth+15) }}
+                {%- endfor %}
               ]
             }
+            {%- else %}
+            {%- for v in l.link.visuals %}
+            {{ rendershape(v, ShapeModel, shapefilemap)|indent(loop.depth+11) }}
             {%- endfor %}
+            {%- endif %}
           ]
         }
         {{ loop(l.children)|indent(4, True) }}

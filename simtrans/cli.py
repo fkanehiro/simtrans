@@ -38,6 +38,7 @@ parser.add_argument('-i', '--input', dest='fromfile', metavar='FILE', help='conv
 parser.add_argument('-o', '--output', dest='tofile', metavar='FILE', help='convert to FILE')
 parser.add_argument('-f', '--from', dest='fromformat', metavar='FORMAT', help='convert from FORMAT (optional)')
 parser.add_argument('-c', '--use-collision', action='store_true', dest='usecollision', default=False, help='use collision shape when converting to VRML')
+parser.add_argument('-b', '--use-both', action='store_true', dest='useboth', default=False, help='use both visual and collision shape when converting to VRML (only supported on most recent version of Choreonoid)')
 parser.add_argument('-t', '--to', dest='toformat', metavar='FORMAT', help='convert to FORMAT (optional)')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 

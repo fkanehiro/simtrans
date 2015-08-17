@@ -376,6 +376,31 @@ class VRMLWriter(object):
         for m in mdata.links:
             self._linkmap[m.name] = m
 
+        # render shape vrml file for each links
+        shapefilemap = {}
+        for l in mdata.links:
+            shapes = copy.copy(l.visuals)
+            if options.usecollision:
+                shapes = copy.copy(l.collisions)
+            if options.useboth:
+                shapes.extend(copy.copy(l.collisions))
+            for v in shapes:
+                logging.info('writing shape of link: %s, type: %s' % (l.name, v.shapeType))
+                if v.shapeType == model.ShapeModel.SP_MESH:
+                    template = env.get_template('vrml-mesh.wrl')
+                    if isinstance(v.data, model.MeshTransformData):
+                        v.data.pretranslate()
+                    m = {}
+                    m['children'] = [v.data]
+                    shapefname = (mdata.name + "-" + l.name + "-" + v.name + ".wrl").replace('::', '_')
+                    with open(os.path.join(dirname, shapefname), 'w') as ofile:
+                        ofile.write(template.render({
+                            'name': v.name,
+                            'ShapeModel': model.ShapeModel,
+                            'mesh': m
+                        }))
+                    shapefilemap[v.name] = shapefname
+
         # render main vrml file for each bodies
         template = env.get_template('vrml.wrl')
         modelfiles = {}
@@ -386,33 +411,13 @@ class VRMLWriter(object):
                 for r in roots:
                     # print("root joint is world. using %s as root" % root)
                     mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
-                    self.renderchildren(mdata, r.child, "fixed", os.path.join(dirname, mfname), template)
+                    self.renderchildren(mdata, r.child, "fixed", os.path.join(dirname, mfname), shapefilemap, template)
                     modelfiles[mfname] = self._linkmap[r.child]
             else:
                 mfname = (mdata.name + "-" + root + ".wrl").replace('::', '_')
-                self.renderchildren(mdata, root, "free", os.path.join(dirname, mfname), template)
+                self.renderchildren(mdata, root, "free", os.path.join(dirname, mfname), shapefilemap, template)
                 modelfiles[mfname] = self._linkmap[root]
         
-        # render shape vrml file for each links
-        for l in mdata.links:
-            shapes = l.visuals
-            if options.usecollision:
-                shapes = l.collisions
-            for v in shapes:
-                logging.info('writing shape of link: %s, type: %s' % (l.name, v.shapeType))
-                if v.shapeType == model.ShapeModel.SP_MESH:
-                    template = env.get_template('vrml-mesh.wrl')
-                    if isinstance(v.data, model.MeshTransformData):
-                        v.data.pretranslate()
-                    m = {}
-                    m['children'] = [v.data]
-                    with open(os.path.join(dirname, mdata.name + "-" + l.name + "-" + v.name + ".wrl").replace('::', '_'), 'w') as ofile:
-                        ofile.write(template.render({
-                            'name': v.name,
-                            'ShapeModel': model.ShapeModel,
-                            'mesh': m
-                        }))
-
         # render openhrp project
         template = env.get_template('openhrp-project.xml')
         with open(fname.replace('.wrl', '-project.xml'), 'w') as ofile:
@@ -461,7 +466,7 @@ class VRMLWriter(object):
             links.append(cjoint.child)
         return (children, joints, links)
 
-    def renderchildren(self, mdata, root, jointtype, fname, template):
+    def renderchildren(self, mdata, root, jointtype, fname, shapefilemap, template):
         nmodel = {}
         rootlink = self._linkmap[root]
         rootjoint = model.JointModel()
@@ -498,6 +503,7 @@ class VRMLWriter(object):
                 'joints': joints,
                 'jointmap': jointmap,
                 'ShapeModel': model.ShapeModel,
+                'shapefilemap': shapefilemap,
                 'options': self._options
             }))
 
