@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 17:30+0900\n"
-"PO-Revision-Date: 2014-12-15 16:25+0900\n"
+"PO-Revision-Date: 2015-08-17 23:52+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -105,6 +105,18 @@ msgstr "URDFフォーマットからVRMLフォーマットへの変換"
 #: ../../usage.rst:30
 msgid "Convert VRML model to SDF format"
 msgstr "VRMLフォーマットからSDFフォーマットへの変換"
+
+#: ../../<autoprogram>:1
+msgid "use collision shape when converting to VRML"
+msgstr "VRMLへの変換時にcollision形状を使う"
+
+#: ../../<autoprogram>:1
+msgid ""
+"use both visual and collision shape when converting to VRML (only supported "
+"on most recent version of Choreonoid)"
+msgstr ""
+"VRMLへの変換時にcollision形状とvisual形状の両方を使う（この機能は最新の"
+"Choreonoidでのみ利用可能です）"
 
 #~ msgid "Convert URDF model to VRML(OpenHRP) format"
 #~ msgstr "URDF形式のモデルのVRML（OpenHRP）形式への変換"
