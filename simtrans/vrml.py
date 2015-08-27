@@ -405,6 +405,7 @@ class VRMLWriter(object):
         template = env.get_template('vrml.wrl')
         modelfiles = {}
         for root in self._roots:
+            logging.info('writing model for %s' % root)
             # first convert data structure (VRML uses tree structure)
             if root == 'world':
                 roots = utils.findchildren(mdata, root)
