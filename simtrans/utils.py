@@ -126,3 +126,22 @@ def findchildren(mdata, linkname):
         if j.parent == linkname:
             children.append(j)
     return children
+
+def findparent(mdata, linkname):
+    '''
+    Find parent joints connected to specified link
+
+    >>> import subprocess
+    >>> from . import urdf
+    >>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+    0
+    >>> r = urdf.URDFReader()
+    >>> m = r.read('/tmp/atlas.urdf')
+    >>> [p.parent for p in findparent(m, 'ltorso')]
+    ['pelvis']
+    '''
+    parents = []
+    for j in mdata.joints:
+        if j.child == linkname:
+            parents.append(j)
+    return parents
