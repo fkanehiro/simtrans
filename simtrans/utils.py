@@ -63,14 +63,14 @@ def findroot(mdata):
     0
     >>> r = urdf.URDFReader()
     >>> m = r.read('/tmp/atlas.urdf')
-    >>> findroot(m)[0]
-    'pelvis'
+    >>> findroot(m)
+    ['pelvis']
 
     >>> from . import urdf
     >>> r = urdf.URDFReader()
     >>> m = r.read('package://ur_description/urdf/ur5_robot.urdf')
-    >>> findroot(m)[0]
-    'world'
+    >>> findroot(m)
+    ['world']
 
     >>> import subprocess
     >>> from . import urdf
@@ -78,14 +78,14 @@ def findroot(mdata):
     0
     >>> r = urdf.URDFReader()
     >>> m = r.read('/tmp/pr2.urdf')
-    >>> findroot(m)[0]
-    'base_footprint'
+    >>> findroot(m)
+    ['base_footprint']
 
     >>> from . import sdf
     >>> r = sdf.SDFReader()
     >>> m = r.read('model://pr2/model.sdf')
-    >>> findroot(m)[0]
-    'base_footprint'
+    >>> findroot(m)
+    ['base_footprint']
     '''
     links = {}
     usedlinks = {}
