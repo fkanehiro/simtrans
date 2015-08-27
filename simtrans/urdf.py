@@ -66,7 +66,7 @@ class URDFReader(object):
         '''
         fd, sdffile = tempfile.mkstemp(suffix='.sdf')
         try:
-            d = subprocess.check_output(['gz', 'sdf', '-p', fname])
+            d = subprocess.check_output(['gz', 'sdf', '-p', utils.resolveFile(fname)])
             os.write(fd, d)
         finally:
             os.close(fd)

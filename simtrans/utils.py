@@ -23,6 +23,7 @@ def resolveFile(f):
     >>> resolveFile('model://PA10/pa10.main.wrl') == os.path.expandvars('$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl')
     True
     '''
+    logger.debug('resolveFile from %s' % f)
     try:
         if f.count('model://') > 0:
             fn = f.replace('model://', '')
@@ -35,13 +36,18 @@ def resolveFile(f):
             for p in paths:
                 ff = os.path.expanduser(os.path.join(p, fn))
                 if os.path.exists(ff):
+                    logger.debug('resolveFile resolved to %s' % ff)
                     return ff
         if f.count('package://') > 0:
             pkgname, pkgfile = f.replace('package://', '').split('/', 1)
             ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
-            return os.path.join(ppath, pkgfile)
+            logger.debug('resolveFile find package path %s' % ppath)
+            ff = os.path.join(ppath, pkgfile)
+            logger.debug('resolveFile resolved to %s' % ff)
+            return ff
     except Exception, e:
         logger.warn(str(e))
+    logger.debug('resolveFile unresolved (use original)')
     return f
 
 
@@ -51,9 +57,12 @@ def findroot(mdata):
     Currently based on following simple principle:
     - Link with no parent will be the root.
 
+    >>> import subprocess
     >>> from . import urdf
+    >>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+    0
     >>> r = urdf.URDFReader()
-    >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+    >>> m = r.read('/tmp/atlas.urdf')
     >>> findroot(m)[0]
     'pelvis'
 
@@ -62,6 +71,15 @@ def findroot(mdata):
     >>> m = r.read('package://ur_description/urdf/ur5_robot.urdf')
     >>> findroot(m)[0]
     'world'
+
+    >>> import subprocess
+    >>> from . import urdf
+    >>> subprocess.call('rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > /tmp/pr2.urdf', shell=True)
+    0
+    >>> r = urdf.URDFReader()
+    >>> m = r.read('/tmp/pr2.urdf')
+    >>> findroot(m)[0]
+    'base_footprint'
 
     >>> from . import sdf
     >>> r = sdf.SDFReader()
@@ -94,11 +112,13 @@ def findchildren(mdata, linkname):
     '''
     Find child joints connected to specified link
 
+    >>> import subprocess
     >>> from . import urdf
+    >>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+    0
     >>> r = urdf.URDFReader()
-    >>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
-    >>> w = VRMLWriter()
-    >>> [c.child for c in w.findchildren(m, 'pelvis')]
+    >>> m = r.read('/tmp/atlas.urdf')
+    >>> [c.child for c in findchildren(m, 'pelvis')]
     ['ltorso', 'l_uglut', 'r_uglut']
     '''
     children = []
