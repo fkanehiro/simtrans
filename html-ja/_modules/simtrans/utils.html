@@ -207,6 +207,7 @@
 <span class="sd">    &gt;&gt;&gt; resolveFile(&#39;model://PA10/pa10.main.wrl&#39;) == os.path.expandvars(&#39;$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl&#39;)</span>
 <span class="sd">    True</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">f</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;model://&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;model://&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
@@ -219,13 +220,18 @@
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
                 <span class="n">ff</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ff</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile resolved to </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">ff</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">ff</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;package://&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">pkgname</span><span class="p">,</span> <span class="n">pkgfile</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;package://&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">ppath</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;rospack&#39;</span><span class="p">,</span> <span class="s">&#39;find&#39;</span><span class="p">,</span> <span class="n">pkgname</span><span class="p">])</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ppath</span><span class="p">,</span> <span class="n">pkgfile</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile find package path </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">ppath</span><span class="p">)</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ppath</span><span class="p">,</span> <span class="n">pkgfile</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile resolved to </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">ff</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ff</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile unresolved (use original)&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">f</span>
 
 </div>
@@ -234,24 +240,37 @@
 <span class="sd">    Find root link from parent to child relationships.</span>
 <span class="sd">    Currently based on following simple principle:</span>
 <span class="sd">    - Link with no parent will be the root.</span>
+<span class="sd">    - Link should have at least one open connection with the other link</span>
 
+<span class="sd">    &gt;&gt;&gt; import subprocess</span>
 <span class="sd">    &gt;&gt;&gt; from . import urdf</span>
+<span class="sd">    &gt;&gt;&gt; subprocess.call(&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;, shell=True)</span>
+<span class="sd">    0</span>
 <span class="sd">    &gt;&gt;&gt; r = urdf.URDFReader()</span>
-<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; findroot(m)[0]</span>
-<span class="sd">    &#39;pelvis&#39;</span>
+<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;/tmp/atlas.urdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; findroot(m)</span>
+<span class="sd">    [&#39;pelvis&#39;]</span>
 
 <span class="sd">    &gt;&gt;&gt; from . import urdf</span>
 <span class="sd">    &gt;&gt;&gt; r = urdf.URDFReader()</span>
 <span class="sd">    &gt;&gt;&gt; m = r.read(&#39;package://ur_description/urdf/ur5_robot.urdf&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; findroot(m)[0]</span>
-<span class="sd">    &#39;world&#39;</span>
+<span class="sd">    &gt;&gt;&gt; findroot(m)</span>
+<span class="sd">    [&#39;world&#39;]</span>
+
+<span class="sd">    &gt;&gt;&gt; import subprocess</span>
+<span class="sd">    &gt;&gt;&gt; from . import urdf</span>
+<span class="sd">    &gt;&gt;&gt; subprocess.call(&#39;rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf&#39;, shell=True)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; r = urdf.URDFReader()</span>
+<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;/tmp/pr2.urdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; findroot(m)</span>
+<span class="sd">    [&#39;base_footprint&#39;]</span>
 
 <span class="sd">    &gt;&gt;&gt; from . import sdf</span>
 <span class="sd">    &gt;&gt;&gt; r = sdf.SDFReader()</span>
 <span class="sd">    &gt;&gt;&gt; m = r.read(&#39;model://pr2/model.sdf&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; findroot(m)[0]</span>
-<span class="sd">    &#39;base_footprint&#39;</span>
+<span class="sd">    &gt;&gt;&gt; findroot(m)</span>
+<span class="sd">    [&#39;base_footprint&#39;]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">links</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">usedlinks</span> <span class="o">=</span> <span class="p">{}</span>
@@ -267,29 +286,73 @@
             <span class="k">del</span> <span class="n">links</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">links</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
+    <span class="n">peaks</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">links</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">hasopenlink</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">usedlinks</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span>
+</div>
+<div class="viewcode-block" id="hasopenlink"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.hasopenlink">[ドキュメント]</a><span class="k">def</span> <span class="nf">hasopenlink</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Check if the link has open connection with neighboring links</span>
+
+<span class="sd">    &gt;&gt;&gt; from . import sdf</span>
+<span class="sd">    &gt;&gt;&gt; r = sdf.SDFReader()</span>
+<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;model://pr2/model.sdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; hasopenlink(m, &#39;base_footprint&#39;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; hasopenlink(m, &#39;l_gripper_l_parallel_link&#39;)</span>
+<span class="sd">    False</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">parent</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">findparent</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">child</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">parents</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
 
 </div>
 <div class="viewcode-block" id="findchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.findchildren">[ドキュメント]</a><span class="k">def</span> <span class="nf">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find child joints connected to specified link</span>
 
+<span class="sd">    &gt;&gt;&gt; import subprocess</span>
 <span class="sd">    &gt;&gt;&gt; from . import urdf</span>
+<span class="sd">    &gt;&gt;&gt; subprocess.call(&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;, shell=True)</span>
+<span class="sd">    0</span>
 <span class="sd">    &gt;&gt;&gt; r = urdf.URDFReader()</span>
-<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; w = VRMLWriter()</span>
-<span class="sd">    &gt;&gt;&gt; [c.child for c in w.findchildren(m, &#39;pelvis&#39;)]</span>
+<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;/tmp/atlas.urdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; [c.child for c in findchildren(m, &#39;pelvis&#39;)]</span>
 <span class="sd">    [&#39;ltorso&#39;, &#39;l_uglut&#39;, &#39;r_uglut&#39;]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">linkname</span><span class="p">:</span>
             <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">children</span></div>
+    <span class="k">return</span> <span class="n">children</span>
+
+</div>
+<div class="viewcode-block" id="findparent"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.findparent">[ドキュメント]</a><span class="k">def</span> <span class="nf">findparent</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Find parent joints connected to specified link</span>
+
+<span class="sd">    &gt;&gt;&gt; import subprocess</span>
+<span class="sd">    &gt;&gt;&gt; from . import urdf</span>
+<span class="sd">    &gt;&gt;&gt; subprocess.call(&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;, shell=True)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; r = urdf.URDFReader()</span>
+<span class="sd">    &gt;&gt;&gt; m = r.read(&#39;/tmp/atlas.urdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; [p.parent for p in findparent(m, &#39;ltorso&#39;)]</span>
+<span class="sd">    [&#39;pelvis&#39;]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">parents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="o">==</span> <span class="n">linkname</span><span class="p">:</span>
+            <span class="n">parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parents</span></div>
 </pre></div>
 
           </div>

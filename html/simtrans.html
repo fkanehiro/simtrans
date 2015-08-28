@@ -1519,12 +1519,30 @@ This method first generates collada and use meshlab to output stl</p>
 <dt id="simtrans.utils.findchildren">
 <code class="descclassname">simtrans.utils.</code><code class="descname">findchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#findchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findchildren" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find child joints connected to specified link</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">VRMLWriter</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">child</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">w</span><span class="o">.</span><span class="n">findchildren</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;pelvis&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/tmp/atlas.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">child</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">findchildren</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;pelvis&#39;</span><span class="p">)]</span>
 <span class="go">[&#39;ltorso&#39;, &#39;l_uglut&#39;, &#39;r_uglut&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="simtrans.utils.findparent">
+<code class="descclassname">simtrans.utils.</code><code class="descname">findparent</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#findparent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findparent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find parent joints connected to specified link</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/tmp/atlas.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">parent</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">findparent</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;ltorso&#39;</span><span class="p">)]</span>
+<span class="go">[&#39;pelvis&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1534,26 +1552,55 @@ This method first generates collada and use meshlab to output stl</p>
 <code class="descclassname">simtrans.utils.</code><code class="descname">findroot</code><span class="sig-paren">(</span><em>mdata</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#findroot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.findroot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find root link from parent to child relationships.
 Currently based on following simple principle:
-- Link with no parent will be the root.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+- Link with no parent will be the root.
+- Link should have at least one open connection with the other link</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">&#39;rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro &gt; /tmp/atlas.urdf&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas_v3.urdf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">&#39;pelvis&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/tmp/atlas.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">[&#39;pelvis&#39;]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;package://ur_description/urdf/ur5_robot.urdf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">&#39;world&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">[&#39;world&#39;]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">urdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s">&#39;rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">urdf</span><span class="o">.</span><span class="n">URDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/tmp/pr2.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">[&#39;base_footprint&#39;]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">&#39;base_footprint&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">findroot</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="go">[&#39;base_footprint&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="simtrans.utils.hasopenlink">
+<code class="descclassname">simtrans.utils.</code><code class="descname">hasopenlink</code><span class="sig-paren">(</span><em>mdata</em>, <em>linkname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#hasopenlink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.utils.hasopenlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the link has open connection with neighboring links</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hasopenlink</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;base_footprint&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hasopenlink</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;l_gripper_l_parallel_link&#39;</span><span class="p">)</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 </dd></dl>
