@@ -56,6 +56,7 @@ def findroot(mdata):
     Find root link from parent to child relationships.
     Currently based on following simple principle:
     - Link with no parent will be the root.
+    - Link should have at least one open connection with the other link
 
     >>> import subprocess
     >>> from . import urdf
@@ -101,11 +102,33 @@ def findroot(mdata):
             del links[j.child]
         except KeyError:
             pass
-    ret = [l[0] for l in sorted(links.items(), key=lambda x: x[1], reverse=True)]
+    peaks = [l[0] for l in sorted(links.items(), key=lambda x: x[1], reverse=True)]
+    ret = []
+    for p in peaks:
+        if hasopenlink(mdata, p):
+            ret.append(p)
     for l in mdata.links:
         if not usedlinks.has_key(l.name):
             ret.append(l.name)
     return ret
+
+def hasopenlink(mdata, linkname):
+    '''
+    Check if the link has open connection with neighboring links
+
+    >>> from . import sdf
+    >>> r = sdf.SDFReader()
+    >>> m = r.read('model://pr2/model.sdf')
+    >>> hasopenlink(m, 'base_footprint')
+    True
+    >>> hasopenlink(m, 'l_gripper_l_parallel_link')
+    False
+    '''
+    for c in findchildren(mdata, linkname):
+        parents = [p.parent for p in findparent(mdata, c.child)]
+        if len(set(parents)) == 1:
+            return True
+    return False
 
 
 def findchildren(mdata, linkname):
@@ -126,6 +149,7 @@ def findchildren(mdata, linkname):
         if j.parent == linkname:
             children.append(j)
     return children
+
 
 def findparent(mdata, linkname):
     '''
