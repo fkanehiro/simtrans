@@ -234,11 +234,13 @@ DEF {{model.name}} Humanoid {
     USE {{j}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
+  {#
   segments [
     {%- for l in links %}
     USE {{l}}{%- if loop.last == False %},{%- endif %}
     {%- endfor %}
   ]
+  #}
   name "{{model.name}}"
   version "1.0"
 }
