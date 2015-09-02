@@ -548,7 +548,23 @@
                 <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nj</span><span class="p">)</span>
                 <span class="n">j</span><span class="o">.</span><span class="n">jointType</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_REVOLUTE</span>
                 <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="n">nl</span><span class="o">.</span><span class="n">name</span>
-        
+
+        <span class="c"># check for same names in visuals or collisions</span>
+        <span class="n">usednames</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">usednames</span><span class="p">:</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-visual&quot;</span>
+                    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">usednames</span><span class="p">:</span>
+                        <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-visual-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">usednames</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">collisions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">usednames</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-collision&quot;</span>
+                    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">usednames</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;-collision-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">usednames</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
         <span class="c"># find root joint (including local peaks)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roots</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">findroot</span><span class="p">(</span><span class="n">mdata</span><span class="p">)</span>
 

@@ -226,7 +226,6 @@
     <span class="kn">from</span> <span class="nn">.thirdparty</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">tf</span>
 <span class="kn">import</span> <span class="nn">jinja2</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">model</span>
@@ -248,17 +247,8 @@
 <span class="sd">        Read simulation model in urdf format</span>
 <span class="sd">        (internally convert to sdf using gz sdf utility)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">fd</span><span class="p">,</span> <span class="n">sdffile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.sdf&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;gz&#39;</span><span class="p">,</span> <span class="s">&#39;sdf&#39;</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">resolveFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)])</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">sdffile</span><span class="p">,</span> <span class="n">assethandler</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">sdffile</span><span class="p">)</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">SDFReader</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">assethandler</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">m</span>
 </div>
 <div class="viewcode-block" id="URDFReader.read2"><a class="viewcode-back" href="../../simtrans.html#simtrans.urdf.URDFReader.read2">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">read2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">assethandler</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
