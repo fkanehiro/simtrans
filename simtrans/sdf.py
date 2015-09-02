@@ -42,6 +42,7 @@ with warnings.catch_warnings():
     from .thirdparty import transformations as tf
 import jinja2
 import re
+import tempfile
 from . import model
 from . import collada
 from . import stl
@@ -63,8 +64,19 @@ class SDFReader(object):
         Read SDF model data given the model file
         '''
         self._assethandler = assethandler
+        fd, sdffile = tempfile.mkstemp(suffix='.sdf')
+        # use gz sdf utility as a filter to beautify input file
+        # also used to convert urdf to sdf
+        try:
+            d = subprocess.check_output(['gz', 'sdf', '-p', utils.resolveFile(fname)])
+            os.write(fd, d)
+        finally:
+            os.close(fd)
+        try:
+            d = lxml.etree.parse(open(sdffile))
+        finally:
+            os.unlink(sdffile)
         bm = model.BodyModel()
-        d = lxml.etree.parse(open(utils.resolveFile(fname)))
         dm = d.find('model')
         bm.name = self._rootname = dm.attrib['name']
 
@@ -245,8 +257,8 @@ class SDFReader(object):
                 continue
             if g.tag == 'mesh':
                 m.shapeType = model.ShapeModel.SP_MESH
-                # print "reading mesh " + mesh.attrib['filename']
                 filename = utils.resolveFile(g.find('uri').text)
+                logging.info("reading mesh " + filename)
                 fileext = os.path.splitext(filename)[1].lower()
                 if fileext == '.dae':
                     reader = collada.ColladaReader()

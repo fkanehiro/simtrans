@@ -364,7 +364,23 @@ class VRMLWriter(object):
                 mdata.joints.append(nj)
                 j.jointType = model.JointModel.J_REVOLUTE
                 j.child = nl.name
-        
+
+        # check for same names in visuals or collisions
+        usednames = {}
+        for l in mdata.links:
+            for v in l.visuals:
+                if v.name in usednames:
+                    v.name = l.name + "-visual"
+                    if v.name in usednames:
+                        v.name = l.name + "-visual-" + str(uuid.uuid1()).replace('-', '')
+                usednames[v.name] = True
+            for c in l.collisions:
+                if c.name in usednames:
+                    c.name = l.name + "-collision"
+                    if c.name in usednames:
+                        c.name = l.name + "-collision-" + str(uuid.uuid1()).replace('-', '')
+                usednames[c.name] = True
+
         # find root joint (including local peaks)
         self._roots = utils.findroot(mdata)
 
