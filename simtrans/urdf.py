@@ -42,7 +42,6 @@ with warnings.catch_warnings():
     from .thirdparty import transformations as tf
 import jinja2
 import uuid
-import tempfile
 import subprocess
 import logging
 from . import model
@@ -64,17 +63,8 @@ class URDFReader(object):
         Read simulation model in urdf format
         (internally convert to sdf using gz sdf utility)
         '''
-        fd, sdffile = tempfile.mkstemp(suffix='.sdf')
-        try:
-            d = subprocess.check_output(['gz', 'sdf', '-p', utils.resolveFile(fname)])
-            os.write(fd, d)
-        finally:
-            os.close(fd)
-        try:
-            reader = sdf.SDFReader()
-            m = reader.read(sdffile, assethandler)
-        finally:
-            os.unlink(sdffile)
+        reader = sdf.SDFReader()
+        m = reader.read(fname, assethandler)
         return m
 
     def read2(self, fname, assethandler=None, options=None):
