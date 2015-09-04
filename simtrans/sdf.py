@@ -311,6 +311,35 @@ class SDFReader(object):
                 m.data.radius = float(g.find('radius').text)
             else:
                 raise Exception('unsupported shape type: %s' % g.tag)
+        materiald =  d.find('material')
+        if materiald is not None:
+            material = model.MaterialModel()
+            diffuseset = False
+            ambient = materiald.find('ambient')
+            if ambient is not None:
+                material.ambient = numpy.array([float(v) for v in re.split(' +', ambient.text.strip(' '))])
+            diffuse = materiald.find('diffuse')
+            if diffuse is not None:
+                material.diffuse = numpy.array([float(v) for v in re.split(' +', diffuse.text.strip(' '))])
+                diffuseset = True
+            specular = materiald.find('specular')
+            if specular is not None:
+                material.specular = numpy.array([float(v) for v in re.split(' +', specular.text.strip(' '))])
+            emission = materiald.find('emission')
+            if emission is not None:
+                material.emission = numpy.array([float(v) for v in re.split(' +', emission.text.strip(' '))])
+            if diffuseset == False:
+                if emission is not None:
+                    material.diffuse = material.emission
+                    logging.warn("diffuse color not set. use emission color instead")
+                elif specular is not None:
+                    material.diffuse = material.specular
+                    logging.warn("diffuse color not set. use specular color instead")
+                elif ambient is not None:
+                    material.diffuse = material.ambient
+                    logging.warn("diffuse color not set. use ambient color instead")
+            if type(m.data) not in [model.MeshData]:
+                m.data.material = material
         return m
 
 

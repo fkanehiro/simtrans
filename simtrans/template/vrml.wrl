@@ -145,24 +145,40 @@ Transform {
     Inline {
       url "{{shapefilemap[v.name]}}"
     }
-    {%- elif v.shapeType == ShapeModel.SP_SPHERE %}
+    {%- else %}
     Shape {
+      {%- if v.data.material is not none %}
+      appearance Appearance {
+        material Material {
+          diffuseColor {{v.data.material.diffuse[0]}} {{v.data.material.diffuse[1]}} {{v.data.material.diffuse[2]}}
+          {%- if v.data.material.specular is not none %}
+          specularColor {{v.data.material.specular[0]}} {{v.data.material.specular[1]}} {{v.data.material.specular[2]}}
+          {%- endif %}
+          {%- if v.data.material.emission is not none %}
+          emissiveColor {{v.data.material.emission[0]}} {{v.data.material.emission[1]}} {{v.data.material.emission[2]}}
+          {%- endif %}
+        }
+        {%- if v.data.material.texture is not none %}
+        texture ImageTexture {
+          url "{{v.data.material.texture}}"
+        }
+        {%- endif %}
+      }
+      {%- endif %}
+      {%- if v.shapeType == ShapeModel.SP_SPHERE %}
       geometry Sphere {
         radius {{v.data.radius}}
       }
-    }
-    {%- elif v.shapeType == ShapeModel.SP_BOX %}
-    Shape {
+      {%- elif v.shapeType == ShapeModel.SP_BOX %}
       geometry Box {
         size {{v.data.x}} {{v.data.y}} {{v.data.z}}
       }
-    }
-    {%- elif v.shapeType == ShapeModel.SP_CYLINDER %}
-    Shape {
+      {%- elif v.shapeType == ShapeModel.SP_CYLINDER %}
       geometry Cylinder {
         radius {{v.data.radius}}
         height {{v.data.height}}
       }
+      {%- endif %}
     }
     {%- endif %}
   ]
