@@ -188,7 +188,6 @@ Transform {
 DEF {{model.name}} Humanoid {
   humanoidBody [
     {%- for l in model.children recursive %}
-    {%- if l.link and (l.link.visuals|length or l.link.collisions|length or l.children|length) %}
     DEF {{l.joint.name}} Joint {
       jointType "{{l.jointtype}}"
       {%- if l.joint.axis.axis %}
@@ -210,6 +209,7 @@ DEF {{model.name}} Humanoid {
       lvlimit {{l.joint.axis.velocitylimit[1]}}
       {%- endif %}
       children [
+        {%- if l.link %}
         DEF {{l.link.name}} Segment {
           mass {{l.link.mass}}
           centerOfMass {{l.link.centerofmass[0]}} {{l.link.centerofmass[1]}} {{l.link.centerofmass[2]}}
@@ -239,10 +239,10 @@ DEF {{model.name}} Humanoid {
             {%- endif %}
           ]
         }
+        {%- endif %}
         {{ loop(l.children)|indent(4, True) }}
       ]
     }
-    {%- endif %}
     {%- endfor %}
   ]
   joints [
