@@ -479,8 +479,7 @@ class VRMLWriter(object):
             nmodel['link'] = clink2
             nmodel['children'] = cchildren
             children.append(nmodel)
-            if clink and (clink.visuals or clink.collisions or len(cchildren) > 0):
-                joints.append(cjoint.name)
+            joints.append(cjoint.name)
             links.append(cjoint.child)
         return (children, joints, links)
 
