@@ -161,7 +161,7 @@
     </link>
     {%- endfor %}
     {%- for j in model.joints %}
-    <joint name="{{j.name}}" type="{{j.jointType}}">
+    <joint name="{{j.name}}" type="{{j.axis.jointType}}">
       <parent>{{j.parent}}</parent>
       <child>{{j.child}}</child>
       {%- if j.offsetPosition %}
@@ -170,18 +170,33 @@
       <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
       {%- endif %}
       <axis>
-        <xyz>{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}</xyz>
+        <xyz>{{j.axis.axis[0]}} {{j.axis.axis[1]}} {{j.axis.axis[2]}}</xyz>
         <limit>
-          {%- if j.limit %}
-          <lower>{{j.limit[1]}}</lower>
-          <upper>{{j.limit[0]}}</upper>
+          {%- if j.axis.limit %}
+          <lower>{{j.axis.limit[1]}}</lower>
+          <upper>{{j.axis.limit[0]}}</upper>
           {%- endif %}
-          {%- if j.velocitylimit %}
-          <velocity>{{j.velocitylimit[1]}}</velocity>
+          {%- if j.axis.velocitylimit %}
+          <velocity>{{j.axis.velocitylimit[1]}}</velocity>
           {%- endif %}
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
+      {%- if j.axis2 %}
+      <axis2>
+        <xyz>{{j.axis2.axis[0]}} {{j.axis2.axis[1]}} {{j.axis2.axis[2]}}</xyz>
+        <limit>
+          {%- if j.axis2.limit %}
+          <lower>{{j.axis2.limit[1]}}</lower>
+          <upper>{{j.axis2.limit[0]}}</upper>
+          {%- endif %}
+          {%- if j.axis2.velocitylimit %}
+          <velocity>{{j.axis2.velocitylimit[1]}}</velocity>
+          {%- endif %}
+        </limit>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis2>
+      {%- endif %}
     </joint>
     {%- endfor %}
     <plugin name='joint_trajectory_plugin' filename='libgazebo_ros_joint_pose_trajectory.so'>

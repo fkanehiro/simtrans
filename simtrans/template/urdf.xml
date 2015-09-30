@@ -60,15 +60,15 @@
   </link>
   {%- endfor %}
   {%- for j in model.joints %}
-  <joint name="{{j.name}}" type="{{j.jointType}}">
+  <joint name="{{j.name}}" type="{{j.axis.jointType}}">
     {%- set trans = j.gettranslation() %}
     {%- set rpy = j.getrpy() %}
     <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
-    <axis xyz="{{j.axis[0]}} {{j.axis[1]}} {{j.axis[2]}}" />
+    <axis xyz="{{j.axis.axis[0]}} {{j.axis.axis[1]}} {{j.axis.axis[2]}}" />
     <parent link="{{j.parent}}" />
     <child link="{{j.child}}" />
     {%- if j.jointType == JointModel.J_REVOLUTE or j.jointType == JointModel.J_PRISMATIC %}
-    <limit lower="{{j.limit[1]}}" upper="{{j.limit[0]}}" effort="100" velocity="{{j.velocitylimit[1]}}" />
+    <limit lower="{{j.axis.limit[1]}}" upper="{{j.axis.limit[0]}}" effort="100" velocity="{{j.axis.velocitylimit[1]}}" />
     {%- endif %}
   </joint>
   {%- endfor %}
