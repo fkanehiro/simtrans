@@ -100,6 +100,7 @@ class VRMLReader(object):
             logging.error('unable to connect to model loader corba service (is "openhrp-model-loader" running?)')
             raise
         bm = model.BodyModel()
+        bm.name = os.path.splitext(os.path.basename(f))[0]
         self._joints = []
         self._links = []
         self._materials = []
@@ -180,6 +181,8 @@ class VRMLReader(object):
                     sm.data.cameraType = model.CameraData.CS_MONO
                 elif s.specValues[3] == 3:
                     sm.data.cameraType = model.CameraData.CS_DEPTH
+                elif s.specValues[3] == 4:
+                    sm.data.cameraType = model.CameraData.CS_RGBD
                 else:
                     raise Exception('unsupported camera type: %i' % s.specValues[3])
                 sm.data.width = s.specValues[4]
@@ -226,6 +229,7 @@ class VRMLReader(object):
                 sm.shapeType = model.ShapeModel.SP_MESH
                 sm.data = self.readMesh(sdata)
             lm.visuals.append(sm)
+            lm.collisions.append(sm)
         return lm
 
     def readMesh(self, sdata):
@@ -278,14 +282,6 @@ class VRMLReader(object):
         jm.child = child.name + '_LINK'
         jm.name = child.name
         jm.axis = model.AxisData()
-        if child.jointType == 'fixed':
-            jm.axis.jointType = model.JointModel.J_FIXED
-        elif child.jointType == 'rotate':
-            jm.axis.jointType = model.JointModel.J_REVOLUTE
-        elif child.jointType == 'slide':
-            jm.axis.jointType = model.JointModel.J_PRISMATIC
-        else:
-            raise Exception('unsupported joint type: %s' % child.jointType)
         try:
             jm.axis.limit = [child.ulimit[0], child.llimit[0]]
         except IndexError:
@@ -295,6 +291,19 @@ class VRMLReader(object):
         except IndexError:
             pass
         jm.axis.axis = child.jointAxis
+        if child.jointType == 'fixed':
+            jm.jointType = model.JointModel.J_FIXED
+        elif child.jointType == 'rotate':
+            if jm.axis.limit is None or (jm.axis.limit[0] is None and jm.axis.limit[1] is None):
+                jm.jointType = model.JointModel.J_CONTINUOUS
+            else:
+                jm.jointType = model.JointModel.J_REVOLUTE
+        elif child.jointType == 'slide':
+            jm.jointType = model.JointModel.J_PRISMATIC
+        elif child.jointType == 'crawler':
+            jm.jointType = model.JointModel.J_CRAWLER
+        else:
+            raise Exception('unsupported joint type: %s' % child.jointType)
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
         # convert to absolute position
