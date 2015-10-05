@@ -175,9 +175,9 @@ class VRMLReader(object):
             # sensors in OpenHRP is defined based on Z-axis up. so we
             # will rotate them to X-axis up here.
             # see http://www.openrtp.jp/openhrp3/jp/create_model.html
-            rot = tf.quaternion_multiply(tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3]), tf.quaternion_about_axis(-math.pi/2, [0, 0, 1]))
-            sm.rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi/2, [0, 1, 0]))
+            sm.rot = tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3])
             if s.type == 'Vision':
+                sm.rot = tf.quaternion_multiply(sm.rot, tf.quaternion_about_axis(math.pi, [1, 0, 0]))
                 sm.sensorType = model.SensorModel.SS_CAMERA
                 sm.data = model.CameraData()
                 sm.data.near = s.specValues[0]
@@ -197,6 +197,9 @@ class VRMLReader(object):
                 sm.data.height = s.specValues[5]
                 sm.rate = s.specValues[6]
             elif s.type == 'Range':
+                rot = tf.quaternion_multiply(sm.rot, tf.quaternion_about_axis(-math.pi/2, [0, 0, 1]))
+                rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi/2, [0, 1, 0]))
+                sm.rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi, [1, 0, 0]))
                 sm.sensorType = model.SensorModel.SS_RAY
                 sm.data = model.RayData()
                 (scanangle, scanstep, scanrate, maxdistance) = s.specValues
