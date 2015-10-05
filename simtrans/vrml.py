@@ -84,6 +84,7 @@ class VRMLReader(object):
         self._model = None
         self._joints = []
         self._links = []
+        self._linknamemap = {}
         self._materials = []
         self._sensors = []
         self._assethandler = None
@@ -140,8 +141,8 @@ class VRMLReader(object):
             # extra joint for closed link models
             m = model.JointModel()
             m.jointType = model.JointModel.J_REVOLUTE
-            m.parent = j.link[0] + '_LINK'
-            m.child = j.link[1] + '_LINK'
+            m.parent = j.link[0]
+            m.child = j.link[1]
             m.name = j.name
             m.axis = numpy.array(j.axis)
             m.trans = numpy.array(j.point[1])
@@ -149,12 +150,19 @@ class VRMLReader(object):
             self._joints.append(m)
         bm.links = self._links
         bm.joints = self._joints
+        for j in bm.joints:
+            j.parent = self._linknamemap[j.parent]
+            j.child = self._linknamemap[j.child]
         bm.sensors = self._sensors
         return bm
 
     def readLink(self, m):
         lm = model.LinkModel()
-        lm.name = m.name + '_LINK'
+        if len(m.segments) > 0:
+            lm.name = m.segments[0].name
+        else:
+            lm.name = m.name
+        self._linknamemap[m.name] = lm.name
         lm.mass = m.mass
         lm.centerofmass = numpy.array(m.centerOfMass)
         lm.inertia = numpy.array(m.inertia).reshape(3, 3)
@@ -275,11 +283,8 @@ class VRMLReader(object):
     def readChild(self, parent, child):
         # first, create joint pairs
         jm = model.JointModel()
-        if parent.name != 'world':
-            jm.parent = parent.name + '_LINK'
-        else:
-            jm.parent = parent.name
-        jm.child = child.name + '_LINK'
+        jm.parent = parent.name
+        jm.child = child.name
         jm.name = child.name
         jm.axis = model.AxisData()
         try:
