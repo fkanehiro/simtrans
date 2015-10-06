@@ -337,6 +337,11 @@ Reader and writer for each formats will read and write the common data structure
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="simtrans.model.CameraData.CS_RGBD">
+<code class="descname">CS_RGBD</code><em class="property"> = 'rgbd'</em><a class="headerlink" href="#simtrans.model.CameraData.CS_RGBD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="simtrans.model.CameraData.cameraType">
 <code class="descname">cameraType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.CameraData.cameraType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Camera type</p>
@@ -408,6 +413,12 @@ Reader and writer for each formats will read and write the common data structure
 <dt id="simtrans.model.JointModel.J_CONTINUOUS">
 <code class="descname">J_CONTINUOUS</code><em class="property"> = 'continuous'</em><a class="headerlink" href="#simtrans.model.JointModel.J_CONTINUOUS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continuous type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="simtrans.model.JointModel.J_CRAWLER">
+<code class="descname">J_CRAWLER</code><em class="property"> = 'crawler'</em><a class="headerlink" href="#simtrans.model.JointModel.J_CRAWLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crawler type</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1350,8 +1361,18 @@ This method first generates collada and use meshlab to output stl</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>URDF writer class</p>
 <dl class="method">
+<dt id="simtrans.urdf.URDFWriter.convertJointType">
+<code class="descname">convertJointType</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.convertJointType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.convertJointType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="simtrans.urdf.URDFWriter.convertchildren">
 <code class="descname">convertchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>pjoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.convertchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.convertchildren" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="simtrans.urdf.URDFWriter.renderchildren">
+<code class="descname">renderchildren</code><span class="sig-paren">(</span><em>mdata</em>, <em>root</em>, <em>jointtype</em>, <em>fname</em>, <em>template</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/urdf.html#URDFWriter.renderchildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#simtrans.urdf.URDFWriter.renderchildren" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
