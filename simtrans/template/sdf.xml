@@ -161,7 +161,7 @@
     </link>
     {%- endfor %}
     {%- for j in model.joints %}
-    <joint name="{{j.name}}" type="{{j.axis.jointType}}">
+    <joint name="{{j.name}}" type="{{j.jointType}}">
       <parent>{{j.parent}}</parent>
       <child>{{j.child}}</child>
       {%- if j.offsetPosition %}

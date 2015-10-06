@@ -84,6 +84,7 @@ class VRMLReader(object):
         self._model = None
         self._joints = []
         self._links = []
+        self._linknamemap = {}
         self._materials = []
         self._sensors = []
         self._assethandler = None
@@ -100,6 +101,7 @@ class VRMLReader(object):
             logging.error('unable to connect to model loader corba service (is "openhrp-model-loader" running?)')
             raise
         bm = model.BodyModel()
+        bm.name = os.path.splitext(os.path.basename(f))[0]
         self._joints = []
         self._links = []
         self._materials = []
@@ -139,8 +141,8 @@ class VRMLReader(object):
             # extra joint for closed link models
             m = model.JointModel()
             m.jointType = model.JointModel.J_REVOLUTE
-            m.parent = j.link[0] + '_LINK'
-            m.child = j.link[1] + '_LINK'
+            m.parent = j.link[0]
+            m.child = j.link[1]
             m.name = j.name
             m.axis = numpy.array(j.axis)
             m.trans = numpy.array(j.point[1])
@@ -148,12 +150,19 @@ class VRMLReader(object):
             self._joints.append(m)
         bm.links = self._links
         bm.joints = self._joints
+        for j in bm.joints:
+            j.parent = self._linknamemap[j.parent]
+            j.child = self._linknamemap[j.child]
         bm.sensors = self._sensors
         return bm
 
     def readLink(self, m):
         lm = model.LinkModel()
-        lm.name = m.name + '_LINK'
+        if len(m.segments) > 0:
+            lm.name = m.segments[0].name
+        else:
+            lm.name = m.name
+        self._linknamemap[m.name] = lm.name
         lm.mass = m.mass
         lm.centerofmass = numpy.array(m.centerOfMass)
         lm.inertia = numpy.array(m.inertia).reshape(3, 3)
@@ -166,9 +175,9 @@ class VRMLReader(object):
             # sensors in OpenHRP is defined based on Z-axis up. so we
             # will rotate them to X-axis up here.
             # see http://www.openrtp.jp/openhrp3/jp/create_model.html
-            rot = tf.quaternion_multiply(tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3]), tf.quaternion_about_axis(-math.pi/2, [0, 0, 1]))
-            sm.rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi/2, [0, 1, 0]))
+            sm.rot = tf.quaternion_about_axis(s.rotation[3], s.rotation[0:3])
             if s.type == 'Vision':
+                sm.rot = tf.quaternion_multiply(sm.rot, tf.quaternion_about_axis(math.pi, [1, 0, 0]))
                 sm.sensorType = model.SensorModel.SS_CAMERA
                 sm.data = model.CameraData()
                 sm.data.near = s.specValues[0]
@@ -180,12 +189,17 @@ class VRMLReader(object):
                     sm.data.cameraType = model.CameraData.CS_MONO
                 elif s.specValues[3] == 3:
                     sm.data.cameraType = model.CameraData.CS_DEPTH
+                elif s.specValues[3] == 4:
+                    sm.data.cameraType = model.CameraData.CS_RGBD
                 else:
                     raise Exception('unsupported camera type: %i' % s.specValues[3])
                 sm.data.width = s.specValues[4]
                 sm.data.height = s.specValues[5]
                 sm.rate = s.specValues[6]
             elif s.type == 'Range':
+                rot = tf.quaternion_multiply(sm.rot, tf.quaternion_about_axis(-math.pi/2, [0, 0, 1]))
+                rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi/2, [0, 1, 0]))
+                sm.rot = tf.quaternion_multiply(rot, tf.quaternion_about_axis(math.pi, [1, 0, 0]))
                 sm.sensorType = model.SensorModel.SS_RAY
                 sm.data = model.RayData()
                 (scanangle, scanstep, scanrate, maxdistance) = s.specValues
@@ -226,6 +240,7 @@ class VRMLReader(object):
                 sm.shapeType = model.ShapeModel.SP_MESH
                 sm.data = self.readMesh(sdata)
             lm.visuals.append(sm)
+            lm.collisions.append(sm)
         return lm
 
     def readMesh(self, sdata):
@@ -271,21 +286,10 @@ class VRMLReader(object):
     def readChild(self, parent, child):
         # first, create joint pairs
         jm = model.JointModel()
-        if parent.name != 'world':
-            jm.parent = parent.name + '_LINK'
-        else:
-            jm.parent = parent.name
-        jm.child = child.name + '_LINK'
+        jm.parent = parent.name
+        jm.child = child.name
         jm.name = child.name
         jm.axis = model.AxisData()
-        if child.jointType == 'fixed':
-            jm.axis.jointType = model.JointModel.J_FIXED
-        elif child.jointType == 'rotate':
-            jm.axis.jointType = model.JointModel.J_REVOLUTE
-        elif child.jointType == 'slide':
-            jm.axis.jointType = model.JointModel.J_PRISMATIC
-        else:
-            raise Exception('unsupported joint type: %s' % child.jointType)
         try:
             jm.axis.limit = [child.ulimit[0], child.llimit[0]]
         except IndexError:
@@ -295,6 +299,19 @@ class VRMLReader(object):
         except IndexError:
             pass
         jm.axis.axis = child.jointAxis
+        if child.jointType == 'fixed':
+            jm.jointType = model.JointModel.J_FIXED
+        elif child.jointType == 'rotate':
+            if jm.axis.limit is None or (jm.axis.limit[0] is None and jm.axis.limit[1] is None):
+                jm.jointType = model.JointModel.J_CONTINUOUS
+            else:
+                jm.jointType = model.JointModel.J_REVOLUTE
+        elif child.jointType == 'slide':
+            jm.jointType = model.JointModel.J_PRISMATIC
+        elif child.jointType == 'crawler':
+            jm.jointType = model.JointModel.J_CRAWLER
+        else:
+            raise Exception('unsupported joint type: %s' % child.jointType)
         jm.trans = numpy.array(child.translation)
         jm.rot = tf.quaternion_about_axis(child.rotation[3], child.rotation[0:3])
         # convert to absolute position

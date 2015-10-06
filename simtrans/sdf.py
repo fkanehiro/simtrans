@@ -391,8 +391,8 @@ class SDFWriter(object):
         for j in m.joints:
             self._jointparentmap[j.child] = j
             if j.jointType == model.JointModel.J_FIXED:
-                j.axis.jointType = model.JointModel.J_REVOLUTE
-                j.axis.limits = [0, 0]
+                j.jointType = model.JointModel.J_REVOLUTE
+                j.limits = [0, 0]
             childinv = numpy.linalg.pinv(self._linkmap[j.child].getmatrix())
             j.matrix = numpy.dot(j.getmatrix(), childinv)
             j.trans = None

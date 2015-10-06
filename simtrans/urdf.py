@@ -185,7 +185,9 @@ class URDFReader(object):
             return model.JointModel.J_SCREW
         elif d == 'continuous':
             return model.JointModel.J_CONTINUOUS
-        raise Exception('unsupported joint type %s' % d)
+        logging.warn('unsupported joint type %s convert to fixed joint' % d)
+        return model.JointModel.J_FIXED
+        #raise Exception('unsupported joint type %s' % d)
 
     def readInertia(self, d):
         inertia = numpy.zeros((3, 3))
@@ -268,32 +270,33 @@ class URDFWriter(object):
         for l in m.links:
             for v in l.visuals:
                 if v.shapeType == model.ShapeModel.SP_MESH:
-                    cwriter.write(v, os.path.join(dirname, v.name + ".dae"))
-                    swriter.write(v, os.path.join(dirname, v.name + ".stl"))
+                    cwriter.write(v, os.path.join(dirname, m.name + "-" + v.name + ".dae"))
+            #for c in l.collisions:
+            #    if c.shapeType == model.ShapeModel.SP_MESH:
+            #        swriter.write(v, os.path.join(dirname, m.name + "-" + v.name + ".stl"))
 
         # render model urdf file
-        self._convertedjoints = []
-        self._convertedlinks = []
         self._roots = utils.findroot(m)
+        self._linkmap = {}
         self._linkmap['world'] = model.LinkModel()
         for l in m.links:
             self._linkmap[l.name] = l
-        for root in self._roots:
-            self.convertchildren(m, root)
         template = env.get_template('urdf.xml')
-        with open(f, 'w') as ofile:
-            ofile.write(template.render({
-                'model': m,
-                'ShapeModel': model.ShapeModel,
-                'JointModel': model.JointModel,
-                'tf': tf
-            }))
+        for root in self._roots:
+            if root == 'world':
+                roots = utils.findchildren(m, root)
+                for r in roots:
+                    # print("root joint is world. using %s as root" % root)
+                    mfname = (m.name + "-" + r.child + ".urdf").replace('::', '_')
+                    self.renderchildren(m, r.child, "fixed", os.path.join(dirname, mfname), template, options)
+            else:
+                mfname = (m.name + "-" + root + ".urdf").replace('::', '_')
+                self.renderchildren(m, root, "free", os.path.join(dirname, mfname), template, options)
 
     def convertchildren(self, mdata, pjoint):
-        children = []
         plink = self._linkmap[pjoint.child]
         for cjoint in utils.findchildren(mdata, pjoint.child):
-            nmodel = {}
+            logging.info('converting joint %s type %s' % (cjoint.name, cjoint.jointType))
             try:
                 clink = self._linkmap[cjoint.child]
             except KeyError:
@@ -304,6 +307,7 @@ class URDFWriter(object):
             cjoint2.matrix = numpy.dot(pjointinv, cjoint.getmatrix())
             cjoint2.trans = None
             cjoint2.rot = None
+            cjoint2.jointType = self.convertJointType(cjoint.jointType)
             clink2 = copy.deepcopy(clink)
             clink2.matrix = numpy.dot(cjointinv, clink.getmatrix())
             clink2.trans = None
@@ -313,3 +317,43 @@ class URDFWriter(object):
             self._convertedjoints.append(cjoint2)
             self._convertedlinks.append(clink2)
             self.convertchildren(mdata, cjoint)
+
+    def renderchildren(self, mdata, root, jointtype, fname, template, options):
+        self._convertedjoints = []
+        self._convertedlinks = []
+        rootlink = self._linkmap[root]
+        rootjoint = model.JointModel()
+        rootjoint.name = root
+        rootjoint.jointType = jointtype
+        rootjoint.matrix = rootlink.getmatrix()
+        rootjoint.trans = None
+        rootjoint.rot = None
+        rootjoint.child = root
+        self.convertchildren(mdata, rootjoint)
+        mdata.joints = self._convertedjoints
+        mdata.links = self._convertedlinks
+        mdata.links.append(rootlink)
+        with open(fname, 'w') as ofile:
+            ofile.write(template.render({
+                'model': mdata,
+                'options': options,
+                'ShapeModel': model.ShapeModel,
+                'JointModel': model.JointModel,
+                'tf': tf
+            }))
+
+    def convertJointType(self, d):
+        if d == model.JointModel.J_FIXED:
+            return "fixed"
+        elif d == model.JointModel.J_REVOLUTE:
+            return "revolute"
+        elif d == model.JointModel.J_REVOLUTE2:
+            return "revolute2"
+        elif d == model.JointModel.J_PRISMATIC:
+            return 'prismatic'
+        elif d == model.JointModel.J_SCREW:
+            return 'screw'
+        elif d == model.JointModel.J_CONTINUOUS:
+            return 'continuous'
+        logging.warn('unsupported joint type %s convert to fixed joint' % d)
+        return "fixed"

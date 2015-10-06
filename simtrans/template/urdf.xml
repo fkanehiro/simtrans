@@ -14,7 +14,7 @@
       <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
-        <mesh filename="model://{{model.name}}/{{v.name}}.dae" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
+        <mesh filename="{{options.prefix}}{{model.name}}-{{v.name}}.dae" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_BOX %}
@@ -37,7 +37,7 @@
       <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
       {%- if v.shapeType == ShapeModel.SP_MESH %}
       <geometry>
-        <mesh filename="model://{{model.name}}/{{v.name}}.stl" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
+        <mesh filename="{{options.prefix}}{{model.name}}-{{v.name}}.dae" scale="{{scale[0]}} {{scale[1]}} {{scale[2]}}" />
       </geometry>
       {%- endif %}
       {%- if v.shapeType == ShapeModel.SP_BOX %}
@@ -60,7 +60,7 @@
   </link>
   {%- endfor %}
   {%- for j in model.joints %}
-  <joint name="{{j.name}}" type="{{j.axis.jointType}}">
+  <joint name="{{j.name}}" type="{{j.jointType}}">
     {%- set trans = j.gettranslation() %}
     {%- set rpy = j.getrpy() %}
     <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
@@ -73,9 +73,16 @@
   </joint>
   {%- endfor %}
   {%- for s in model.sensors %}
-  <sensor name="{{s.name}}" update_rate="{{s.rate}}">
-    {%- set trans = s.gettranslation() %}
-    {%- set rpy = s.getrpy() %}
+  {%- set trans = s.gettranslation() %}
+  {%- set rpy = s.getrpy() %}
+  <link name="{{s.name}}">
+  </link>
+  <joint name="{{s.name}}_JOINT" type="fixed">
+    <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
+    <parent link="{{s.parent}}" />
+    <child link="{{s.name}}" />
+  </joint>
+  <sensor name="{{s.name}}_SENSOR" update_rate="{{s.rate}}">
     <origin xyz="{{trans[0]}} {{trans[1]}} {{trans[2]}}" rpy="{{rpy[0]}} {{rpy[1]}} {{rpy[2]}}" />
     <parent link="{{s.parent}}" />
     {%- if s.sensorType == "ray" %}

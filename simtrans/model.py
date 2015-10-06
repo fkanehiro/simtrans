@@ -196,6 +196,7 @@ class JointModel(TransformationModel):
     J_PRISMATIC = 'prismatic'    #: Prismatic type
     J_SCREW = 'screw'            #: Screw type
     J_CONTINUOUS = 'continuous'  #: Continuous type
+    J_CRAWLER = 'crawler'        #: Crawler type
 
     name = None             #: Joint name
     jointType = None        #: Joint type
@@ -377,6 +378,7 @@ class CameraData(object):
     CS_COLOR = "color"
     CS_MONO = "mono"
     CS_DEPTH = "depth"
+    CS_RGBD = "rgbd"
 
     cameraType = None    #: Camera type
     near = 0.01          #: Near clip distance
