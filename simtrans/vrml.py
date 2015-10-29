@@ -101,7 +101,7 @@ class VRMLReader(object):
             logging.error('unable to connect to model loader corba service (is "openhrp-model-loader" running?)')
             raise
         bm = model.BodyModel()
-        bm.name = os.path.splitext(os.path.basename(f))[0]
+        bm.name = self._model._get_name()
         self._joints = []
         self._links = []
         self._materials = []
@@ -436,21 +436,22 @@ class VRMLWriter(object):
 
         # render main vrml file for each bodies
         template = env.get_template('vrml.wrl')
+        roots = []
         modelfiles = {}
         for root in self._roots:
-            logging.info('writing model for %s' % root)
-            # first convert data structure (VRML uses tree structure)
             if root == 'world':
-                roots = utils.findchildren(mdata, root)
-                for r in roots:
-                    # print("root joint is world. using %s as root" % root)
-                    mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
-                    self.renderchildren(mdata, r.child, "fixed", os.path.join(dirname, mfname), shapefilemap, template)
-                    modelfiles[mfname] = self._linkmap[r.child]
+                for r in utils.findchildren(m, root):
+                    roots.append((r.child, "fixed"))
             else:
-                mfname = (mdata.name + "-" + root + ".wrl").replace('::', '_')
-                self.renderchildren(mdata, root, "free", os.path.join(dirname, mfname), shapefilemap, template)
-                modelfiles[mfname] = self._linkmap[root]
+                roots.append((root, "free"))
+        for r in roots:
+            logging.info('writing model for %s' % r[0])
+            if len(roots) == 1:
+                mfname = f
+            else:
+                mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
+            self.renderchildren(mdata, r[0], r[1], os.path.join(dirname, mfname), shapefilemap, template)
+            modelfiles[mfname] = self._linkmap[r[0]]
         
         # render openhrp project
         template = env.get_template('openhrp-project.xml')

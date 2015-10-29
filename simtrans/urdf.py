@@ -282,16 +282,20 @@ class URDFWriter(object):
         for l in m.links:
             self._linkmap[l.name] = l
         template = env.get_template('urdf.xml')
+        roots = []
         for root in self._roots:
             if root == 'world':
-                roots = utils.findchildren(m, root)
-                for r in roots:
-                    # print("root joint is world. using %s as root" % root)
-                    mfname = (m.name + "-" + r.child + ".urdf").replace('::', '_')
-                    self.renderchildren(m, r.child, "fixed", os.path.join(dirname, mfname), template, options)
+                for r in utils.findchildren(m, root):
+                    roots.append((r.child, "fixed"))
             else:
-                mfname = (m.name + "-" + root + ".urdf").replace('::', '_')
-                self.renderchildren(m, root, "free", os.path.join(dirname, mfname), template, options)
+                roots.append((root, "free"))
+        for r in roots:
+            logging.info('writing model for %s' % r[0])
+            if len(roots) == 1:
+                mfname = f
+            else:
+                mfname = (m.name + "-" + r[0] + ".urdf").replace('::', '_')
+            self.renderchildren(m, r[0], r[1], os.path.join(dirname, mfname), template, options)
 
     def convertchildren(self, mdata, pjoint):
         plink = self._linkmap[pjoint.child]
