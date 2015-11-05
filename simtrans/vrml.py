@@ -474,7 +474,7 @@ class VRMLWriter(object):
         for r in roots:
             logging.info('writing model for %s' % r[0])
             if len(roots) == 1:
-                mfname = f
+                mfname = fname
             else:
                 mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
             self.renderchildren(mdata, r[0], r[1], os.path.join(dirname, mfname), shapefilemap, template)
