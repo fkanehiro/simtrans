@@ -49,6 +49,9 @@ from . import model
 from . import utils
 import os
 import sys
+import time
+import subprocess
+import atexit
 import logging
 import warnings
 with warnings.catch_warnings():
@@ -69,6 +72,13 @@ except ImportError:
     print "$ sudo apt-get update"
     print "$ sudo apt-get install openhrp openrtm-aist-python"
     raise
+
+plist = []
+def terminator():
+    global plist
+    for p in plist:
+        p.terminate()
+atexit.register(terminator)
 
 class VRMLReader(object):
     '''
@@ -94,7 +104,24 @@ class VRMLReader(object):
         Read vrml model data given the file path
         '''
         self._assethandler = assethandler
-        self.resolveModelLoader()
+        try:
+            self.resolveModelLoader()
+            self._loader.clearData()
+        except (CosNaming.NamingContext.NotFound, CORBA.TRANSIENT):
+            logging.info("try running openhrp-model-loader")
+            plist.append(subprocess.Popen(["openhrp-model-loader"]))
+            for t in range(0, 6):
+                if t == 5:
+                    logging.error("unable to find openhrp-model-loader")
+                    raise CosNaming.NamingContext.NotFound
+                try:
+                    self.resolveModelLoader()
+                    self._loader.clearData()
+                except (CosNaming.NamingContext.NotFound, CORBA.TRANSIENT):
+                    time.sleep(1)
+                else:
+                    logging.info("resolved openhrp-model-loader")
+                    break
         try:
             self._model = self._loader.loadBodyInfo(f)
         except CORBA.TRANSIENT:
