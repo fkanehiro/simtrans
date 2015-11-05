@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 CMD="python -m simtrans.cli"
 
 OPENHRP_MODEL="`pkg-config openhrp3.1 --variable=prefix`/share/OpenHRP-3.1/sample/model"
@@ -22,16 +24,24 @@ $CMD -i `rospack find baxter_description`/urdf/baxter.urdf -o /tmp/baxter.wrl
 
 # convert from sdf to wrl
 for i in `cat tests/models.txt`; do
-$CMD -i model://$i/model.sdf -o /tmp/$i.wrl
+    $CMD -i model://$i/model.sdf -o /tmp/$i.wrl
 done
 
 # convert from wrl to sdf
+if [ -d "$HOME/.gazebo/models" ]; then
+    mkdir -p $HOME/.gazebo/models
+fi
 if [ -f $HOME/HRP-4C/HRP4Cmain.wrl ]; then
-$CMD -i $HOME/HRP-4C/HRP4Cmain.wrl -o $HOME/.gazebo/models/hrp4c.world
+    $CMD -i $HOME/HRP-4C/HRP4Cmain.wrl -o $HOME/.gazebo/models/hrp4c.world
 fi
 $CMD -i $OPENHRP_MODEL/PA10/pa10.main.wrl -o $HOME/.gazebo/models/pa10.world
 $CMD -i $OPENHRP_MODEL/closed-link-sample.wrl -o $HOME/.gazebo/models/closed-link-sample.world
 $CMD -i $OPENHRP_MODEL/house/house.main.wrl -o $HOME/.gazebo/models/house.world
+
+# this specific case should return error
+set +e
 $CMD -i $OPENHRP_MODEL/crawler.wrl -o $HOME/.gazebo/models/crawler.world
+set -e
+
 $CMD -i $OPENHRP_MODEL/simple_vehicle_with_camera.wrl -o $HOME/.gazebo/models/simple_vehicle_with_camera.world
 $CMD -i $OPENHRP_MODEL/simple_vehicle_with_rangesensor.wrl -o $HOME/.gazebo/models/simple_vehicle_with_rangesensor.world
