@@ -22,10 +22,11 @@ sudo apt-get install -qq -y python-pip graphviz openhrp openrtm-aist-python pyth
 sudo pip install --upgrade pip
 sudo pip install -r requirements.txt
 sudo pip install -r requirements-dev.txt
-sudo pip install rospkg
 
+set +x
 source /opt/ros/$ROS_DISTRO/setup.bash
 source /usr/share/drcsim/setup.sh
+set -x
 
 source ./convertall.sh
 
