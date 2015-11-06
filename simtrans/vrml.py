@@ -95,6 +95,7 @@ class VRMLReader(object):
         self._joints = []
         self._links = []
         self._linknamemap = {}
+        self._linknamemap['world'] = 'world'
         self._materials = []
         self._sensors = []
         self._assethandler = None
