@@ -193,7 +193,7 @@ class SDFReader(object):
         am = model.AxisData()
         am.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
         useparent = axis.find('use_parent_model_frame')
-        if useparent is not None and useparent in ('1', 'true'):
+        if useparent is not None and useparent.text in ('1', 'true'):
             baseframe = self._linkmap[jm.parent]
         else:
             baseframe = self._linkmap[jm.child]
