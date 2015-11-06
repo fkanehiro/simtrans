@@ -19,6 +19,7 @@ import numpy
 import os
 import subprocess
 import tempfile
+import logging
 from stl import stl
 
 
@@ -54,9 +55,12 @@ class STLWriter(object):
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
         try:
-            subprocess.check_call(['meshlabserver', '-i', daefile, '-o', f], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output = subprocess.check_output(['meshlabserver', '-i', daefile, '-o', f], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            logging.error("meshlabserver returned error: %s" % e.output)
+            raise
         except OSError:
-            print "command meshlabserver not found. please install by:"
-            print "$ sudo apt-get install meshlab"
+            logging.error("command meshlabserver not found. please install by:")
+            logging.error("$ sudo apt-get install meshlab")
             raise
         os.unlink(daefile)
