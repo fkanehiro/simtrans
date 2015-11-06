@@ -476,7 +476,7 @@ class VRMLWriter(object):
             if len(roots) == 1:
                 mfname = fname
             else:
-                mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
+                mfname = (mdata.name + "-" + r[0] + ".wrl").replace('::', '_')
             self.renderchildren(mdata, r[0], r[1], os.path.join(dirname, mfname), shapefilemap, template)
             modelfiles[mfname] = self._linkmap[r[0]]
         
