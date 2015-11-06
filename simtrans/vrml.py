@@ -172,7 +172,8 @@ class VRMLReader(object):
             m.parent = j.link[0]
             m.child = j.link[1]
             m.name = j.name
-            m.axis = numpy.array(j.axis)
+            m.axis = model.AxisData()
+            m.axis.axis = numpy.array(j.axis)
             m.trans = numpy.array(j.point[1])
             m.offsetPosition = True
             self._joints.append(m)
