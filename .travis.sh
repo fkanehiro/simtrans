@@ -28,6 +28,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 source /usr/share/drcsim/setup.sh
 set -x
 
+python -m simtrans.gzfetch -f tests/models.txt
 source ./convertall.sh
 
 cd doc
