@@ -467,7 +467,7 @@ class VRMLWriter(object):
         modelfiles = {}
         for root in self._roots:
             if root == 'world':
-                for r in utils.findchildren(m, root):
+                for r in utils.findchildren(mdata, root):
                     roots.append((r.child, "fixed"))
             else:
                 roots.append((root, "free"))
