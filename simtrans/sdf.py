@@ -192,11 +192,11 @@ class SDFReader(object):
     def readAxis(self, jm, axis):
         am = model.AxisData()
         am.axis = [float(v) for v in re.split(' +', axis.find('xyz').text.strip(' '))]
-        #if axis.find('use_parent_model_frame') is not None:
-        #    baseframe = self._linkmap[jm.parent]
-        #else:
-        #    baseframe = self._linkmap[jm.child]
-        baseframe = self._linkmap[jm.child]
+        useparent = axis.find('use_parent_model_frame')
+        if useparent is not None and useparent in ('1', 'true'):
+            baseframe = self._linkmap[jm.parent]
+        else:
+            baseframe = self._linkmap[jm.child]
         axismat = tf.quaternion_matrix(baseframe.getrotation())
         axisinv = numpy.linalg.pinv(axismat)
         am.axis = numpy.dot(axisinv, numpy.hstack((am.axis, [1])))[0:3]
