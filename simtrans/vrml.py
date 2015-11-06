@@ -95,6 +95,7 @@ class VRMLReader(object):
         self._joints = []
         self._links = []
         self._linknamemap = {}
+        self._linknamemap['world'] = 'world'
         self._materials = []
         self._sensors = []
         self._assethandler = None
@@ -171,7 +172,8 @@ class VRMLReader(object):
             m.parent = j.link[0]
             m.child = j.link[1]
             m.name = j.name
-            m.axis = numpy.array(j.axis)
+            m.axis = model.AxisData()
+            m.axis.axis = numpy.array(j.axis)
             m.trans = numpy.array(j.point[1])
             m.offsetPosition = True
             self._joints.append(m)
@@ -467,16 +469,16 @@ class VRMLWriter(object):
         modelfiles = {}
         for root in self._roots:
             if root == 'world':
-                for r in utils.findchildren(m, root):
+                for r in utils.findchildren(mdata, root):
                     roots.append((r.child, "fixed"))
             else:
                 roots.append((root, "free"))
         for r in roots:
             logging.info('writing model for %s' % r[0])
             if len(roots) == 1:
-                mfname = f
+                mfname = fname
             else:
-                mfname = (mdata.name + "-" + r.child + ".wrl").replace('::', '_')
+                mfname = (mdata.name + "-" + r[0] + ".wrl").replace('::', '_')
             self.renderchildren(mdata, r[0], r[1], os.path.join(dirname, mfname), shapefilemap, template)
             modelfiles[mfname] = self._linkmap[r[0]]
         
