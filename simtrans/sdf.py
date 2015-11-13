@@ -70,6 +70,9 @@ class SDFReader(object):
         try:
             d = subprocess.check_output(['gz', 'sdf', '-p', utils.resolveFile(fname)])
             os.write(fd, d)
+        except OSError:
+            logging.error("command gz not found. please install recent version of gazebo.")
+            raise
         finally:
             os.close(fd)
         try:
