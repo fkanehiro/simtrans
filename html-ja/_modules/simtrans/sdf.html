@@ -203,6 +203,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;gz&#39;</span><span class="p">,</span> <span class="s">&#39;sdf&#39;</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">resolveFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)])</span>
             <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;command gz not found. please install recent version of gazebo.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
