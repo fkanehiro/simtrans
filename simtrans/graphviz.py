@@ -36,7 +36,7 @@ class GraphvizWriter(object):
     def __init__(self):
         self._linkmap = {}
 
-    def write(self, mdata, fname):
+    def write(self, mdata, fname, options=None):
         '''
         Write simulation model in graphviz dot format
         '''
