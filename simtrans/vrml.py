@@ -301,7 +301,8 @@ class VRMLReader(object):
                 data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
         if len(data.vertex_index) != len(data.normal_index):
             raise Exception('vertex length and normal length not match')
-        data.material = self._materials[adata.materialIndex]
+        if adata.materialIndex >= 0:
+            data.material = self._materials[adata.materialIndex]
         if adata.textureIndex >= 0:
             fname = self._hrptextures[adata.textureIndex].url
             if self._assethandler:
