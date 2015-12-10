@@ -61,6 +61,7 @@ import math
 import numpy
 import copy
 import jinja2
+import uuid
 try:
     import CORBA
     import CosNaming
