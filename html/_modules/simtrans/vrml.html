@@ -316,8 +316,8 @@
             <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linknamemap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">parent</span><span class="p">]</span>
             <span class="n">j</span><span class="o">.</span><span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linknamemap</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
         <span class="n">bm</span><span class="o">.</span><span class="n">sensors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sensors</span>
-        <span class="k">return</span> <span class="n">bm</span>
-</div>
+        <span class="k">return</span> <span class="n">bm</span></div>
+
 <div class="viewcode-block" id="VRMLReader.readLink"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readLink">[docs]</a>    <span class="k">def</span> <span class="nf">readLink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
         <span class="n">lm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">LinkModel</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -403,8 +403,8 @@
                 <span class="n">sm</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readMesh</span><span class="p">(</span><span class="n">sdata</span><span class="p">)</span>
             <span class="n">lm</span><span class="o">.</span><span class="n">visuals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
             <span class="n">lm</span><span class="o">.</span><span class="n">collisions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lm</span>
-</div>
+        <span class="k">return</span> <span class="n">lm</span></div>
+
 <div class="viewcode-block" id="VRMLReader.readMesh"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readMesh">[docs]</a>    <span class="k">def</span> <span class="nf">readMesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sdata</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">()</span>
         <span class="n">data</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sdata</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -434,7 +434,8 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">normal_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">vertex_index</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">normal_index</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;vertex length and normal length not match&#39;</span><span class="p">)</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">materialIndex</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">adata</span><span class="o">.</span><span class="n">materialIndex</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">materialIndex</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">adata</span><span class="o">.</span><span class="n">textureIndex</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrptextures</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">textureIndex</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assethandler</span><span class="p">:</span>
@@ -443,9 +444,9 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">material</span><span class="o">.</span><span class="n">texture</span> <span class="o">=</span> <span class="n">fname</span>
             <span class="n">data</span><span class="o">.</span><span class="n">uvmap</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordinate</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordinate</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">data</span><span class="o">.</span><span class="n">uvmap_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordIndices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">textureCoordIndices</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data</span>
-</div>
-<div class="viewcode-block" id="VRMLReader.readChild"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readChild">[docs]</a>    <span class="k">def</span> <span class="nf">readChild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="VRMLReader.readChild"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.readChild">[docs]</a>    <span class="k">def</span> <span class="nf">readChild</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span></div>
         <span class="c"># first, create joint pairs</span>
         <span class="n">jm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="p">()</span>
         <span class="n">jm</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">name</span>
@@ -489,7 +490,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lm</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">child</span><span class="o">.</span><span class="n">childIndices</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">readChild</span><span class="p">(</span><span class="n">jm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hrplinks</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
-</div>
+
 <div class="viewcode-block" id="VRMLReader.resolveModelLoader"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLReader.resolveModelLoader">[docs]</a>    <span class="k">def</span> <span class="nf">resolveModelLoader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">nsobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">resolve_initial_references</span><span class="p">(</span><span class="s">&quot;NameService&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ns</span> <span class="o">=</span> <span class="n">nsobj</span><span class="o">.</span><span class="n">_narrow</span><span class="p">(</span><span class="n">CosNaming</span><span class="o">.</span><span class="n">NamingContext</span><span class="p">)</span>
@@ -498,9 +499,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_loader</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">_narrow</span><span class="p">(</span><span class="n">OpenHRP</span><span class="o">.</span><span class="n">ModelLoader</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">CosNaming</span><span class="o">.</span><span class="n">NamingContext</span><span class="o">.</span><span class="n">NotFound</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;unable to resolve OpenHRP model loader on CORBA name service&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
+            <span class="k">raise</span></div></div>
 
-</div></div>
+
 <div class="viewcode-block" id="VRMLWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter">[docs]</a><span class="k">class</span> <span class="nc">VRMLWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    VRML writer class</span>
@@ -627,8 +628,8 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.wrl&#39;</span><span class="p">,</span> <span class="s">&#39;-project.cnoid&#39;</span><span class="p">),</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
             <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">({</span>
                 <span class="s">&#39;models&#39;</span><span class="p">:</span> <span class="n">modelfiles</span><span class="p">,</span>
-            <span class="p">}))</span>
-</div>
+            <span class="p">}))</span></div>
+
 <div class="viewcode-block" id="VRMLWriter.convertchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertchildren">[docs]</a>    <span class="k">def</span> <span class="nf">convertchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">pjoint</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">):</span>
         <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">plink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">pjoint</span><span class="o">.</span><span class="n">child</span><span class="p">]</span>
@@ -661,8 +662,8 @@
             <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nmodel</span><span class="p">)</span>
             <span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cjoint</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cjoint</span><span class="o">.</span><span class="n">child</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">joints</span><span class="p">,</span> <span class="n">links</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="VRMLWriter.renderchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.renderchildren">[docs]</a>    <span class="k">def</span> <span class="nf">renderchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdata</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">jointtype</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">shapefilemap</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
         <span class="n">nmodel</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">rootlink</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkmap</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
@@ -702,8 +703,8 @@
                 <span class="s">&#39;ShapeModel&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="p">,</span>
                 <span class="s">&#39;shapefilemap&#39;</span><span class="p">:</span> <span class="n">shapefilemap</span><span class="p">,</span>
                 <span class="s">&#39;options&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
-            <span class="p">}))</span>
-</div>
+            <span class="p">}))</span></div>
+
 <div class="viewcode-block" id="VRMLWriter.convertjointtype"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLWriter.convertjointtype">[docs]</a>    <span class="k">def</span> <span class="nf">convertjointtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;fixed&quot;</span>
@@ -716,8 +717,8 @@
         <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_CONTINUOUS</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;rotate&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="p">)</span>
-</div></div>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">t</span><span class="p">)</span></div></div>
+
 <div class="viewcode-block" id="VRMLMeshWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.vrml.VRMLMeshWriter">[docs]</a><span class="k">class</span> <span class="nc">VRMLMeshWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    VRML mesh writer class</span>

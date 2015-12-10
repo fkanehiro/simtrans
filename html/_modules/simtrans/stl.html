@@ -171,9 +171,9 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">npoints</span><span class="p">))</span>
         <span class="n">data</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">v0</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">v1</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">v2</span><span class="p">])</span>
         <span class="n">data</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="o">+</span><span class="n">npoints</span><span class="p">,</span> <span class="n">idx</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">npoints</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
-        <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">data</span></div></div>
 
-</div></div>
+
 <div class="viewcode-block" id="STLWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.stl.STLWriter">[docs]</a><span class="k">class</span> <span class="nc">STLWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    STL writer class</span>

@@ -181,9 +181,9 @@
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;resolveFile unresolved (use original)&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">f</span>
+    <span class="k">return</span> <span class="n">f</span></div>
 
-</div>
+
 <div class="viewcode-block" id="findroot"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.findroot">[docs]</a><span class="k">def</span> <span class="nf">findroot</span><span class="p">(</span><span class="n">mdata</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find root link from parent to child relationships.</span>
@@ -243,8 +243,8 @@
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">usedlinks</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</div>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
 <div class="viewcode-block" id="hasopenlink"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.hasopenlink">[docs]</a><span class="k">def</span> <span class="nf">hasopenlink</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Check if the link has open connection with neighboring links</span>
@@ -261,9 +261,9 @@
         <span class="n">parents</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">parent</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">findparent</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">child</span><span class="p">)]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">parents</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">False</span></div>
 
-</div>
+
 <div class="viewcode-block" id="findchildren"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.findchildren">[docs]</a><span class="k">def</span> <span class="nf">findchildren</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find child joints connected to specified link</span>
@@ -281,9 +281,9 @@
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">mdata</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">parent</span> <span class="o">==</span> <span class="n">linkname</span><span class="p">:</span>
             <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">children</span>
+    <span class="k">return</span> <span class="n">children</span></div>
 
-</div>
+
 <div class="viewcode-block" id="findparent"><a class="viewcode-back" href="../../simtrans.html#simtrans.utils.findparent">[docs]</a><span class="k">def</span> <span class="nf">findparent</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">linkname</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Find parent joints connected to specified link</span>

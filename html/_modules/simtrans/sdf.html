@@ -310,8 +310,8 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;link </span><span class="si">%s</span><span class="s"> referenced by joint </span><span class="si">%s</span><span class="s"> does not exist (ignoring)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jm</span><span class="o">.</span><span class="n">child</span><span class="p">,</span> <span class="n">jm</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">bm</span><span class="o">.</span><span class="n">joints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jm</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bm</span>
-</div>
+        <span class="k">return</span> <span class="n">bm</span></div>
+
 <div class="viewcode-block" id="SDFReader.readPose"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readPose">[docs]</a>    <span class="k">def</span> <span class="nf">readPose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
         <span class="n">pose</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; +&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))])</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
@@ -323,8 +323,8 @@
         <span class="n">M</span> <span class="o">/=</span> <span class="n">M</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">m</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">M</span>
         <span class="n">m</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
-</div>
+        <span class="n">m</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span></div>
+
 <div class="viewcode-block" id="SDFReader.readAxis"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readAxis">[docs]</a>    <span class="k">def</span> <span class="nf">readAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jm</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="n">am</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">AxisData</span><span class="p">()</span>
         <span class="n">am</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; +&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;xyz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))]</span>
@@ -355,8 +355,8 @@
                         <span class="n">am</span><span class="o">.</span><span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="n">velocity</span><span class="p">,</span> <span class="o">-</span><span class="n">velocity</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">am</span>
-        </div>
+        <span class="k">return</span> <span class="n">am</span></div>
+        
 <div class="viewcode-block" id="SDFReader.readJointType"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readJointType">[docs]</a>    <span class="k">def</span> <span class="nf">readJointType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&quot;fixed&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_FIXED</span>
@@ -370,8 +370,8 @@
             <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_SCREW</span>
         <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="s">&#39;continuous&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">JointModel</span><span class="o">.</span><span class="n">J_CONTINUOUS</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">d</span><span class="p">)</span>
-</div>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;unsupported joint type: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">d</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SDFReader.readInertia"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readInertia">[docs]</a>    <span class="k">def</span> <span class="nf">readInertia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="n">inertia</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;ixx&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
@@ -380,8 +380,8 @@
         <span class="n">inertia</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;iyy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="n">inertia</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">inertia</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;iyz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="n">inertia</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;izz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">inertia</span>
-</div>
+        <span class="k">return</span> <span class="n">inertia</span></div>
+
 <div class="viewcode-block" id="SDFReader.readShape"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFReader.readShape">[docs]</a>    <span class="k">def</span> <span class="nf">readShape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="p">()</span>
         <span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rootname</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
@@ -476,9 +476,9 @@
                     <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;diffuse color not set. use ambient color instead&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">]:</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="n">material</span>
-        <span class="k">return</span> <span class="n">m</span>
+        <span class="k">return</span> <span class="n">m</span></div></div>
 
-</div></div>
+
 <div class="viewcode-block" id="SDFWriter"><a class="viewcode-back" href="../../simtrans.html#simtrans.sdf.SDFWriter">[docs]</a><span class="k">class</span> <span class="nc">SDFWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    SDF writer class</span>
@@ -552,8 +552,9 @@
             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shapeType</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">ShapeModel</span><span class="o">.</span><span class="n">SP_MESH</span><span class="p">:</span>
                     <span class="n">cwriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.dae&quot;</span><span class="p">))</span>
-                    <span class="n">swriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.stl&quot;</span><span class="p">))</span>
-</pre></div></div></div>
+                    <span class="n">swriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;.stl&quot;</span><span class="p">))</span></div></div>
+
+</pre></div>
 
            </div>
           </div>
