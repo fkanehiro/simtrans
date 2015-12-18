@@ -81,6 +81,8 @@ class ColladaReader(object):
             self._materials[mm.name] = mm
         m = model.MeshTransformData()
         unitmeter = d.assetInfo.unitmeter
+        if unitmeter == None:
+            unitmeter = 0.01
         m.matrix = tf.scale_matrix(unitmeter)
         m.children = []
         rootnodes = d.scene.nodes
