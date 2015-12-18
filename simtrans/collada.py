@@ -83,6 +83,7 @@ class ColladaReader(object):
         unitmeter = d.assetInfo.unitmeter
         if unitmeter == None:
             unitmeter = 0.01
+            logging.info("unitmeter is not specified in dae and 0.01 is used.")
         m.matrix = tf.scale_matrix(unitmeter)
         m.children = []
         rootnodes = d.scene.nodes
