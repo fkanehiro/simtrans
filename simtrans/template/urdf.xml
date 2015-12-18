@@ -68,7 +68,7 @@
     <parent link="{{j.parent}}" />
     <child link="{{j.child}}" />
     {%- if j.jointType == JointModel.J_REVOLUTE or j.jointType == JointModel.J_PRISMATIC %}
-    <limit lower="{{j.axis.limit[1]}}" upper="{{j.axis.limit[0]}}" effort="100" velocity="{{j.axis.velocitylimit[1]}}" />
+    <limit lower="{{j.axis.limit[1]}}" upper="{{j.axis.limit[0]}}" effort="100" velocity="{{j.axis.velocitylimit[0]}}" />
     {%- endif %}
   </joint>
   {%- endfor %}
