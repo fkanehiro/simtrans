@@ -214,6 +214,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_materials</span><span class="p">[</span><span class="n">mm</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mm</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshTransformData</span><span class="p">()</span>
         <span class="n">unitmeter</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">assetInfo</span><span class="o">.</span><span class="n">unitmeter</span>
+        <span class="k">if</span> <span class="n">unitmeter</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">unitmeter</span> <span class="o">=</span> <span class="mf">0.01</span>
         <span class="n">m</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">scale_matrix</span><span class="p">(</span><span class="n">unitmeter</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">rootnodes</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">nodes</span>
