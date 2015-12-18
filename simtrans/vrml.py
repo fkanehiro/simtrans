@@ -300,8 +300,8 @@ class VRMLReader(object):
                     idx.append(i)
                     idx.append(i)
                 data.normal_index = numpy.array(idx).reshape(len(idx)/3, 3)
-        if len(data.vertex_index) != len(data.normal_index):
-            raise Exception('vertex length and normal length not match')
+#        if len(data.vertex_index) != len(data.normal_index):
+#            raise Exception('vertex length and normal length not match')
         if adata.materialIndex >= 0:
             data.material = self._materials[adata.materialIndex]
         if adata.textureIndex >= 0:
