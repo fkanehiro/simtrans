@@ -216,8 +216,8 @@ class AxisData(object):
     axis = None             #: Joint axis (relative to parent link)
     damping = None          #: Damping factor
     friction = None         #: Friction factor
-    limit = None            #: Joint limits (upper and lower limits in 2-dim array)
-    velocitylimit = None    #: Velocity limits (upper and lower limits in 2-dim array)
+    limit = [float("inf"),-float("inf")]        #: Joint limits (upper and lower limits in 2-dim array)
+    velocitylimit = [float("inf"),-float("inf")]    #: Velocity limits (upper and lower limits in 2-dim array)
 
 class ShapeModel(TransformationModel):
     """
