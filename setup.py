@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 import versioneer
-
+import subprocess
 
 versioneer.VCS = 'git'
 versioneer.versionfile_source = 'simtrans/_version.py'
 versioneer.versionfile_build = 'simtrans/_version.py'
 versioneer.tag_prefix = ''
 versioneer.parentdir_prefix = 'simtrans-'
+
+sdformat_include = subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True).strip().lstrip('-I')
 
 setup(name='simtrans',
       version=versioneer.get_version(),
@@ -30,7 +32,14 @@ setup(name='simtrans',
       ],
       packages=find_packages(exclude=['tests']),
       package_data={'simtrans': ['template/*']},
-      entry_points={
+      ext_modules=[
+          Extension('simtranssdfhelper',
+                    ['simtrans/sdfhelper.cpp'],
+                    include_dirs=[sdformat_include],
+                    libraries=['sdformat'],
+                 )
+      ],
+    entry_points={
           'console_scripts': [
               'simtrans = simtrans.cli:main',
               'catxml = simtrans.catxml:main',

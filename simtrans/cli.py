@@ -76,6 +76,12 @@ def main():
         print >> sys.stderr, parser.print_help()
         return 1
 
+    if options.verbose:
+        logging.info('enable verbose output')
+        logging.level = logging.DEBUG
+        if 'coloredlogs' in dir():
+            coloredlogs.set_level(logging.DEBUG)
+
     if options.tofile is None or options.fromfile is None:
         print >> sys.stderr, parser.print_help()
         return 1

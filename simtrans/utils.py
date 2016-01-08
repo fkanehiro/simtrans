@@ -6,8 +6,7 @@ Miscellaneous utility functions
 
 import os
 import subprocess
-from logging import getLogger
-logger = getLogger(__name__)
+import logging
 
 
 def resolveFile(f):
@@ -23,12 +22,12 @@ def resolveFile(f):
     >>> resolveFile('model://PA10/pa10.main.wrl') == os.path.expandvars('$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl')
     True
     '''
-    logger.debug('resolveFile from %s' % f)
+    logging.debug('resolveFile from %s' % f)
     try:
         if f.count('file://') > 0:
             ff = os.path.expanduser(f.replace('file://', ''))
             if os.path.exists(ff):
-                logger.debug('resolveFile resolved to %s' % ff)
+                logging.debug('resolveFile resolved to %s' % ff)
                 return ff
         if f.count('model://') > 0:
             fn = f.replace('model://', '')
@@ -41,18 +40,20 @@ def resolveFile(f):
             for p in paths:
                 ff = os.path.expanduser(os.path.join(p, fn))
                 if os.path.exists(ff):
-                    logger.debug('resolveFile resolved to %s' % ff)
+                    logging.debug('resolveFile resolved to %s' % ff)
                     return ff
+        if f.count('model://') > 0:
+            f = f.replace('model://', 'package://')
         if f.count('package://') > 0:
             pkgname, pkgfile = f.replace('package://', '').split('/', 1)
             ppath = subprocess.check_output(['rospack', 'find', pkgname]).rstrip()
-            logger.debug('resolveFile find package path %s' % ppath)
+            logging.debug('resolveFile find package path %s' % ppath)
             ff = os.path.join(ppath, pkgfile)
-            logger.debug('resolveFile resolved to %s' % ff)
+            logging.debug('resolveFile resolved to %s' % ff)
             return ff
     except Exception, e:
-        logger.warn(str(e))
-    logger.debug('resolveFile unresolved (use original)')
+        logging.warn(str(e))
+    logging.debug('resolveFile unresolved (use original)')
     return f
 
 

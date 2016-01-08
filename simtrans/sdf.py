@@ -47,6 +47,7 @@ from . import model
 from . import collada
 from . import stl
 from . import utils
+import simtranssdfhelper
 
 
 class SDFReader(object):
@@ -64,21 +65,12 @@ class SDFReader(object):
         Read SDF model data given the model file
         '''
         self._assethandler = assethandler
-        fd, sdffile = tempfile.mkstemp(suffix='.sdf')
-        # use gz sdf utility as a filter to beautify input file
+        
+        # use libsdformat library as a filter to beautify input file
         # also used to convert urdf to sdf
-        try:
-            d = subprocess.check_output(['gz', 'sdf', '-p', utils.resolveFile(fname)])
-            os.write(fd, d)
-        except OSError:
-            logging.error("command gz not found. please install recent version of gazebo.")
-            raise
-        finally:
-            os.close(fd)
-        try:
-            d = lxml.etree.parse(open(sdffile))
-        finally:
-            os.unlink(sdffile)
+        sdfdata = simtranssdfhelper.filter(utils.resolveFile(fname))
+        d = lxml.etree.fromstring(sdfdata)
+        
         bm = model.BodyModel()
         dm = d.find('model')
         bm.name = self._rootname = dm.attrib['name']
