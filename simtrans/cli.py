@@ -184,7 +184,7 @@ def main():
         m = nm
         
     if len(m.links) == 0:
-        logging.error("cannot read links at all (probably the model refers to another model by <include> tag)")
+        logging.error("cannot read links at all (probably the model refers to another model by <include> tag or <link> tag contains no <inertial> or <visual> or <collision> item and reduced by simulation optimization process of gz command used inside simtrans)")
         return 1
 
     if meshoutput:
