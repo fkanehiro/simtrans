@@ -69,7 +69,10 @@ class URDFReader(object):
 
     def read2(self, fname, assethandler=None, options=None):
         """Read URDF model data given the model file
-
+        
+        ** [Deprecated] This function is currently broken but kept for historical reason **
+        ** (might be fixed if "gz sdf" command not work in some situation) **
+        
         :param fname: path of the file to read
         :param assethandler: asset handler (optional)
         :returns: model data

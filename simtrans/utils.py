@@ -25,6 +25,11 @@ def resolveFile(f):
     '''
     logger.debug('resolveFile from %s' % f)
     try:
+        if f.count('file://') > 0:
+            ff = os.path.expanduser(f.replace('file://', ''))
+            if os.path.exists(ff):
+                logger.debug('resolveFile resolved to %s' % ff)
+                return ff
         if f.count('model://') > 0:
             fn = f.replace('model://', '')
             paths = ['.', '~/.gazebo/models']
