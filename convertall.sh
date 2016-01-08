@@ -4,7 +4,7 @@ set -e
 
 export ORBgiopMaxMsgSize=2097152000
 
-CMD="python -m simtrans.cli"
+CMD="simtrans -v"
 
 OPENHRP_MODEL="`pkg-config openhrp3.1 --variable=prefix`/share/OpenHRP-3.1/sample/model"
 
