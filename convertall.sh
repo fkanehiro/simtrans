@@ -26,7 +26,7 @@ $CMD -i `rospack find baxter_description`/urdf/baxter.urdf -o /tmp/baxter.wrl
 
 # convert from sdf to wrl
 for i in `cat tests/models.txt`; do
-    if pkg-config --libs "sdformat >= 1.5"; then
+    if pkg-config "sdformat >= 1.5"; then
         $CMD -i model://$i/model.sdf -o /tmp/$i.wrl
     else
         $CMD -i model://$i/model-1_4.sdf -o /tmp/$i.wrl
