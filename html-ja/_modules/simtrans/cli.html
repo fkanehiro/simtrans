@@ -212,7 +212,7 @@
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;enable verbose output&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
-        <span class="k">if</span> <span class="s">&#39;coloredlogs&#39;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s">&#39;coloredlogs&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
             <span class="n">coloredlogs</span><span class="o">.</span><span class="n">set_level</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">tofile</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
