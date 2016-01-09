@@ -79,7 +79,7 @@ def main():
     if options.verbose:
         logging.info('enable verbose output')
         logging.level = logging.DEBUG
-        if 'coloredlogs' in dir():
+        if 'coloredlogs' in globals():
             coloredlogs.set_level(logging.DEBUG)
 
     if options.tofile is None or options.fromfile is None:
