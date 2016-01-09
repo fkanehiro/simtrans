@@ -35,5 +35,7 @@ static PyMethodDef methods[] = {
 PyMODINIT_FUNC
 initsimtranssdfhelper(void)
 {
-    Py_InitModule3("simtranssdfhelper", methods, ext_doc);
+    PyObject *m;
+    m = Py_InitModule3("simtranssdfhelper", methods, ext_doc);
+    PyModule_AddStringConstant(m, "SDFVERSION", sdf::SDF::version.c_str());
 }
