@@ -6,6 +6,7 @@ Common data structure for model converter
 """
 
 from __future__ import absolute_import
+import logging
 import numpy
 import warnings
 with warnings.catch_warnings():
@@ -51,6 +52,34 @@ class TransformationModel(object):
         self.trans = numpy.array([0, 0, 0])
         self.scale = numpy.array([1, 1, 1])
         self.rot = numpy.array([1, 0, 0, 0])
+
+    def isvalid(self):
+        valid = True
+        allnone = True
+        if self.matrix is not None:
+            if True in numpy.isnan(self.matrix):
+                logging.error('NaN in the transformation matrix')
+                valid = False
+            allnone = False
+        if self.trans is not None:
+            if True in numpy.isnan(self.trans):
+                logging.error('NaN in the translation vector')
+                valid = False
+            allnone = False
+        if self.scale is not None:
+            if True in numpy.isnan(self.scale):
+                logging.error('NaN in the scale vector')
+                valid = False
+            allnone = False
+        if scale.rot is not None:
+            if True in numpy.isnan(self.rot):
+                logging.error('NaN in the rotation vector')
+                valid = False
+            allnone = False
+        if allnone:
+            logging.error('no transformation data in the model')
+            valid = False
+        return valid
 
     def gettranslation(self):
         if self.matrix is not None:
@@ -116,6 +145,7 @@ class TransformationModel(object):
         self.matrix = m
         self.trans = None
         self.rot = None
+        self.scale = None
 
 
 class BodyModel(TransformationModel):
@@ -135,6 +165,14 @@ class BodyModel(TransformationModel):
         self.sensors = []
         self.materials = []
 
+    def isvalid(self):
+        valid = self.isvalid()
+        for l in self.links:
+            valid = valid and l.isvalid()
+        for j in self.joints:
+            valid = valid and j.isvalid()
+        return valid
+
 
 class LinkModel(TransformationModel):
     """
@@ -151,6 +189,38 @@ class LinkModel(TransformationModel):
         TransformationModel.__init__(self)
         self.centerofmass = [0, 0, 0]
         self.inertia = numpy.identity(3)
+
+    def isvalid(self):
+        valid = True
+        if True in numpy.isnan(self.centerofmass):
+            logging.error('NaN in the center of mass vector')
+            valid = False
+        if True in numpy.isinf(self.centerofmass):
+            logging.error('Inf in the center of mass vector')
+            valid = False
+        if True in numpy.isnan(self.inertia):
+            logging.error('NaN in the inertia matrix')
+            valid = False
+        if True in numpy.isinf(self.inertia):
+            logging.error('Inf in the inertia matrix')
+            valid = False
+        maxbb = None
+        for v in self.visuals:
+            bb = v.getbbox()
+            if maxbb:
+                maxbb = numpy.maximum(maxbb, bb)
+            else:
+                maxbb = bb
+        for c in self.collisions:
+            bb = c.getbbox()
+            if maxbb:
+                maxbb = numpy.maximum(maxbb, bb)
+            else:
+                maxbb = bb
+        if False in self.centerofmass > maxbb[0] or False in self.centerofmass < maxbb[1]:
+            logging.error('center of mass not locate inside shape boundingbox')
+            valid = False
+        return valid
 
     def translate(self, mat):
         self.matrix = numpy.dot(self.getmatrix(), mat)
@@ -209,6 +279,14 @@ class JointModel(TransformationModel):
     def __init__(self):
         TransformationModel.__init__(self)
 
+    def isvalid(self):
+        valid = True
+        if self.axis is not None:
+            valid = valid and self.axis.valid()
+        if self.axis2 is not None:
+            valid = valid and self.axis2.valid()
+        return valid
+
 class AxisData(object):
     """
     Joint axis data
@@ -217,7 +295,14 @@ class AxisData(object):
     damping = None          #: Damping factor
     friction = None         #: Friction factor
     limit = [float("inf"),-float("inf")]        #: Joint limits (upper and lower limits in 2-dim array)
-    velocitylimit = [float("inf"),-float("inf")]    #: Velocity limits (upper and lower limits in 2-dim array)
+    velocitylimit = [float("inf"),-float("inf")]    #: Velocity limits
+    #(upper and lower limits in 2-dim array)
+
+    def isvalid(self):
+        valid = True
+        if True in numpy.isinf(self.velocitylimit):
+            valid = False
+        return valid
 
 class ShapeModel(TransformationModel):
     """
@@ -286,6 +371,11 @@ class MeshTransformData(TransformationModel):
         half = (maxv - minv) / 2
         center = minv + half
         return center[0:3]
+
+    def getbbox(self):
+        maxv = self.maxv()
+        minv = self.minv()
+        return [minv, maxv]
 
     def pretranslate(self, trans=None):
         '''
