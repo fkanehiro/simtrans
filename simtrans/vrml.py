@@ -16,19 +16,10 @@ Examples
 
 Read vrml model data given the file path
 
->>> r = VRMLReader()
->>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
-
-Write simulation model in URDF format
-
->>> from . import vrml
->>> r = vrml.VRMLReader()
->>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
->>> w = URDFWriter()
->>> w.write(m, '/tmp/hrp4c.urdf')
 >>> import subprocess
->>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
-0
+>>> hrpprefix = subprocess.check_output('pkg-config openhrp3.1 --variable=prefix').strip()
+>>> r = VRMLReader()
+>>> m = r.read(hrpprefix + '/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
 
 Write simulation model in VRML format
 
