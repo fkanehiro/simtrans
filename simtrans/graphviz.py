@@ -22,9 +22,11 @@ Write simulation model in graphviz dot format
 >>> w = GraphvizWriter()
 >>> w.write(m, '/tmp/pr2.dot')
 
+>>> import subprocess
+>>> hrpprefix = subprocess.check_output('pkg-config openhrp3.1 --variable=prefix').strip()
 >>> from . import vrml
 >>> r = vrml.VRMLReader()
->>> m = r.read('/usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl')
+>>> m = r.read(hrpprefix + '/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl')
 >>> w = GraphvizWriter()
 >>> w.write(m, '/tmp/pa10.dot')
 """
