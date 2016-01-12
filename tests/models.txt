@@ -29,3 +29,4 @@ drc_practice_wood_slats
 drc_practice_yellow_parking_block
 hinged_door
 polaris_ranger_xp900_no_roll_cage
+pr2

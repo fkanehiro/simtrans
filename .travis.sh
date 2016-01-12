@@ -16,7 +16,7 @@ sudo add-apt-repository -y ppa:hrg/daily
 
 # install required packages
 sudo apt-get update -qq
-sudo apt-get install -qq -y python-dev python-pip graphviz meshlab xvfb openhrp openrtm-aist-python python-omniorb omniidl-python omniorb-idl omniidl python-numpy ros-$ROS_DISTRO-xacro ros-$ROS_DISTRO-pr2-description ros-$ROS_DISTRO-ur-description ros-$ROS_DISTRO-baxter-description drcsim
+sudo apt-get install -qq -y pkg-config python-dev python-pip graphviz meshlab xvfb openhrp openrtm-aist-python python-omniorb omniidl-python omniorb-idl omniidl python-numpy ros-$ROS_DISTRO-xacro ros-$ROS_DISTRO-pr2-description ros-$ROS_DISTRO-ur-description ros-$ROS_DISTRO-baxter-description drcsim
 
 # install python libraries
 sudo pip install --upgrade pip
@@ -32,6 +32,9 @@ source /usr/share/drcsim/setup.sh
 set -x
 
 python -m simtrans.gzfetch -f tests/models.txt
+
+xvfb-run python testrunner.py
+
 xvfb-run ./convertall.sh
 
 cd doc

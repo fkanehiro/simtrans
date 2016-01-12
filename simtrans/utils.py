@@ -13,10 +13,10 @@ def resolveFile(f):
     '''
     Resolve file by replacing file path heading "package://" or "model://"
 
-    >>> resolveFile('package://atlas_description/package.xml')
-    '/opt/ros/indigo/share/atlas_description/package.xml'
-    >>> resolveFile('package://atlas_description/urdf/atlas.urdf')
-    '/opt/ros/indigo/share/atlas_description/urdf/atlas.urdf'
+    >>> resolveFile('package://atlas_description/package.xml') == os.path.expandvars('$ROS_PACKAGE_PATH/atlas_description/package.xml')
+    True
+    >>> resolveFile('package://atlas_description/urdf/atlas.urdf') == os.path.expandvars('$ROS_PACKAGE_PATH/atlas_description/atlas.urdf')
+    True
     >>> resolveFile('model://pr2/model.sdf') == os.path.expanduser('~/.gazebo/models/pr2/model.sdf')
     True
     >>> resolveFile('model://PA10/pa10.main.wrl') == os.path.expandvars('$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl')

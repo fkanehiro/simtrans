@@ -12,24 +12,37 @@ OPENHRP_MODEL="`pkg-config openhrp3.1 --variable=prefix`/share/OpenHRP-3.1/sampl
 #python -m simtrans.gzfetch -f tests/models.txt
 
 # convert from urdf to wrl
-rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf
-$CMD -i /tmp/atlas.urdf -o /tmp/atlas.wrl
+if rospack find atlas_description; then
+    rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf
+    $CMD -i /tmp/atlas.urdf -o /tmp/atlas.wrl
+fi
 
-rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > /tmp/pr2.urdf
-$CMD -i /tmp/pr2.urdf -o /tmp/pr2.wrl
+if rospack find pr2_description; then
+    rosrun xacro xacro.py `rospack find pr2_description`/robots/pr2.urdf.xacro > /tmp/pr2.urdf
+    $CMD -i /tmp/pr2.urdf -o /tmp/pr2.wrl
+fi
 
-$CMD -i `rospack find ur_description`/urdf/ur10_robot.urdf -o /tmp/ur10.wrl
+if rospack find ur_description; then
+    $CMD -i `rospack find ur_description`/urdf/ur10_robot.urdf -o /tmp/ur10.wrl
+fi
 
-$CMD -i `rospack find baxter_description`/urdf/baxter.urdf -o /tmp/baxter.wrl
+if rospack find baxter_description; then
+    $CMD -i `rospack find baxter_description`/urdf/baxter.urdf -o /tmp/baxter.wrl
+fi
 
 #$CMD -i `rospack find nao_description`/urdf/naoV50_generated_urdf/nao.urdf -o /tmp/nao.wrl
 
 # convert from sdf to wrl
 for i in `cat tests/models.txt`; do
     if pkg-config "sdformat >= 1.5"; then
-        $CMD -i model://$i/model.sdf -o /tmp/$i.wrl
+        MODEL="model.sdf"
     else
-        $CMD -i model://$i/model-1_4.sdf -o /tmp/$i.wrl
+        MODEL="model-1_4.sdf"
+    fi
+    if [ -d "$HOME/.gazeo/models/$i/$MODEL" ]; then
+        $CMD -i model://$i/$MODEL -o /tmp/$i.wrl
+    else
+        echo "$HOME/.gazeo/models/$i/$MODEL not found"
     fi
 done
 

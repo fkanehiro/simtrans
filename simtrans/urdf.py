@@ -23,11 +23,11 @@ Write simulation model in URDF format
 
 >>> from . import vrml
 >>> r = vrml.VRMLReader()
->>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+>>> m = r.read(os.path.expandvars('$OPENHRP_MODEL_PATH/closed-link-sample.wrl'))
 >>> w = URDFWriter()
->>> w.write(m, '/tmp/hrp4c.urdf')
+>>> w.write(m, '/tmp/closed-link-sample.urdf')
 >>> import subprocess
->>> subprocess.check_call('check_urdf /tmp/hrp4c.urdf'.split(' '))
+>>> subprocess.check_call('check_urdf /tmp/closed-link-sample.urdf'.split(' '))
 0
 """
 

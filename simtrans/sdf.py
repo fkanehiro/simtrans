@@ -23,11 +23,11 @@ Write simulation model in SDF format
 
 >>> from . import vrml
 >>> r = vrml.VRMLReader()
->>> m = r.read('/home/yosuke/HRP-4C/HRP4Cmain.wrl')
+>>> m = r.read(os.path.expandvars('$OPENHRP_MODEL_PATH/closed-link-sample.wrl'))
 >>> w = SDFWriter()
->>> w.write(m, '/tmp/hrp4c.sdf')
+>>> w.write(m, '/tmp/closed-link-sample.sdf')
 >>> import subprocess
->>> subprocess.check_call('gz sdf -k /tmp/hrp4c.sdf'.split(' '))
+>>> subprocess.check_call('gz sdf -k /tmp/closed-link-sample.sdf'.split(' '))
 0
 """
 
