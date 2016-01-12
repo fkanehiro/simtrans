@@ -156,11 +156,11 @@
 
 <span class="sd">&gt;&gt;&gt; from . import vrml</span>
 <span class="sd">&gt;&gt;&gt; r = vrml.VRMLReader()</span>
-<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;)</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(os.path.expandvars(&#39;$OPENHRP_MODEL_PATH/closed-link-sample.wrl&#39;))</span>
 <span class="sd">&gt;&gt;&gt; w = URDFWriter()</span>
-<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/hrp4c.urdf&#39;)</span>
+<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/closed-link-sample.urdf&#39;)</span>
 <span class="sd">&gt;&gt;&gt; import subprocess</span>
-<span class="sd">&gt;&gt;&gt; subprocess.check_call(&#39;check_urdf /tmp/hrp4c.urdf&#39;.split(&#39; &#39;))</span>
+<span class="sd">&gt;&gt;&gt; subprocess.check_call(&#39;check_urdf /tmp/closed-link-sample.urdf&#39;.split(&#39; &#39;))</span>
 <span class="sd">0</span>
 <span class="sd">&quot;&quot;&quot;</span>
 

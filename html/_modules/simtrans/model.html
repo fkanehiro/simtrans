@@ -139,6 +139,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
@@ -184,6 +185,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<div class="viewcode-block" id="TransformationModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">allnone</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the transformation matrix&#39;</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">allnone</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the translation vector&#39;</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">allnone</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the scale vector&#39;</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">allnone</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">scale</span><span class="o">.</span><span class="n">rot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rot</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the rotation vector&#39;</span><span class="p">)</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">allnone</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">allnone</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;no transformation data in the model&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">valid</span></div>
 
 <div class="viewcode-block" id="TransformationModel.gettranslation"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.gettranslation">[docs]</a>    <span class="k">def</span> <span class="nf">gettranslation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -248,7 +277,8 @@
 <div class="viewcode-block" id="TransformationModel.setmatrix"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.TransformationModel.setmatrix">[docs]</a>    <span class="k">def</span> <span class="nf">setmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">m</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="bp">None</span></div></div>
 
 
 <div class="viewcode-block" id="BodyModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BodyModel">[docs]</a><span class="k">class</span> <span class="nc">BodyModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
@@ -266,7 +296,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">joints</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sensors</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="BodyModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BodyModel.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">valid</span></div></div>
 
 
 <div class="viewcode-block" id="LinkModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel">[docs]</a><span class="k">class</span> <span class="nc">LinkModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
@@ -284,6 +322,38 @@
         <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LinkModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the center of mass vector&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Inf in the center of mass vector&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the inertia matrix&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Inf in the inertia matrix&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">maxbb</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
+            <span class="n">bb</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">maxbb</span><span class="p">:</span>
+                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">maxbb</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">bb</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collisions</span><span class="p">:</span>
+            <span class="n">bb</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">maxbb</span><span class="p">:</span>
+                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">maxbb</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">bb</span>
+        <span class="k">if</span> <span class="bp">False</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&gt;</span> <span class="n">maxbb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">False</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&lt;</span> <span class="n">maxbb</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;center of mass not locate inside shape boundingbox&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">valid</span></div>
 
 <div class="viewcode-block" id="LinkModel.translate"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mat</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getmatrix</span><span class="p">(),</span> <span class="n">mat</span><span class="p">)</span>
@@ -340,7 +410,15 @@
     <span class="n">offsetPosition</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c">#: Whether offset joint position or not</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JointModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.JointModel.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">valid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span><span class="o">.</span><span class="n">valid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">valid</span></div></div>
 
 <div class="viewcode-block" id="AxisData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.AxisData">[docs]</a><span class="k">class</span> <span class="nc">AxisData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -350,7 +428,14 @@
     <span class="n">damping</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Damping factor</span>
     <span class="n">friction</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Friction factor</span>
     <span class="n">limit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>        <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
-    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>    <span class="c">#: Velocity limits (upper and lower limits in 2-dim array)</span></div>
+    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>    <span class="c">#: Velocity limits</span>
+    <span class="c">#(upper and lower limits in 2-dim array)</span>
+
+<div class="viewcode-block" id="AxisData.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.AxisData.isvalid">[docs]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">):</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">valid</span></div></div>
 
 <div class="viewcode-block" id="ShapeModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ShapeModel">[docs]</a><span class="k">class</span> <span class="nc">ShapeModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -419,6 +504,11 @@
         <span class="n">half</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxv</span> <span class="o">-</span> <span class="n">minv</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">center</span> <span class="o">=</span> <span class="n">minv</span> <span class="o">+</span> <span class="n">half</span>
         <span class="k">return</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MeshTransformData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.getbbox">[docs]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">maxv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxv</span><span class="p">()</span>
+        <span class="n">minv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minv</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">minv</span><span class="p">,</span> <span class="n">maxv</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MeshTransformData.pretranslate"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.pretranslate">[docs]</a>    <span class="k">def</span> <span class="nf">pretranslate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>

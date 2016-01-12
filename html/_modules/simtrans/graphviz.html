@@ -157,7 +157,7 @@
 
 <span class="sd">&gt;&gt;&gt; from . import vrml</span>
 <span class="sd">&gt;&gt;&gt; r = vrml.VRMLReader()</span>
-<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl&#39;)</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(os.path.expandvars(&#39;$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl&#39;))</span>
 <span class="sd">&gt;&gt;&gt; w = GraphvizWriter()</span>
 <span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/pa10.dot&#39;)</span>
 <span class="sd">&quot;&quot;&quot;</span>

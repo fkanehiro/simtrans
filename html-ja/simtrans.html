@@ -234,6 +234,11 @@ Reader and writer for each formats will read and write the common data structure
 <dd><p>Friction factor</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="simtrans.model.AxisData.isvalid">
+<code class="descname">isvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#AxisData.isvalid"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.AxisData.isvalid" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="simtrans.model.AxisData.limit">
 <code class="descname">limit</code><em class="property"> = [inf, -inf]</em><a class="headerlink" href="#simtrans.model.AxisData.limit" title="この定義へのパーマリンク">¶</a></dt>
@@ -243,7 +248,7 @@ Reader and writer for each formats will read and write the common data structure
 <dl class="attribute">
 <dt id="simtrans.model.AxisData.velocitylimit">
 <code class="descname">velocitylimit</code><em class="property"> = [inf, -inf]</em><a class="headerlink" href="#simtrans.model.AxisData.velocitylimit" title="この定義へのパーマリンク">¶</a></dt>
-<dd><p>Velocity limits (upper and lower limits in 2-dim array)</p>
+<dd><p>Velocity limits</p>
 </dd></dl>
 
 </dd></dl>
@@ -253,6 +258,11 @@ Reader and writer for each formats will read and write the common data structure
 <em class="property">class </em><code class="descclassname">simtrans.model.</code><code class="descname">BodyModel</code><a class="reference internal" href="_modules/simtrans/model.html#BodyModel"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.BodyModel" title="この定義へのパーマリンク">¶</a></dt>
 <dd><p>ベースクラス: <a class="reference internal" href="#simtrans.model.TransformationModel" title="simtrans.model.TransformationModel"><code class="xref py py-class docutils literal"><span class="pre">simtrans.model.TransformationModel</span></code></a></p>
 <p>Body model</p>
+<dl class="method">
+<dt id="simtrans.model.BodyModel.isvalid">
+<code class="descname">isvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#BodyModel.isvalid"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.BodyModel.isvalid" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="simtrans.model.BodyModel.joints">
 <code class="descname">joints</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.BodyModel.joints" title="この定義へのパーマリンク">¶</a></dt>
@@ -469,6 +479,11 @@ Reader and writer for each formats will read and write the common data structure
 <dd><p>Name of child link</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="simtrans.model.JointModel.isvalid">
+<code class="descname">isvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#JointModel.isvalid"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.JointModel.isvalid" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="simtrans.model.JointModel.jointType">
 <code class="descname">jointType</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.JointModel.jointType" title="この定義へのパーマリンク">¶</a></dt>
@@ -522,6 +537,11 @@ Reader and writer for each formats will read and write the common data structure
 <code class="descname">inertia</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.LinkModel.inertia" title="この定義へのパーマリンク">¶</a></dt>
 <dd><p>Inertia (3x3 numpy matrix)</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.LinkModel.isvalid">
+<code class="descname">isvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#LinkModel.isvalid"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.LinkModel.isvalid" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="simtrans.model.LinkModel.mass">
@@ -675,6 +695,11 @@ Reader and writer for each formats will read and write the common data structure
 <code class="descname">children</code><em class="property"> = []</em><a class="headerlink" href="#simtrans.model.MeshTransformData.children" title="この定義へのパーマリンク">¶</a></dt>
 <dd><p>Children (store MeshData or MeshTransformData)</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="simtrans.model.MeshTransformData.getbbox">
+<code class="descname">getbbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#MeshTransformData.getbbox"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.MeshTransformData.getbbox" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="simtrans.model.MeshTransformData.getcenter">
@@ -914,6 +939,11 @@ Reader and writer for each formats will read and write the common data structure
 <code class="descname">gettranslation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.gettranslation"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.gettranslation" title="この定義へのパーマリンク">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="simtrans.model.TransformationModel.isvalid">
+<code class="descname">isvalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/model.html#TransformationModel.isvalid"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.model.TransformationModel.isvalid" title="この定義へのパーマリンク">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="simtrans.model.TransformationModel.matrix">
 <code class="descname">matrix</code><em class="property"> = None</em><a class="headerlink" href="#simtrans.model.TransformationModel.matrix" title="この定義へのパーマリンク">¶</a></dt>
@@ -1098,7 +1128,7 @@ Reader and writer for each formats will read and write the common data structure
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">GraphvizWriter</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/pa10.dot&#39;</span><span class="p">)</span>
 </pre></div>
@@ -1147,11 +1177,11 @@ Reader and writer for each formats will read and write the common data structure
 <p>Write simulation model in SDF format</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/closed-link-sample.wrl&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">SDFWriter</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.sdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/closed-link-sample.sdf&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;gz sdf -k /tmp/hrp4c.sdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;gz sdf -k /tmp/closed-link-sample.sdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
 <span class="go">0</span>
 </pre></div>
 </div>
@@ -1284,11 +1314,11 @@ This method first generates collada and use meshlab to output stl</p>
 <p>Write simulation model in URDF format</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/closed-link-sample.wrl&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">URDFWriter</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.urdf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/closed-link-sample.urdf&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;check_urdf /tmp/hrp4c.urdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;check_urdf /tmp/closed-link-sample.urdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
 <span class="go">0</span>
 </pre></div>
 </div>
@@ -1428,18 +1458,7 @@ This method first generates collada and use meshlab to output stl</p>
 <h3>Examples<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h3>
 <p>Read vrml model data given the file path</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">VRMLReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Write simulation model in URDF format</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">vrml</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">vrml</span><span class="o">.</span><span class="n">VRMLReader</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">URDFWriter</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;/tmp/hrp4c.urdf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="s">&#39;check_urdf /tmp/hrp4c.urdf&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">))</span>
-<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/closed-link-sample.wrl&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Write simulation model in VRML format</p>
@@ -1638,10 +1657,10 @@ Currently based on following simple principle:
 <dt id="simtrans.utils.resolveFile">
 <code class="descclassname">simtrans.utils.</code><code class="descname">resolveFile</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simtrans/utils.html#resolveFile"><span class="viewcode-link">[ソース]</span></a><a class="headerlink" href="#simtrans.utils.resolveFile" title="この定義へのパーマリンク">¶</a></dt>
 <dd><p>Resolve file by replacing file path heading &#8220;package://&#8221; or &#8220;model://&#8221;</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/package.xml&#39;</span><span class="p">)</span>
-<span class="go">&#39;/opt/ros/indigo/share/atlas_description/package.xml&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas.urdf&#39;</span><span class="p">)</span>
-<span class="go">&#39;/opt/ros/indigo/share/atlas_description/urdf/atlas.urdf&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/package.xml&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$ROS_PACKAGE_PATH/atlas_description/package.xml&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;package://atlas_description/urdf/atlas.urdf&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$ROS_PACKAGE_PATH/atlas_description/atlas.urdf&#39;</span><span class="p">)</span>
+<span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;model://pr2/model.sdf&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/.gazebo/models/pr2/model.sdf&#39;</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resolveFile</span><span class="p">(</span><span class="s">&#39;model://PA10/pa10.main.wrl&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="s">&#39;$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl&#39;</span><span class="p">)</span>

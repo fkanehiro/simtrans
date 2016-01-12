@@ -150,18 +150,7 @@
 <span class="sd">Read vrml model data given the file path</span>
 
 <span class="sd">&gt;&gt;&gt; r = VRMLReader()</span>
-<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/usr/local/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl&#39;)</span>
-
-<span class="sd">Write simulation model in URDF format</span>
-
-<span class="sd">&gt;&gt;&gt; from . import vrml</span>
-<span class="sd">&gt;&gt;&gt; r = vrml.VRMLReader()</span>
-<span class="sd">&gt;&gt;&gt; m = r.read(&#39;/home/yosuke/HRP-4C/HRP4Cmain.wrl&#39;)</span>
-<span class="sd">&gt;&gt;&gt; w = URDFWriter()</span>
-<span class="sd">&gt;&gt;&gt; w.write(m, &#39;/tmp/hrp4c.urdf&#39;)</span>
-<span class="sd">&gt;&gt;&gt; import subprocess</span>
-<span class="sd">&gt;&gt;&gt; subprocess.check_call(&#39;check_urdf /tmp/hrp4c.urdf&#39;.split(&#39; &#39;))</span>
-<span class="sd">0</span>
+<span class="sd">&gt;&gt;&gt; m = r.read(os.path.expandvars(&#39;$OPENHRP_MODEL_PATH/closed-link-sample.wrl&#39;))</span>
 
 <span class="sd">Write simulation model in VRML format</span>
 
