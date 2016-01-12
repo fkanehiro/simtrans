@@ -31,9 +31,10 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 source /usr/share/drcsim/setup.sh
 set -x
 
-python testrunner.py
-
 python -m simtrans.gzfetch -f tests/models.txt
+
+xvfb-run python testrunner.py
+
 xvfb-run ./convertall.sh
 
 cd doc
