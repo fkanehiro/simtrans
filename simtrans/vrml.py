@@ -16,10 +16,8 @@ Examples
 
 Read vrml model data given the file path
 
->>> import subprocess
->>> hrpprefix = subprocess.check_output('pkg-config openhrp3.1 --variable=prefix').strip()
 >>> r = VRMLReader()
->>> m = r.read(hrpprefix + '/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
+>>> m = r.read(os.path.expandvars('$OPENHRP_MODEL_PATH/closed-link-sample.wrl'))
 
 Write simulation model in VRML format
 

@@ -21,11 +21,9 @@ Read SDF model data given the model file
  
 Write simulation model in SDF format
 
->>> import subprocess
->>> hrpprefix = subprocess.check_output('pkg-config openhrp3.1 --variable=prefix').strip()
 >>> from . import vrml
 >>> r = vrml.VRMLReader()
->>> m = r.read(hrpprefix + '/share/OpenHRP-3.1/sample/model/closed-link-sample.wrl')
+>>> m = r.read(os.path.expandvars('$OPENHRP_MODEL_PATH/closed-link-sample.wrl'))
 >>> w = SDFWriter()
 >>> w.write(m, '/tmp/closed-link-sample.sdf')
 >>> import subprocess
