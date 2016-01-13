@@ -13,9 +13,9 @@ def resolveFile(f):
     '''
     Resolve file by replacing file path heading "package://" or "model://"
 
-    >>> resolveFile('package://atlas_description/package.xml') == os.path.expandvars('$ROS_PACKAGE_PATH/atlas_description/package.xml')
+    >>> resolveFile('package://atlas_description/package.xml') == os.path.expandvars('/opt/ros/$ROS_DISTRO/share/atlas_description/package.xml')
     True
-    >>> resolveFile('package://atlas_description/urdf/atlas.urdf') == os.path.expandvars('$ROS_PACKAGE_PATH/atlas_description/atlas.urdf')
+    >>> resolveFile('package://atlas_description/urdf/atlas.urdf') == os.path.expandvars('/opt/ros/$ROS_DISTRO/share/atlas_description/urdf/atlas.urdf')
     True
     >>> resolveFile('model://pr2/model.sdf') == os.path.expanduser('~/.gazebo/models/pr2/model.sdf')
     True
