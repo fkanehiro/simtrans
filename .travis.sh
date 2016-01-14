@@ -39,7 +39,5 @@ xvfb-run python testrunner.py
 
 xvfb-run ./convertall.sh
 
-xvfb-run ./convertall-jvrc.sh
-
 cd doc
 source ./build.sh
