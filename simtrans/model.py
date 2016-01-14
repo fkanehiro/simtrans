@@ -234,8 +234,8 @@ class LinkModel(TransformationModel):
             valid = False
         # calc bounding box from all the shapes
         allbb = [
-            [numpy.Inf, numpy.Inf, numpy.Inf],
-            [-numpy.Inf, -numpy.Inf, -numpy.Inf]
+            [-numpy.Inf, -numpy.Inf, -numpy.Inf],
+            [numpy.Inf, numpy.Inf, numpy.Inf]
         ]
         for s in self.visuals + self.collisions:
             bb = s.getbbox()
