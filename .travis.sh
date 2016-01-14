@@ -33,6 +33,8 @@ set -x
 
 python -m simtrans.gzfetch -f tests/models.txt
 
+git clone --depth 1 https://github.com/jvrc/model.git jvrcmodels
+
 xvfb-run python testrunner.py
 
 xvfb-run ./convertall.sh

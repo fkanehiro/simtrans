@@ -39,7 +39,9 @@ class TransformationModel(object):
     True
     >>> numpy.allclose(m.getrpy(), [0, 0, 0])
     True
-    >>> numpy.allclose(m.getangle(), [0, 0, 0])
+    >>> numpy.allclose(m.getangle()[0], [0, 1, 0])
+    True
+    >>> numpy.allclose(m.getangle()[1], 0)
     True
     """
     matrix = None     #: Transformation matrix (4x4 numpy matrix)
@@ -71,7 +73,7 @@ class TransformationModel(object):
                 logging.error('NaN in the scale vector')
                 valid = False
             allnone = False
-        if scale.rot is not None:
+        if self.rot is not None:
             if True in numpy.isnan(self.rot):
                 logging.error('NaN in the rotation vector')
                 valid = False
@@ -166,10 +168,22 @@ class BodyModel(TransformationModel):
         self.materials = []
 
     def isvalid(self):
-        valid = self.isvalid()
+        valid = TransformationModel.isvalid(self)
+        linknames = {}
+        jointnames = {}
+        jointids = {}
         for l in self.links:
+            if l.name in linknames:
+                logging.warn('found overlapping link name: %s', l.name)
+            linknames[l.name] = True
             valid = valid and l.isvalid()
         for j in self.joints:
+            if j.name in jointnames:
+                logging.warn('found overlapping joint name: %s', j.name)
+            jointnames[j.name] = True
+            if j.jointId != -1 and j.jointId in jointids:
+                logging.warn('found overlapping joint ID: %i', j.jointId)
+            jointids[j.jointId] = True
             valid = valid and j.isvalid()
         return valid
 
@@ -191,12 +205,25 @@ class LinkModel(TransformationModel):
         self.inertia = numpy.identity(3)
 
     def isvalid(self):
-        valid = True
+        valid = TransformationModel.isvalid(self)
+        if self.name is not None:
+            logging.info('validating link %s', self.name)
+        else:
+            logging.error('link name not set')
+            valid = False
+        if self.mass == 0:
+            logging.warn('mass is zero')
+        elif self.mass < 0:
+            logging.error('mass is minus')
+            valid = False
         if True in numpy.isnan(self.centerofmass):
             logging.error('NaN in the center of mass vector')
             valid = False
         if True in numpy.isinf(self.centerofmass):
             logging.error('Inf in the center of mass vector')
+            valid = False
+        if self.inertia.shape != (3, 3):
+            logging.error('shape of the inertia matrix is not 3x3')
             valid = False
         if True in numpy.isnan(self.inertia):
             logging.error('NaN in the inertia matrix')
@@ -204,22 +231,37 @@ class LinkModel(TransformationModel):
         if True in numpy.isinf(self.inertia):
             logging.error('Inf in the inertia matrix')
             valid = False
-        maxbb = None
-        for v in self.visuals:
-            bb = v.getbbox()
-            if maxbb:
-                maxbb = numpy.maximum(maxbb, bb)
-            else:
-                maxbb = bb
-        for c in self.collisions:
-            bb = c.getbbox()
-            if maxbb:
-                maxbb = numpy.maximum(maxbb, bb)
-            else:
-                maxbb = bb
-        if False in self.centerofmass > maxbb[0] or False in self.centerofmass < maxbb[1]:
-            logging.error('center of mass not locate inside shape boundingbox')
-            valid = False
+        if numpy.allclose(self.inertia, self.inertia.transpose()) == False:
+            logging.error('the inertia matrix is not diagonal')
+            #valid = False
+        # calc bounding box from all the shapes
+        allbb = [
+            [-numpy.Inf, -numpy.Inf, -numpy.Inf],
+            [numpy.Inf, numpy.Inf, numpy.Inf]
+        ]
+        for s in self.visuals + self.collisions:
+            valid = valid and s.isvalid()
+            bb = s.getbbox()
+            allbb[0] = numpy.maximum(allbb[0], bb[0])
+            allbb[1] = numpy.minimum(allbb[1], bb[1])
+        if numpy.any(self.centerofmass > allbb[0]) or numpy.any(self.centerofmass < allbb[1]):
+            logging.error('the center of mass not locate inside bounding box of the shapes')
+            logging.debug('center of mass: %s', str(self.centerofmass))
+            logging.debug('bounding box: %s', str(allbb))
+            #valid = False
+        # calc inertia matrix from bounding box and compare with self.inertia
+        bblen = [0, 0, 0]
+        for i in range(0, 3):
+            bblen[i] = allbb[0][i] - allbb[1][i]
+        bbinertia = numpy.diag([
+            self.mass * (bblen[1] * bblen[1] + bblen[2] * bblen[2]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[2] * bblen[2]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[1] * bblen[1]) / 12
+        ])
+        if numpy.allclose(self.inertia, bbinertia) == False:
+            logging.warn('the inertia matrix is far from the values estimated from bounding box of the shapes')
+            logging.debug('inertia calculated from bounding box: %s', bbinertia)
+            logging.debug('inertia of the link: %s', self.inertia)
         return valid
 
     def translate(self, mat):
@@ -269,6 +311,7 @@ class JointModel(TransformationModel):
     J_CRAWLER = 'crawler'        #: Crawler type
 
     name = None             #: Joint name
+    jointId = -1            #: Numeric ID of the joint (used in VRML model)
     jointType = None        #: Joint type
     axis = None             #: Joint axis (relative to parent link)
     axis2 = None            #: Joint axis (used the joint type is revolute2)
@@ -280,11 +323,18 @@ class JointModel(TransformationModel):
         TransformationModel.__init__(self)
 
     def isvalid(self):
-        valid = True
+        valid = TransformationModel.isvalid(self)
+        if self.name is not None:
+            logging.info('validating joint %s' % self.name)
+        else:
+            logging.error('joint name not set')
+            valid = False
+        if self.jointId == -1:
+            logging.warn('jointId not set')
         if self.axis is not None:
-            valid = valid and self.axis.valid()
+            valid = valid and self.axis.isvalid()
         if self.axis2 is not None:
-            valid = valid and self.axis2.valid()
+            valid = valid and self.axis2.isvalid()
         return valid
 
 class AxisData(object):
@@ -294,13 +344,26 @@ class AxisData(object):
     axis = None             #: Joint axis (relative to parent link)
     damping = None          #: Damping factor
     friction = None         #: Friction factor
-    limit = [float("inf"),-float("inf")]        #: Joint limits (upper and lower limits in 2-dim array)
-    velocitylimit = [float("inf"),-float("inf")]    #: Velocity limits
-    #(upper and lower limits in 2-dim array)
+    limit = [float("inf"),-float("inf")]
+                            #: Joint limits (upper and lower limits in 2-dim array)
+    velocitylimit = [float("inf"),-float("inf")]
+                            #: Velocity limits (upper and lower limits in 2-dim array)
 
     def isvalid(self):
         valid = True
-        if True in numpy.isinf(self.velocitylimit):
+        if self.limit[0] < self.limit[1]:
+            logging.error('upper joint limit is smaller than the lower joint limit')
+            valid = False
+        if self.limit[0] == self.limit[1]:
+            logging.warn('upper and lower joint limit is same (there is no space to move the joint)')
+        if self.velocitylimit[0] < self.velocitylimit[1]:
+            logging.error('upper velocity limit is smaller than the lower velocity limit')
+            valid = False
+        if self.velocitylimit[0] < 0:
+            logging.error('upper velocity limit is smaller than zero')
+            valid = False
+        if self.velocitylimit[1] > 0:
+            logging.error('lower velocity limit is larger than zero')
             valid = False
         return valid
 
@@ -319,6 +382,15 @@ class ShapeModel(TransformationModel):
 
     def __init__(self):
         TransformationModel.__init__(self)
+
+    def isvalid(self):
+        valid = TransformationModel.isvalid(self)
+        return valid
+        
+    def getbbox(self):
+        # Need to debug: transformation of bbox required here since the shape
+        # has transformation info
+        return self.data.getbbox()
 
 
 class MeshTransformData(TransformationModel):
@@ -373,9 +445,9 @@ class MeshTransformData(TransformationModel):
         return center[0:3]
 
     def getbbox(self):
-        maxv = self.maxv()
-        minv = self.minv()
-        return [minv, maxv]
+        maxv = self.maxv()[0:3]
+        minv = self.minv()[0:3]
+        return [maxv, minv]
 
     def pretranslate(self, trans=None):
         '''
@@ -416,6 +488,15 @@ class MeshData(object):
         self.vertex = []
         self.vertex_index = []
 
+    def getbbox(self):
+        maxv = numpy.array([-numpy.Inf, -numpy.Inf, -numpy.Inf])
+        minv = numpy.array([numpy.Inf, numpy.Inf, numpy.Inf])
+        for v in self.vertex:
+            maxv = numpy.maximum(maxv, v)
+            minv = numpy.minimum(minv, v)
+        return [maxv, minv]
+
+
 class BoxData(object):
     """
     Box shape data
@@ -424,6 +505,12 @@ class BoxData(object):
     y = None             #: Height
     z = None             #: Depth
     material = None      #: Name of material
+
+    def getbbox(self):
+        return [
+            [self.x/2, self.y/2, self.z/2],
+            [-self.x/2, -self.y/2, -self.z/2]
+        ]
 
 
 class CylinderData(object):
@@ -434,6 +521,12 @@ class CylinderData(object):
     height = None        #: Height
     material = None      #: Name of material
 
+    def getbbox(self):
+        return [
+            [self.radius, self.height/2, self.radius],
+            [-self.radius, -self.height/2, -self.radius]
+        ]
+
 
 class SphereData(object):
     """
@@ -441,6 +534,12 @@ class SphereData(object):
     """
     radius = None        #: Radius
     material = None      #: Name of material
+
+    def getbbox(self):
+        return [
+            [self.radius, self.radius, self.radius],
+            [-self.radius, -self.radius, -self.radius]
+        ]
 
 
 class SensorModel(TransformationModel):

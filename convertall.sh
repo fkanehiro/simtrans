@@ -7,6 +7,7 @@ export ORBgiopMaxMsgSize=2097152000
 CMD="simtrans -v"
 
 OPENHRP_MODEL="`pkg-config openhrp3.1 --variable=prefix`/share/OpenHRP-3.1/sample/model"
+JVRC_MODEL="jvrcmodels"
 
 # fetch the drc_practice_* models from gazebo model database
 #python -m simtrans.gzfetch -f tests/models.txt
@@ -64,3 +65,13 @@ set -e
 
 $CMD -i $OPENHRP_MODEL/simple_vehicle_with_camera.wrl -o $HOME/.gazebo/models/simple_vehicle_with_camera.world
 $CMD -i $OPENHRP_MODEL/simple_vehicle_with_rangesensor.wrl -o $HOME/.gazebo/models/simple_vehicle_with_rangesensor.world
+
+# apply model validation to jvrc models (turn off error detection)
+set +e
+if [ -d "$JVRC_MODEL" ]; then
+    $CMD -i $JVRC_MODEL/JVRC-1/main.wrl -o /tmp/jvrc-1.world
+    for f in `ls $JVRC_MODEL/tasks/*/*.wrl`; do
+        $CMD -i $f -o /tmp/tmp.world
+    done
+fi
+set -e

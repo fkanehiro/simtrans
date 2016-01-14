@@ -22,6 +22,7 @@ Write simulation model in graphviz dot format
 >>> w = GraphvizWriter()
 >>> w.write(m, '/tmp/pr2.dot')
 
+>>> import os
 >>> from . import vrml
 >>> r = vrml.VRMLReader()
 >>> m = r.read(os.path.expandvars('$OPENHRP_MODEL_PATH/PA10/pa10.main.wrl'))

@@ -41,6 +41,7 @@ parser.add_argument('-c', '--use-collision', action='store_true', dest='usecolli
 parser.add_argument('-b', '--use-both', action='store_true', dest='useboth', default=False, help='use both visual and collision shape when converting to VRML (only supported on most recent version of Choreonoid)')
 parser.add_argument('-t', '--to', dest='toformat', metavar='FORMAT', help='convert to FORMAT (optional)')
 parser.add_argument('-p', '--prefix', dest='prefix', metavar='PREFIX', default='', help='prefix given to mesh path (e.g. package://packagename, optional)')
+parser.add_argument('-s', '--skip-validation', action='store_true', dest='skipvalidation', default=False, help='skip validation of model data')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 
 
@@ -193,6 +194,12 @@ def main():
         logging.error("cannot read links at all (probably the model refers to another model by <include> tag or <link> tag contains no <inertial> or <visual> or <collision> item and reduced by simulation optimization process of gz command used inside simtrans)")
         return 1
 
+    if options.skipvalidation == False:
+        logging.info('validating model data...')
+        if m.isvalid() == False:
+            logging.error('input model data is not valid')
+            return 1
+    
     if meshoutput:
         m = m.links[0].visuals[0]
 
