@@ -240,6 +240,7 @@ class LinkModel(TransformationModel):
             [numpy.Inf, numpy.Inf, numpy.Inf]
         ]
         for s in self.visuals + self.collisions:
+            valid = valid and s.isvalid()
             bb = s.getbbox()
             allbb[0] = numpy.maximum(allbb[0], bb[0])
             allbb[1] = numpy.minimum(allbb[1], bb[1])
@@ -382,7 +383,13 @@ class ShapeModel(TransformationModel):
     def __init__(self):
         TransformationModel.__init__(self)
 
+    def isvalid(self):
+        valid = TransformationModel.isvalid(self)
+        return valid
+        
     def getbbox(self):
+        # Need to debug: transformation of bbox required here since the shape
+        # has transformation info
         return self.data.getbbox()
 
 
