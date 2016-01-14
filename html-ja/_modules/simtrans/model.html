@@ -172,7 +172,9 @@
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getrpy(), [0, 0, 0])</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getangle(), [0, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getangle()[0], [0, 1, 0])</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; numpy.allclose(m.getangle()[1], 0)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matrix</span> <span class="o">=</span> <span class="bp">None</span>     <span class="c">#: Transformation matrix (4x4 numpy matrix)</span>
@@ -204,7 +206,7 @@
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the scale vector&#39;</span><span class="p">)</span>
                 <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="n">allnone</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="k">if</span> <span class="n">scale</span><span class="o">.</span><span class="n">rot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rot</span><span class="p">):</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the rotation vector&#39;</span><span class="p">)</span>
                 <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
@@ -299,10 +301,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="BodyModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BodyModel.isvalid">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">linknames</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">jointnames</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">jointids</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">linknames</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;found overlapping link name: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">linknames</span><span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">jointnames</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;found overlapping joint name: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">jointnames</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">jointId</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">jointId</span> <span class="ow">in</span> <span class="n">jointids</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;found overlapping joint ID: </span><span class="si">%i</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">j</span><span class="o">.</span><span class="n">jointId</span><span class="p">)</span>
+            <span class="n">jointids</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">jointId</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">j</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">valid</span></div></div>
 
@@ -324,12 +338,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LinkModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel.isvalid">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;validating link </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;link name not set&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;mass is zero&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;mass is minus&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the center of mass vector&#39;</span><span class="p">)</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Inf in the center of mass vector&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;shape of the inertia matrix is not 3x3&#39;</span><span class="p">)</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;NaN in the inertia matrix&#39;</span><span class="p">)</span>
@@ -337,22 +364,37 @@
         <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Inf in the inertia matrix&#39;</span><span class="p">)</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">maxbb</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visuals</span><span class="p">:</span>
-            <span class="n">bb</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">maxbb</span><span class="p">:</span>
-                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">maxbb</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">bb</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">collisions</span><span class="p">:</span>
-            <span class="n">bb</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">maxbb</span><span class="p">:</span>
-                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">maxbb</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">maxbb</span> <span class="o">=</span> <span class="n">bb</span>
-        <span class="k">if</span> <span class="bp">False</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&gt;</span> <span class="n">maxbb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">False</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&lt;</span> <span class="n">maxbb</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;center of mass not locate inside shape boundingbox&#39;</span><span class="p">)</span>
-            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;the inertia matrix is not diagonal&#39;</span><span class="p">)</span>
+            <span class="c">#valid = False</span>
+        <span class="c"># calc bounding box from all the shapes</span>
+        <span class="n">allbb</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visuals</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">collisions</span><span class="p">:</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
+            <span class="n">bb</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span>
+            <span class="n">allbb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">allbb</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">allbb</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">allbb</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bb</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&gt;</span> <span class="n">allbb</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span> <span class="o">&lt;</span> <span class="n">allbb</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;the center of mass not locate inside bounding box of the shapes&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;center of mass: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">centerofmass</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;bounding box: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">allbb</span><span class="p">))</span>
+            <span class="c">#valid = False</span>
+        <span class="c"># calc inertia matrix from bounding box and compare with self.inertia</span>
+        <span class="n">bblen</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">bblen</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">allbb</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">allbb</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">bbinertia</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="n">bblen</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="n">bblen</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">12</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">*</span> <span class="p">(</span><span class="n">bblen</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">bblen</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">12</span>
+        <span class="p">])</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">,</span> <span class="n">bbinertia</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;the inertia matrix is far from the values estimated from bounding box of the shapes&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;inertia calculated from bounding box: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">bbinertia</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;inertia of the link: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inertia</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">valid</span></div>
 
 <div class="viewcode-block" id="LinkModel.translate"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.LinkModel.translate">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mat</span><span class="p">):</span>
@@ -402,6 +444,7 @@
     <span class="n">J_CRAWLER</span> <span class="o">=</span> <span class="s">&#39;crawler&#39;</span>        <span class="c">#: Crawler type</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint name</span>
+    <span class="n">jointId</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>            <span class="c">#: Numeric ID of the joint (used in VRML model)</span>
     <span class="n">jointType</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Joint type</span>
     <span class="n">axis</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint axis (relative to parent link)</span>
     <span class="n">axis2</span> <span class="o">=</span> <span class="bp">None</span>            <span class="c">#: Joint axis (used the joint type is revolute2)</span>
@@ -413,11 +456,18 @@
         <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JointModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.JointModel.isvalid">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;validating joint </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;joint name not set&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">jointId</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;jointId not set&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">valid</span><span class="p">()</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span><span class="o">.</span><span class="n">valid</span><span class="p">()</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span><span class="o">.</span><span class="n">isvalid</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">valid</span></div></div>
 
 <div class="viewcode-block" id="AxisData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.AxisData">[ドキュメント]</a><span class="k">class</span> <span class="nc">AxisData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -427,13 +477,26 @@
     <span class="n">axis</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Joint axis (relative to parent link)</span>
     <span class="n">damping</span> <span class="o">=</span> <span class="bp">None</span>          <span class="c">#: Damping factor</span>
     <span class="n">friction</span> <span class="o">=</span> <span class="bp">None</span>         <span class="c">#: Friction factor</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>        <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
-    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>    <span class="c">#: Velocity limits</span>
-    <span class="c">#(upper and lower limits in 2-dim array)</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>
+                            <span class="c">#: Joint limits (upper and lower limits in 2-dim array)</span>
+    <span class="n">velocitylimit</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">),</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s">&quot;inf&quot;</span><span class="p">)]</span>
+                            <span class="c">#: Velocity limits (upper and lower limits in 2-dim array)</span>
 
 <div class="viewcode-block" id="AxisData.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.AxisData.isvalid">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;upper joint limit is smaller than the lower joint limit&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;upper and lower joint limit is same (there is no space to move the joint)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;upper velocity limit is smaller than the lower velocity limit&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;upper velocity limit is smaller than zero&#39;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocitylimit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;lower velocity limit is larger than zero&#39;</span><span class="p">)</span>
             <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">return</span> <span class="n">valid</span></div></div>
 
@@ -451,7 +514,16 @@
     <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>              <span class="c">#: Store properties for each specific type of shape</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">TransformationModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ShapeModel.isvalid"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ShapeModel.isvalid">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">TransformationModel</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">valid</span></div>
+        
+<div class="viewcode-block" id="ShapeModel.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.ShapeModel.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="c"># Need to debug: transformation of bbox required here since the shape</span>
+        <span class="c"># has transformation info</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">getbbox</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MeshTransformData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData">[ドキュメント]</a><span class="k">class</span> <span class="nc">MeshTransformData</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>
@@ -506,9 +578,9 @@
         <span class="k">return</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MeshTransformData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">maxv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxv</span><span class="p">()</span>
-        <span class="n">minv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minv</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">minv</span><span class="p">,</span> <span class="n">maxv</span><span class="p">]</span></div>
+        <span class="n">maxv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxv</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">minv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minv</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">maxv</span><span class="p">,</span> <span class="n">minv</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MeshTransformData.pretranslate"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshTransformData.pretranslate">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">pretranslate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -547,7 +619,16 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex_index</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="MeshData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.MeshData.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">maxv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
+        <span class="n">minv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex</span><span class="p">:</span>
+            <span class="n">maxv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">maxv</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="n">minv</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">minv</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">maxv</span><span class="p">,</span> <span class="n">minv</span><span class="p">]</span></div></div>
+
 
 <div class="viewcode-block" id="BoxData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BoxData">[ドキュメント]</a><span class="k">class</span> <span class="nc">BoxData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -556,7 +637,13 @@
     <span class="n">x</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Width</span>
     <span class="n">y</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Height</span>
     <span class="n">z</span> <span class="o">=</span> <span class="bp">None</span>             <span class="c">#: Depth</span>
-    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span></div>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+<div class="viewcode-block" id="BoxData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.BoxData.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="CylinderData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.CylinderData">[ドキュメント]</a><span class="k">class</span> <span class="nc">CylinderData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -565,7 +652,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">radius</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Radius</span>
     <span class="n">height</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Height</span>
-    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span></div>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+<div class="viewcode-block" id="CylinderData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.CylinderData.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">]</span>
+        <span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="SphereData"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.SphereData">[ドキュメント]</a><span class="k">class</span> <span class="nc">SphereData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -573,7 +666,13 @@
 <span class="sd">    Sphere shape data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">radius</span> <span class="o">=</span> <span class="bp">None</span>        <span class="c">#: Radius</span>
-    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span></div>
+    <span class="n">material</span> <span class="o">=</span> <span class="bp">None</span>      <span class="c">#: Name of material</span>
+
+<div class="viewcode-block" id="SphereData.getbbox"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.SphereData.getbbox">[ドキュメント]</a>    <span class="k">def</span> <span class="nf">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">],</span>
+            <span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">]</span>
+        <span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="SensorModel"><a class="viewcode-back" href="../../simtrans.html#simtrans.model.SensorModel">[ドキュメント]</a><span class="k">class</span> <span class="nc">SensorModel</span><span class="p">(</span><span class="n">TransformationModel</span><span class="p">):</span>

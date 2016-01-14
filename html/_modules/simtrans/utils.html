@@ -146,9 +146,9 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Resolve file by replacing file path heading &quot;package://&quot; or &quot;model://&quot;</span>
 
-<span class="sd">    &gt;&gt;&gt; resolveFile(&#39;package://atlas_description/package.xml&#39;) == os.path.expandvars(&#39;$ROS_PACKAGE_PATH/atlas_description/package.xml&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; resolveFile(&#39;package://atlas_description/package.xml&#39;) == os.path.expandvars(&#39;/opt/ros/$ROS_DISTRO/share/atlas_description/package.xml&#39;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; resolveFile(&#39;package://atlas_description/urdf/atlas.urdf&#39;) == os.path.expandvars(&#39;$ROS_PACKAGE_PATH/atlas_description/atlas.urdf&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; resolveFile(&#39;package://atlas_description/urdf/atlas.urdf&#39;) == os.path.expandvars(&#39;/opt/ros/$ROS_DISTRO/share/atlas_description/urdf/atlas.urdf&#39;)</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; resolveFile(&#39;model://pr2/model.sdf&#39;) == os.path.expanduser(&#39;~/.gazebo/models/pr2/model.sdf&#39;)</span>
 <span class="sd">    True</span>
