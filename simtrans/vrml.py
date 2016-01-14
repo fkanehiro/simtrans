@@ -433,9 +433,9 @@ class VRMLWriter(object):
         shapefilemap = {}
         for l in mdata.links:
             shapes = copy.copy(l.visuals)
-            if options.usecollision:
+            if options is not None and options.usecollision:
                 shapes = copy.copy(l.collisions)
-            if options.useboth:
+            if options is not None and options.useboth:
                 shapes.extend(copy.copy(l.collisions))
             for v in shapes:
                 logging.info('writing shape of link: %s, type: %s' % (l.name, v.shapeType))
