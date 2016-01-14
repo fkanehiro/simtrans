@@ -484,7 +484,7 @@ class MeshData(object):
         minv = numpy.array([numpy.Inf, numpy.Inf, numpy.Inf])
         for v in self.vertex:
             maxv = numpy.maximum(maxv, v)
-            minv = numpy.maximum(minv, v)
+            minv = numpy.minimum(minv, v)
         return [maxv, minv]
 
 
