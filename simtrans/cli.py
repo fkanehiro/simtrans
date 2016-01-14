@@ -195,7 +195,7 @@ def main():
         return 1
 
     if options.skipvalidation == False:
-        logging.info('validating mode data...')
+        logging.info('validating model data...')
         if m.isvalid() == False:
             logging.error('input model data is not valid')
             return 1
