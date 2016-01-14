@@ -293,7 +293,7 @@ class VRMLReader(object):
 #            raise Exception('vertex length and normal length not match')
         if adata.materialIndex >= 0:
             data.material = self._materials[adata.materialIndex]
-        if adata.textureIndex >= 0:
+        if data.material is not None and adata.textureIndex >= 0:
             fname = self._hrptextures[adata.textureIndex].url
             if self._assethandler:
                 data.material.texture = self._assethandler(fname)
@@ -309,6 +309,7 @@ class VRMLReader(object):
         jm.parent = parent.name
         jm.child = child.name
         jm.name = child.name
+        jm.jointId = child.jointId
         jm.axis = model.AxisData()
         try:
             jm.axis.limit = [child.ulimit[0], child.llimit[0]]

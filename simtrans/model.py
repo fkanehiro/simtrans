@@ -233,7 +233,7 @@ class LinkModel(TransformationModel):
             valid = False
         if numpy.allclose(self.inertia, self.inertia.transpose()) == False:
             logging.error('the inertia matrix is not diagonal')
-            valid = False
+            #valid = False
         # calc bounding box from all the shapes
         allbb = [
             [-numpy.Inf, -numpy.Inf, -numpy.Inf],
