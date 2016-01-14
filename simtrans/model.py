@@ -39,7 +39,9 @@ class TransformationModel(object):
     True
     >>> numpy.allclose(m.getrpy(), [0, 0, 0])
     True
-    >>> numpy.allclose(m.getangle(), [0, 0, 0])
+    >>> numpy.allclose(m.getangle()[0], [0, 1, 0])
+    True
+    >>> numpy.allclose(m.getangle()[1], 0)
     True
     """
     matrix = None     #: Transformation matrix (4x4 numpy matrix)
