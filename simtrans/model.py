@@ -71,7 +71,7 @@ class TransformationModel(object):
                 logging.error('NaN in the scale vector')
                 valid = False
             allnone = False
-        if scale.rot is not None:
+        if self.rot is not None:
             if True in numpy.isnan(self.rot):
                 logging.error('NaN in the rotation vector')
                 valid = False
@@ -166,10 +166,22 @@ class BodyModel(TransformationModel):
         self.materials = []
 
     def isvalid(self):
-        valid = self.isvalid()
+        valid = TransformationModel.isvalid(self)
+        linknames = {}
+        jointnames = {}
+        jointids = {}
         for l in self.links:
+            if l.name in linknames:
+                logging.warn('found overlapping link name: %s', l.name)
+            linknames[l.name] = True
             valid = valid and l.isvalid()
         for j in self.joints:
+            if j.name in jointnames:
+                logging.warn('found overlapping joint name: %s', j.name)
+            jointnames[j.name] = True
+            if j.jointId != -1 and j.jointId in jointids:
+                logging.warn('found overlapping joint ID: %i', j.jointId)
+            jointids[j.jointId] = True
             valid = valid and j.isvalid()
         return valid
 
@@ -191,12 +203,25 @@ class LinkModel(TransformationModel):
         self.inertia = numpy.identity(3)
 
     def isvalid(self):
-        valid = True
+        valid = TransformationModel.isvalid(self)
+        if self.name is not None:
+            logging.info('validating link %s', self.name)
+        else:
+            logging.error('link name not set')
+            valid = False
+        if self.mass == 0:
+            logging.warn('mass is zero')
+        elif self.mass < 0:
+            logging.error('mass is minus')
+            valid = False
         if True in numpy.isnan(self.centerofmass):
             logging.error('NaN in the center of mass vector')
             valid = False
         if True in numpy.isinf(self.centerofmass):
             logging.error('Inf in the center of mass vector')
+            valid = False
+        if self.inertia.shape != (3, 3):
+            logging.error('shape of the inertia matrix is not 3x3')
             valid = False
         if True in numpy.isnan(self.inertia):
             logging.error('NaN in the inertia matrix')
@@ -204,22 +229,34 @@ class LinkModel(TransformationModel):
         if True in numpy.isinf(self.inertia):
             logging.error('Inf in the inertia matrix')
             valid = False
-        maxbb = None
-        for v in self.visuals:
-            bb = v.getbbox()
-            if maxbb:
-                maxbb = numpy.maximum(maxbb, bb)
-            else:
-                maxbb = bb
-        for c in self.collisions:
-            bb = c.getbbox()
-            if maxbb:
-                maxbb = numpy.maximum(maxbb, bb)
-            else:
-                maxbb = bb
-        if False in self.centerofmass > maxbb[0] or False in self.centerofmass < maxbb[1]:
-            logging.error('center of mass not locate inside shape boundingbox')
+        if numpy.allclose(self.inertia, self.inertia.transpose()) == False:
+            logging.error('the inertia matrix is not diagonal')
             valid = False
+        # calc bounding box from all the shapes
+        allbb = None
+        for s in self.visuals + self.collisions:
+            bb = s.getbbox()
+            if allbb:
+                allbb[0] = numpy.maximum(allbb[0], bb[0])
+                allbb[1] = numpy.minimum(allbb[1], bb[1])
+            else:
+                allbb = bb
+        if False in self.centerofmass < allbb[0] or False in self.centerofmass > allbb[1]:
+            logging.error('the center of mass not locate inside bounding box of the shapes')
+            valid = False
+        # calc inertia matrix from bounding box and compare with self.inertia
+        bblen = [0, 0, 0]
+        for i in range(0, 3):
+            bblen[i] = allbb[0][i] - allbb[1][i]
+        bbinertia = numpy.diagonal([
+            self.mass * (bblen[1] * bblen[1] + bblen[2] * bblen[2]) / 12,
+            self.mass * (bblen[1] * bblen[1] + bblen[3] * bblen[3]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[1] * bblen[1]) / 12
+        ])
+        logging.debug('inertia calculated from bounding box: %s', bbinertia)
+        if numpy.allclose(self.inertia, bbinertia) == False:
+            logging.warn('the inertia matrix is far from the values estimated from bounding box of the shapes')
+            logging.debug('inertia of the link: %s', self.inertia)
         return valid
 
     def translate(self, mat):
@@ -269,6 +306,7 @@ class JointModel(TransformationModel):
     J_CRAWLER = 'crawler'        #: Crawler type
 
     name = None             #: Joint name
+    jointId = -1            #: Numeric ID of the joint (used in VRML model)
     jointType = None        #: Joint type
     axis = None             #: Joint axis (relative to parent link)
     axis2 = None            #: Joint axis (used the joint type is revolute2)
@@ -280,7 +318,14 @@ class JointModel(TransformationModel):
         TransformationModel.__init__(self)
 
     def isvalid(self):
-        valid = True
+        valid = TransformationModel.isvalid(self)
+        if self.name is not None:
+            logging.info('validating joint %s' % self.name)
+        else:
+            logging.error('joint name not set')
+            valid = False
+        if self.jointId == -1:
+            logging.warn('jointId not set')
         if self.axis is not None:
             valid = valid and self.axis.valid()
         if self.axis2 is not None:
@@ -294,13 +339,26 @@ class AxisData(object):
     axis = None             #: Joint axis (relative to parent link)
     damping = None          #: Damping factor
     friction = None         #: Friction factor
-    limit = [float("inf"),-float("inf")]        #: Joint limits (upper and lower limits in 2-dim array)
-    velocitylimit = [float("inf"),-float("inf")]    #: Velocity limits
-    #(upper and lower limits in 2-dim array)
+    limit = [float("inf"),-float("inf")]
+                            #: Joint limits (upper and lower limits in 2-dim array)
+    velocitylimit = [float("inf"),-float("inf")]
+                            #: Velocity limits (upper and lower limits in 2-dim array)
 
     def isvalid(self):
         valid = True
-        if True in numpy.isinf(self.velocitylimit):
+        if limit[0] < limit[1]:
+            logging.error('upper joint limit is smaller than the lower joint limit')
+            valid = False
+        if limit[0] == limit[1]:
+            logging.warn('upper and lower joint limit is same (there is no space to move the joint)')
+        if velocitylimit[0] < velocitylimit[1]:
+            logging.error('upper velocity limit is smaller than the lower velocity limit')
+            valid = False
+        if velocitylimit[0] < 0:
+            logging.error('upper velocity limit is smaller than zero')
+            valid = False
+        if velocitylimit[1] > 0:
+            logging.error('lower velocity limit is larger than zero')
             valid = False
         return valid
 
@@ -375,7 +433,7 @@ class MeshTransformData(TransformationModel):
     def getbbox(self):
         maxv = self.maxv()
         minv = self.minv()
-        return [minv, maxv]
+        return [maxv, minv]
 
     def pretranslate(self, trans=None):
         '''
