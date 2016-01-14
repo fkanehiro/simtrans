@@ -233,29 +233,31 @@ class LinkModel(TransformationModel):
             logging.error('the inertia matrix is not diagonal')
             valid = False
         # calc bounding box from all the shapes
-        allbb = None
+        allbb = [
+            [numpy.Inf, numpy.Inf, numpy.Inf],
+            [-numpy.Inf, -numpy.Inf, -numpy.Inf]
+        ]
         for s in self.visuals + self.collisions:
             bb = s.getbbox()
-            if allbb:
-                allbb[0] = numpy.maximum(allbb[0], bb[0])
-                allbb[1] = numpy.minimum(allbb[1], bb[1])
-            else:
-                allbb = bb
-        if False in self.centerofmass < allbb[0] or False in self.centerofmass > allbb[1]:
+            allbb[0] = numpy.maximum(allbb[0], bb[0])
+            allbb[1] = numpy.minimum(allbb[1], bb[1])
+        if numpy.any(self.centerofmass > allbb[0]) or numpy.any(self.centerofmass < allbb[1]):
             logging.error('the center of mass not locate inside bounding box of the shapes')
-            valid = False
+            logging.debug('center of mass: %s', str(self.centerofmass))
+            logging.debug('bounding box: %s', str(allbb))
+            #valid = False
         # calc inertia matrix from bounding box and compare with self.inertia
         bblen = [0, 0, 0]
         for i in range(0, 3):
             bblen[i] = allbb[0][i] - allbb[1][i]
-        bbinertia = numpy.diagonal([
+        bbinertia = numpy.diag([
             self.mass * (bblen[1] * bblen[1] + bblen[2] * bblen[2]) / 12,
-            self.mass * (bblen[1] * bblen[1] + bblen[3] * bblen[3]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[2] * bblen[2]) / 12,
             self.mass * (bblen[0] * bblen[0] + bblen[1] * bblen[1]) / 12
         ])
-        logging.debug('inertia calculated from bounding box: %s', bbinertia)
         if numpy.allclose(self.inertia, bbinertia) == False:
             logging.warn('the inertia matrix is far from the values estimated from bounding box of the shapes')
+            logging.debug('inertia calculated from bounding box: %s', bbinertia)
             logging.debug('inertia of the link: %s', self.inertia)
         return valid
 
@@ -327,9 +329,9 @@ class JointModel(TransformationModel):
         if self.jointId == -1:
             logging.warn('jointId not set')
         if self.axis is not None:
-            valid = valid and self.axis.valid()
+            valid = valid and self.axis.isvalid()
         if self.axis2 is not None:
-            valid = valid and self.axis2.valid()
+            valid = valid and self.axis2.isvalid()
         return valid
 
 class AxisData(object):
@@ -346,18 +348,18 @@ class AxisData(object):
 
     def isvalid(self):
         valid = True
-        if limit[0] < limit[1]:
+        if self.limit[0] < self.limit[1]:
             logging.error('upper joint limit is smaller than the lower joint limit')
             valid = False
-        if limit[0] == limit[1]:
+        if self.limit[0] == self.limit[1]:
             logging.warn('upper and lower joint limit is same (there is no space to move the joint)')
-        if velocitylimit[0] < velocitylimit[1]:
+        if self.velocitylimit[0] < self.velocitylimit[1]:
             logging.error('upper velocity limit is smaller than the lower velocity limit')
             valid = False
-        if velocitylimit[0] < 0:
+        if self.velocitylimit[0] < 0:
             logging.error('upper velocity limit is smaller than zero')
             valid = False
-        if velocitylimit[1] > 0:
+        if self.velocitylimit[1] > 0:
             logging.error('lower velocity limit is larger than zero')
             valid = False
         return valid
@@ -377,6 +379,9 @@ class ShapeModel(TransformationModel):
 
     def __init__(self):
         TransformationModel.__init__(self)
+
+    def getbbox(self):
+        return self.data.getbbox()
 
 
 class MeshTransformData(TransformationModel):
@@ -431,8 +436,8 @@ class MeshTransformData(TransformationModel):
         return center[0:3]
 
     def getbbox(self):
-        maxv = self.maxv()
-        minv = self.minv()
+        maxv = self.maxv()[0:3]
+        minv = self.minv()[0:3]
         return [maxv, minv]
 
     def pretranslate(self, trans=None):
@@ -474,6 +479,15 @@ class MeshData(object):
         self.vertex = []
         self.vertex_index = []
 
+    def getbbox(self):
+        maxv = numpy.array([-numpy.Inf, -numpy.Inf, -numpy.Inf])
+        minv = numpy.array([numpy.Inf, numpy.Inf, numpy.Inf])
+        for v in self.vertex:
+            maxv = numpy.maximum(maxv, v)
+            minv = numpy.maximum(minv, v)
+        return [maxv, minv]
+
+
 class BoxData(object):
     """
     Box shape data
@@ -482,6 +496,12 @@ class BoxData(object):
     y = None             #: Height
     z = None             #: Depth
     material = None      #: Name of material
+
+    def getbbox(self):
+        return [
+            [self.x/2, self.y/2, self.z/2],
+            [-self.x/2, -self.y/2, -self.z/2]
+        ]
 
 
 class CylinderData(object):
@@ -492,6 +512,12 @@ class CylinderData(object):
     height = None        #: Height
     material = None      #: Name of material
 
+    def getbbox(self):
+        return [
+            [self.radius, self.height/2, self.radius],
+            [-self.radius, -self.height/2, -self.radius]
+        ]
+
 
 class SphereData(object):
     """
@@ -499,6 +525,12 @@ class SphereData(object):
     """
     radius = None        #: Radius
     material = None      #: Name of material
+
+    def getbbox(self):
+        return [
+            [self.radius, self.radius, self.radius],
+            [-self.radius, -self.radius, -self.radius]
+        ]
 
 
 class SensorModel(TransformationModel):
