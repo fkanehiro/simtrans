@@ -242,8 +242,10 @@ class LinkModel(TransformationModel):
         for s in self.visuals + self.collisions:
             valid = valid and s.isvalid()
             bb = s.getbbox()
+            #logging.debug('bounding box: %s %s', str(type(s.data)), str(bb))
             allbb[0] = numpy.maximum(allbb[0], bb[0])
             allbb[1] = numpy.minimum(allbb[1], bb[1])
+        logging.debug('unified bounding box: %s', str(allbb))
         if numpy.any(self.centerofmass > allbb[0]) or numpy.any(self.centerofmass < allbb[1]):
             logging.error('the center of mass not locate inside bounding box of the shapes')
             logging.debug('center of mass: %s', str(self.centerofmass))
@@ -388,9 +390,26 @@ class ShapeModel(TransformationModel):
         return valid
         
     def getbbox(self):
-        # Need to debug: transformation of bbox required here since the shape
-        # has transformation info
-        return self.data.getbbox()
+        bb = self.data.getbbox()
+        # generate rectangle mesh from the bounding box
+        mesh = MeshData()
+        mesh.vertex = numpy.ndarray([8, 3])
+        i = 0
+        for x in [0, 1]:
+            for y in [0, 1]:
+                for z in [0, 1]:
+                    mesh.vertex[i][0] = bb[x][0]
+                    mesh.vertex[i][1] = bb[y][1]
+                    mesh.vertex[i][2] = bb[z][2]
+                    i = i + 1
+        # apply transformation to generated rectangle
+        trans = MeshTransformData()
+        trans.matrix = self.getmatrix()
+        trans.trans = None
+        trans.rot = None
+        trans.scale = None
+        trans.children = [mesh]
+        return trans.getbbox()
 
 
 class MeshTransformData(TransformationModel):
@@ -419,7 +438,7 @@ class MeshTransformData(TransformationModel):
             elif type(c) == MeshData:
                 for v in c.vertex:
                     mv = numpy.maximum(mv, numpy.dot(trans2, numpy.append(v, 1)))
-        return mv
+        return numpy.array(mv).reshape(4)
 
     def minv(self, trans=None):
         mv = numpy.array([numpy.Inf, numpy.Inf, numpy.Inf, numpy.Inf])
@@ -435,7 +454,7 @@ class MeshTransformData(TransformationModel):
             elif type(c) == MeshData:
                 for v in c.vertex:
                     mv = numpy.minimum(mv, numpy.dot(trans2, numpy.append(v, 1)))
-        return mv
+        return numpy.array(mv).reshape(4)
 
     def getcenter(self):
         maxv = self.maxv()
