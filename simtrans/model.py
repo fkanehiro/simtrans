@@ -242,7 +242,7 @@ class LinkModel(TransformationModel):
         for s in self.visuals + self.collisions:
             valid = valid and s.isvalid()
             bb = s.getbbox()
-            logging.debug('bounding box: %s %s', str(type(s.data)), str(bb))
+            #logging.debug('bounding box: %s %s', str(type(s.data)), str(bb))
             allbb[0] = numpy.maximum(allbb[0], bb[0])
             allbb[1] = numpy.minimum(allbb[1], bb[1])
         logging.debug('unified bounding box: %s', str(allbb))
