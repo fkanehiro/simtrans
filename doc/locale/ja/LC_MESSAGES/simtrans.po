@@ -2,7 +2,7 @@
 # Copyright (C) 2014, AIST
 # This file is distributed under the same license as the simtrans package.
 # Automatically generated, 2014.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
@@ -11,10 +11,10 @@ msgstr ""
 "PO-Revision-Date: 2014-11-19 12:04+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 # 113c3285e58d4bbaa00488492f22f9c2
@@ -156,6 +156,7 @@ msgid "Screw type"
 msgstr ""
 
 # 1b153440028f4cd9b6b4bf602ddedc62
+#: ../../../simtrans/model.pydocstring of simtrans.model.AxisData.axis:1
 #: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.axis:1
 msgid "Joint axis (relative to parent link)"
 msgstr ""
@@ -166,12 +167,12 @@ msgid "Name of child link"
 msgstr ""
 
 # b962e256dc574b74ae097ddfdbe318a9
-#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.damping:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.AxisData.damping:1
 msgid "Damping factor"
 msgstr ""
 
 # c384cac12a4e4ac8b06d54d96dc3b6d9
-#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.friction:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.AxisData.friction:1
 msgid "Friction factor"
 msgstr ""
 
@@ -182,7 +183,8 @@ msgid "Joint type"
 msgstr ""
 
 # 88cd79ea777243bc8f89ba0c2ca7150f
-#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.limit:1
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.AxisData.velocitylimit:1
 msgid "Joint limits (upper and lower limits in 2-dim array)"
 msgstr ""
 
@@ -666,14 +668,13 @@ msgstr ""
 
 # b1340b1b5080494bb0a563553c68311f
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf:15
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:1
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read2:1
 msgid "Read URDF model data given the model file"
 msgstr ""
 
 # 1b3a86f0508b44b0adcce42cc35d0fee
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf:20
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:1
-#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:20
 msgid "Write simulation model in URDF format"
 msgstr ""
 
@@ -718,15 +719,8 @@ msgstr ""
 msgid "Find child joints connected to specified link"
 msgstr ""
 
-# fcc544a6787e4de4ae08496da8b1e123
-#: ../../../simtrans/utils.pydocstring of simtrans.utils.findroot:1
-msgid ""
-"Find root link from parent to child relationships. Currently based on "
-"following simple principle: - Link with no parent will be the root."
-msgstr ""
-
 # ef5ee7dbb05f4f679532d75b2ad411f7
-#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:31
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml:20
 #: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLWriter.write:1
 msgid "Write simulation model in VRML format"
 msgstr ""
@@ -756,16 +750,38 @@ msgstr ""
 msgid "Thirdparty library"
 msgstr ""
 
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
-#: ../../<autodoc>:1 ../../<autodoc>:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BodyModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.LinkModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshTransformData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SensorModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ShapeModel:1
 msgid "Bases: :class:`simtrans.model.TransformationModel`"
 msgstr ""
 
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
-#: ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1 ../../<autodoc>:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.AxisData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.BoxData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CameraData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.CylinderData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MaterialModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.MeshData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.ProjectModel:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.RayData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.SphereData:1
+#: ../../../simtrans/model.pydocstring of simtrans.model.TransformationModel:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada.ColladaReader:1
+#: ../../../simtrans/collada.pydocstring of simtrans.collada.ColladaWriter:1
+#: ../../../simtrans/graphviz.pydocstring of
+#: simtrans.graphviz.GraphvizWriter:1 ../../../simtrans/sdf.pydocstring of
+#: simtrans.sdf.SDFReader:1 ../../../simtrans/sdf.pydocstring of
+#: simtrans.sdf.SDFWriter:1 ../../../simtrans/stl.pydocstring of
+#: simtrans.stl.STLReader:1 ../../../simtrans/stl.pydocstring of
+#: simtrans.stl.STLWriter:1 ../../../simtrans/urdf.pydocstring of
+#: simtrans.urdf.URDFReader:1 ../../../simtrans/urdf.pydocstring of
+#: simtrans.urdf.URDFWriter:1 ../../../simtrans/vrml.pydocstring of
+#: simtrans.vrml.VRMLMeshWriter:1 ../../../simtrans/vrml.pydocstring of
+#: simtrans.vrml.VRMLReader:1 ../../../simtrans/vrml.pydocstring of
+#: simtrans.vrml.VRMLWriter:1
 msgid "Bases: :class:`object`"
 msgstr ""
 
@@ -793,11 +809,6 @@ msgstr ""
 #: ../../../simtrans/model.pydocstring of
 #: simtrans.model.JointModel.offsetPosition:1
 msgid "Whether offset joint position or not"
-msgstr ""
-
-#: ../../../simtrans/model.pydocstring of
-#: simtrans.model.JointModel.velocitylimit:1
-msgid "Velocity limits (upper and lower limits in 2-dim array)"
 msgstr ""
 
 #: ../../../simtrans/model.pydocstring of simtrans.model.RayData:1
@@ -832,12 +843,6 @@ msgstr ""
 msgid "MID"
 msgstr ""
 
-#: ../../../simtrans/sdf.pydocstring of simtrans.sdf.SDFWriter.write2:1
-msgid ""
-"Write simulation model in SDF format (internally use urdf and convert to sdf"
-" using gz sdf utility)"
-msgstr ""
-
 #: ../../../simtrans/stl.pydocstring of simtrans.stl:9
 msgid "numpy-stl"
 msgstr ""
@@ -846,21 +851,17 @@ msgstr ""
 msgid "meshlab"
 msgstr ""
 
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:3
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read2:6
 msgid "path of the file to read"
 msgstr ""
 
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:4
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read2:7
 msgid "asset handler (optional)"
 msgstr ""
 
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:5
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read2:8
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:3
 msgid "model data"
-msgstr ""
-
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:6
-msgid "model.Model"
 msgstr ""
 
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:4
@@ -868,7 +869,6 @@ msgid "path of the file to save"
 msgstr ""
 
 #: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:5
-#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFWriter.write:6
 msgid "None"
 msgstr ""
 
@@ -881,6 +881,80 @@ msgstr ""
 msgid ""
 "Apply translation to vertex and normals to make translation matrix diagonal"
 msgstr ""
+
+#: ../../../simtrans/model.pydocstring of simtrans.model.AxisData:1
+msgid "Joint axis data"
+msgstr ""
+
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.J_CRAWLER:1
+msgid "Crawler type"
+msgstr ""
+
+#: ../../../simtrans/model.pydocstring of
+#: simtrans.model.JointModel.J_REVOLUTE2:1
+msgid "Revolute (2-axis) type"
+msgstr ""
+
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.axis2:1
+msgid "Joint axis (used the joint type is revolute2)"
+msgstr ""
+
+#: ../../../simtrans/model.pydocstring of simtrans.model.JointModel.jointId:1
+msgid "Numeric ID of the joint (used in VRML model)"
+msgstr ""
+
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read:1
+msgid ""
+"Read simulation model in urdf format (internally convert to sdf using gz sdf"
+" utility)"
+msgstr ""
+
+#: ../../../simtrans/urdf.pydocstring of simtrans.urdf.URDFReader.read2:3
+msgid ""
+"** [Deprecated] This function is currently broken but kept for historical "
+"reason ** ** (might be fixed if \"gz sdf\" command not work in some "
+"situation) **"
+msgstr ""
+
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLMeshWriter:1
+msgid "VRML mesh writer class"
+msgstr ""
+
+#: ../../../simtrans/vrml.pydocstring of simtrans.vrml.VRMLMeshWriter.write:1
+msgid "Write mesh in VRML format"
+msgstr ""
+
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.findparent:1
+msgid "Find parent joints connected to specified link"
+msgstr ""
+
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.findroot:1
+msgid ""
+"Find root link from parent to child relationships. Currently based on "
+"following simple principle: - Link with no parent will be the root. - Link "
+"should have at least one open connection with the other link"
+msgstr ""
+
+#: ../../../simtrans/utils.pydocstring of simtrans.utils.hasopenlink:1
+msgid "Check if the link has open connection with neighboring links"
+msgstr ""
+
+#~ msgid ""
+#~ "Find root link from parent to child relationships. Currently based on "
+#~ "following simple principle: - Link with no parent will be the root."
+#~ msgstr ""
+
+#~ msgid "Velocity limits (upper and lower limits in 2-dim array)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Write simulation model in SDF format (internally use urdf and convert to sdf"
+#~ " using gz sdf utility)"
+#~ msgstr ""
+
+#~ msgid "model.Model"
+#~ msgstr ""
 
 #~ msgid "ベースクラス: :class:`simtrans.model.TransformationModel`"
 #~ msgstr ""

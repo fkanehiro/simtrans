@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: simtrans 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 17:30+0900\n"
-"PO-Revision-Date: 2015-08-17 23:52+0900\n"
+"PO-Revision-Date: 2016-01-22 14:44+0900\n"
 "Last-Translator: Yosuke Matsusaka <yosuke.matsusaka@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -69,40 +69,40 @@ msgid "verbose output"
 msgstr "デバッグ情報の出力"
 
 # c39f058da0444fefaff47e0284826cc1
-#: ../../usage.rst:14
+#: ../../usage.rst:18
 msgid "For example, PR2 robot model can be converted as follows."
 msgstr "例えば、PR2ロボットモデルは以下のコマンドで変換できます。"
 
 # aff971dadfd04c09b2427109f5c7bc5f
-#: ../../usage.rst:21
+#: ../../usage.rst:25
 msgid "To open the project using hrpsys-simulator."
 msgstr "hrpsys-simulatorを使ってプロジェクトを開く。"
 
 # 81009c066848421bab29e0e59865656d
-#: ../../usage.rst:32
+#: ../../usage.rst:36
 msgid "For example, PA10 robot model can be converted as follows."
 msgstr "例えば、PA10ロボットモデルは以下のコマンドで変換できます。"
 
 # 63738e4c9c6a4d75bd85de968b389653
-#: ../../usage.rst:38
+#: ../../usage.rst:42
 msgid "To open the project using gazebo."
 msgstr "gazeboを使ってプロジェクトを開く。"
 
 # 82215cfb9eeb4dcb82df041482defaf8
-#: ../../usage.rst:46
+#: ../../usage.rst:61
 msgid "Visualize joint structure using graphviz"
 msgstr "graphvizを使った関節構造の視覚化"
 
 # 4e7784a617bb40758eda2398ad470870
-#: ../../usage.rst:48
+#: ../../usage.rst:63
 msgid "For example, PR2 robot model can be visualized as follows."
 msgstr "例えば、PR2ロボットは以下のようにして視覚化できます。"
 
-#: ../../usage.rst:12
+#: ../../usage.rst:16
 msgid "Convert URDF model to VRML format"
 msgstr "URDFフォーマットからVRMLフォーマットへの変換"
 
-#: ../../usage.rst:30
+#: ../../usage.rst:34
 msgid "Convert VRML model to SDF format"
 msgstr "VRMLフォーマットからSDFフォーマットへの変換"
 
@@ -117,6 +117,36 @@ msgid ""
 msgstr ""
 "VRMLへの変換時にcollision形状とvisual形状の両方を使う（この機能は最新の"
 "Choreonoidでのみ利用可能です）"
+
+#: ../../<autoprogram>:1
+msgid "prefix given to mesh path (e.g. package://packagename, optional)"
+msgstr ""
+"メッシュの格納に用いるファイルプリフィックス（例 package://packagename、任"
+"意）"
+
+#: ../../<autoprogram>:1
+msgid "skip validation of model data"
+msgstr "モデルの検証をスキップする"
+
+#: ../../<autoprogram>:1
+msgid "simtrans-checker"
+msgstr ""
+
+#: ../../<autoprogram>:1
+msgid "Check robot simulation model."
+msgstr "ロボットのシミュレーションモデルの整合性をチェックする"
+
+#: ../../<autoprogram>:1
+msgid "model files to validate"
+msgstr "検証したいモデルファイル"
+
+#: ../../usage.rst:50
+msgid "Validate all the models in the folder"
+msgstr "フォルダ内のモデルの整合性を検証する"
+
+#: ../../usage.rst:52
+msgid "For example, we can check JVRC task models as follows."
+msgstr "例えばJVRCタスクモデルの検証は以下のように実行できます。"
 
 #~ msgid "Convert URDF model to VRML(OpenHRP) format"
 #~ msgstr "URDF形式のモデルのVRML（OpenHRP）形式への変換"
