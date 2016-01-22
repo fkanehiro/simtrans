@@ -87,10 +87,12 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#commandline-options">Commandline options</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#simtrans">simtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simtrans-checker">simtrans-checker</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-urdf-model-to-vrml-format">Convert URDF model to VRML format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-vrml-model-to-sdf-format">Convert VRML model to SDF format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-all-the-models-in-the-folder">Validate all the models in the folder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualize-joint-structure-using-graphviz">Visualize joint structure using graphviz</a></li>
 </ul>
 </li>
@@ -210,37 +212,68 @@
 </dd></dl>
 
 </div>
+<div class="section" id="simtrans-checker">
+<h3>simtrans-checker<a class="headerlink" href="#simtrans-checker" title="Permalink to this headline">¶</a></h3>
+<p>Check robot simulation model.</p>
+<p>usage: simtrans-checker [-h] [-v] F [F ...]</p>
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-arg-f">
+<code class="descname">f</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-arg-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>model files to validate</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-h">
+<span id="cmdoption-simtrans-checker--help"></span><code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>show this help message and exit</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-v">
+<span id="cmdoption-simtrans-checker--verbose"></span><code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--verbose</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-v" title="Permalink to this definition">¶</a></dt>
+<dd><p>verbose output</p>
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="convert-urdf-model-to-vrml-format">
 <h2>Convert URDF model to VRML format<a class="headerlink" href="#convert-urdf-model-to-vrml-format" title="Permalink to this headline">¶</a></h2>
 <p>For example, PR2 robot model can be converted as follows.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
-<span class="nv">$ </span>simtrans -i /tmp/pr2.urdf -o /tmp/pr2.wrl
+<div class="highlight-bash"><div class="highlight"><pre>$ rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
+$ simtrans -i /tmp/pr2.urdf -o /tmp/pr2.wrl
 </pre></div>
 </div>
 <p>To open the project using hrpsys-simulator.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>gnome-terminal -x openhrp-model-loader
-<span class="nv">$ </span>hrpsys-simulator /tmp/pr2-project.xml
+<div class="highlight-bash"><div class="highlight"><pre>$ gnome-terminal -x openhrp-model-loader
+$ hrpsys-simulator /tmp/pr2-project.xml
 </pre></div>
 </div>
 </div>
 <div class="section" id="convert-vrml-model-to-sdf-format">
 <h2>Convert VRML model to SDF format<a class="headerlink" href="#convert-vrml-model-to-sdf-format" title="Permalink to this headline">¶</a></h2>
 <p>For example, PA10 robot model can be converted as follows.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>simtrans -i /usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl -o ~/.gazebo/models/pa10.world
+<div class="highlight-bash"><div class="highlight"><pre>$ simtrans -i /usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl -o ~/.gazebo/models/pa10.world
 </pre></div>
 </div>
 <p>To open the project using gazebo.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>gazebo ~/.gazebo/models/pa10.world
+<div class="highlight-bash"><div class="highlight"><pre>$ gazebo ~/.gazebo/models/pa10.world
+</pre></div>
+</div>
+</div>
+<div class="section" id="validate-all-the-models-in-the-folder">
+<h2>Validate all the models in the folder<a class="headerlink" href="#validate-all-the-models-in-the-folder" title="Permalink to this headline">¶</a></h2>
+<p>For example, we can check JVRC task models as follows.</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ git clone https://github.com/jvrc/model.git jvrcmodels
+$ simtrans-checker jvrcmodels/tasks/*/*.wrl
 </pre></div>
 </div>
 </div>
 <div class="section" id="visualize-joint-structure-using-graphviz">
 <h2>Visualize joint structure using graphviz<a class="headerlink" href="#visualize-joint-structure-using-graphviz" title="Permalink to this headline">¶</a></h2>
 <p>For example, PR2 robot model can be visualized as follows.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
-<span class="nv">$ </span>simtrans -i /tmp/pr2.urdf -o /tmp/pr2.dot
-<span class="nv">$ </span>dot -Tx11 /tmp/pr2.dot
+<div class="highlight-bash"><div class="highlight"><pre>$ rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
+$ simtrans -i /tmp/pr2.urdf -o /tmp/pr2.dot
+$ dot -Tx11 /tmp/pr2.dot
 </pre></div>
 </div>
 </div>

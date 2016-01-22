@@ -131,7 +131,7 @@
            <div itemprop="articleBody">
             
   <h1>simtrans.gzfetch のソースコード</h1><div class="highlight"><pre>
-<span class="c"># -*- coding:utf-8 -*-</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;Utility command to fetch simulation model from gazebo&#39;s model database</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -145,33 +145,33 @@
 
 
 <div class="viewcode-block" id="renderworld"><a class="viewcode-back" href="../../simtrans.html#simtrans.gzfetch.renderworld">[ドキュメント]</a><span class="k">def</span> <span class="nf">renderworld</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
-    <span class="n">fd</span><span class="p">,</span> <span class="n">worldfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.world&#39;</span><span class="p">)</span>
+    <span class="n">fd</span><span class="p">,</span> <span class="n">worldfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.world&#39;</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">worldfile</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-        <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jinja2</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
-<span class="s">&lt;sdf version=&quot;1.5&quot;&gt;</span>
-<span class="s">  &lt;world name=&quot;default&quot;&gt;</span>
-<span class="s">{</span><span class="si">%- f</span><span class="s">or m in models %}</span>
-<span class="s">    &lt;include&gt;</span>
-<span class="s">      &lt;uri&gt;model://{{m}}&lt;/uri&gt;</span>
-<span class="s">    &lt;/include&gt;</span>
-<span class="s">{</span><span class="si">%- e</span><span class="s">ndfor %}</span>
-<span class="s">  &lt;/world&gt;</span>
-<span class="s">&lt;/sdf&gt;</span>
-<span class="s">&#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">({</span><span class="s">&#39;models&#39;</span><span class="p">:</span> <span class="n">models</span><span class="p">}))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">worldfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+        <span class="n">ofile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jinja2</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; ?&gt;</span>
+<span class="s1">&lt;sdf version=&quot;1.5&quot;&gt;</span>
+<span class="s1">  &lt;world name=&quot;default&quot;&gt;</span>
+<span class="s1">{</span><span class="si">%- f</span><span class="s1">or m in models %}</span>
+<span class="s1">    &lt;include&gt;</span>
+<span class="s1">      &lt;uri&gt;model://{{m}}&lt;/uri&gt;</span>
+<span class="s1">    &lt;/include&gt;</span>
+<span class="s1">{</span><span class="si">%- e</span><span class="s1">ndfor %}</span>
+<span class="s1">  &lt;/world&gt;</span>
+<span class="s1">&lt;/sdf&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">({</span><span class="s1">&#39;models&#39;</span><span class="p">:</span> <span class="n">models</span><span class="p">}))</span>
     <span class="k">return</span> <span class="n">worldfile</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../simtrans.html#simtrans.gzfetch.main">[ドキュメント]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">usage</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;Usage: %prog [options] model://name</span>
-<span class="s">Utility command to fetch simulation model from gazebo&#39;s model database.&#39;&#39;&#39;</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Usage: %prog [options] model://name</span>
+<span class="s1">Utility command to fetch simulation model from gazebo&#39;s model database.&#39;&#39;&#39;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">(</span><span class="n">usage</span><span class="o">=</span><span class="n">usage</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="s">&#39;--fromfile&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;fromfile&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;read list from FILE (optional)&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;-v&#39;</span><span class="p">,</span> <span class="s">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;verbose output&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--fromfile&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;fromfile&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;read list from FILE (optional)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;verbose output&#39;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">OptionError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#39;OptionError: &#39;</span><span class="p">,</span> <span class="n">e</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s1">&#39;OptionError: &#39;</span><span class="p">,</span> <span class="n">e</span>
         <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">1</span>
 
@@ -179,30 +179,30 @@
         <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">()</span>
         <span class="k">return</span> <span class="mi">1</span>
 
-    <span class="c"># prepare world file which contains required model information</span>
+    <span class="c1"># prepare world file which contains required model information</span>
     <span class="n">worldfile</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">:</span>
         <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">fromfile</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
         <span class="n">worldfile</span> <span class="o">=</span> <span class="n">renderworld</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
         <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">True</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;.world&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;.world&#39;</span><span class="p">):</span>
         <span class="n">worldfile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">worldfile</span> <span class="o">=</span> <span class="n">renderworld</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">needcleanup</span> <span class="o">=</span> <span class="bp">True</span>
 
-    <span class="c"># now fetch the simulation model (run gzserver for only one iteration)</span>
-    <span class="k">print</span> <span class="s">&quot;running gzserver to fetch the models ... (this will take a while)&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;gzserver&#39;</span><span class="p">,</span> <span class="s">&#39;--iters&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="n">worldfile</span><span class="p">])</span>
-    <span class="k">print</span> <span class="s">&quot;done!&quot;</span>
+    <span class="c1"># now fetch the simulation model (run gzserver for only one iteration)</span>
+    <span class="k">print</span> <span class="s2">&quot;running gzserver to fetch the models ... (this will take a while)&quot;</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;gzserver&#39;</span><span class="p">,</span> <span class="s1">&#39;--iters&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">worldfile</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s2">&quot;done!&quot;</span>
 
     <span class="k">if</span> <span class="n">needcleanup</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">worldfile</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="mi">0</span></div>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 

@@ -87,10 +87,12 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="">利用方法</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#commandline-options">コマンドラインオプション</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#simtrans">simtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simtrans-checker">simtrans-checker</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-urdf-model-to-vrml-format">URDFフォーマットからVRMLフォーマットへの変換</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#convert-vrml-model-to-sdf-format">VRMLフォーマットからSDFフォーマットへの変換</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-all-the-models-in-the-folder">フォルダ内のモデルの整合性を検証する</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualize-joint-structure-using-graphviz">graphvizを使った関節構造の視覚化</a></li>
 </ul>
 </li>
@@ -194,13 +196,13 @@
 <dl class="option">
 <dt id="cmdoption-simtrans-p">
 <span id="cmdoption-simtrans--prefix"></span><code class="descname">-p</code><code class="descclassname"> &lt;prefix&gt;</code><code class="descclassname">, </code><code class="descname">--prefix</code><code class="descclassname"> &lt;prefix&gt;</code><a class="headerlink" href="#cmdoption-simtrans-p" title="この定義へのパーマリンク">¶</a></dt>
-<dd><p>prefix given to mesh path (e.g. package://packagename, optional)</p>
+<dd><p>メッシュの格納に用いるファイルプリフィックス（例 package://packagename、任意）</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-simtrans-s">
 <span id="cmdoption-simtrans--skip-validation"></span><code class="descname">-s</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--skip-validation</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-s" title="この定義へのパーマリンク">¶</a></dt>
-<dd><p>skip validation of model data</p>
+<dd><p>モデルの検証をスキップする</p>
 </dd></dl>
 
 <dl class="option">
@@ -210,37 +212,68 @@
 </dd></dl>
 
 </div>
+<div class="section" id="simtrans-checker">
+<h3>simtrans-checker<a class="headerlink" href="#simtrans-checker" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p>ロボットのシミュレーションモデルの整合性をチェックする</p>
+<p>usage: simtrans-checker [-h] [-v] F [F ...]</p>
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-arg-f">
+<code class="descname">f</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-arg-f" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>検証したいモデルファイル</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-h">
+<span id="cmdoption-simtrans-checker--help"></span><code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-h" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>このヘルプを表示する。</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-simtrans-checker-v">
+<span id="cmdoption-simtrans-checker--verbose"></span><code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--verbose</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-checker-v" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>デバッグ情報の出力</p>
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="convert-urdf-model-to-vrml-format">
 <h2>URDFフォーマットからVRMLフォーマットへの変換<a class="headerlink" href="#convert-urdf-model-to-vrml-format" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>例えば、PR2ロボットモデルは以下のコマンドで変換できます。</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
-<span class="nv">$ </span>simtrans -i /tmp/pr2.urdf -o /tmp/pr2.wrl
+<div class="highlight-bash"><div class="highlight"><pre>$ rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
+$ simtrans -i /tmp/pr2.urdf -o /tmp/pr2.wrl
 </pre></div>
 </div>
 <p>hrpsys-simulatorを使ってプロジェクトを開く。</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>gnome-terminal -x openhrp-model-loader
-<span class="nv">$ </span>hrpsys-simulator /tmp/pr2-project.xml
+<div class="highlight-bash"><div class="highlight"><pre>$ gnome-terminal -x openhrp-model-loader
+$ hrpsys-simulator /tmp/pr2-project.xml
 </pre></div>
 </div>
 </div>
 <div class="section" id="convert-vrml-model-to-sdf-format">
 <h2>VRMLフォーマットからSDFフォーマットへの変換<a class="headerlink" href="#convert-vrml-model-to-sdf-format" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>例えば、PA10ロボットモデルは以下のコマンドで変換できます。</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>simtrans -i /usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl -o ~/.gazebo/models/pa10.world
+<div class="highlight-bash"><div class="highlight"><pre>$ simtrans -i /usr/local/share/OpenHRP-3.1/sample/model/PA10/pa10.main.wrl -o ~/.gazebo/models/pa10.world
 </pre></div>
 </div>
 <p>gazeboを使ってプロジェクトを開く。</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>gazebo ~/.gazebo/models/pa10.world
+<div class="highlight-bash"><div class="highlight"><pre>$ gazebo ~/.gazebo/models/pa10.world
+</pre></div>
+</div>
+</div>
+<div class="section" id="validate-all-the-models-in-the-folder">
+<h2>フォルダ内のモデルの整合性を検証する<a class="headerlink" href="#validate-all-the-models-in-the-folder" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>例えばJVRCタスクモデルの検証は以下のように実行できます。</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ git clone https://github.com/jvrc/model.git jvrcmodels
+$ simtrans-checker jvrcmodels/tasks/*/*.wrl
 </pre></div>
 </div>
 </div>
 <div class="section" id="visualize-joint-structure-using-graphviz">
 <h2>graphvizを使った関節構造の視覚化<a class="headerlink" href="#visualize-joint-structure-using-graphviz" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>例えば、PR2ロボットは以下のようにして視覚化できます。</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
-<span class="nv">$ </span>simtrans -i /tmp/pr2.urdf -o /tmp/pr2.dot
-<span class="nv">$ </span>dot -Tx11 /tmp/pr2.dot
+<div class="highlight-bash"><div class="highlight"><pre>$ rosrun xacro xacro.py <span class="sb">`</span>rospack find pr2_description<span class="sb">`</span>/robots/pr2.urdf.xacro &gt; /tmp/pr2.urdf
+$ simtrans -i /tmp/pr2.urdf -o /tmp/pr2.dot
+$ dot -Tx11 /tmp/pr2.dot
 </pre></div>
 </div>
 </div>

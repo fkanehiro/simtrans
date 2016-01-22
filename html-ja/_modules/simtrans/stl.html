@@ -131,7 +131,7 @@
            <div itemprop="articleBody">
             
   <h1>simtrans.stl のソースコード</h1><div class="highlight"><pre>
-<span class="c"># -*- coding:utf-8 -*-</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
 
 <span class="sd">&quot;&quot;&quot;Reader and writer for stl format</span>
 
@@ -165,7 +165,7 @@
 <span class="sd">        Read mesh model in STL format</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">MeshData</span><span class="p">()</span>
-        <span class="c">#stl.MAX_COUNT = 1e10</span>
+        <span class="c1">#stl.MAX_COUNT = 1e10</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">stl</span><span class="o">.</span><span class="n">StlMesh</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="n">npoints</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">npoints</span><span class="p">))</span>
@@ -183,18 +183,18 @@
 <span class="sd">        Write mesh model in STL format</span>
 <span class="sd">        This method first generates collada and use meshlab to output stl</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">fd</span><span class="p">,</span> <span class="n">daefile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&#39;.dae&#39;</span><span class="p">)</span>
+        <span class="n">fd</span><span class="p">,</span> <span class="n">daefile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.dae&#39;</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
         <span class="n">cwriter</span> <span class="o">=</span> <span class="n">collada</span><span class="o">.</span><span class="n">ColladaWriter</span><span class="p">()</span>
         <span class="n">cwriter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">daefile</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">&#39;meshlabserver&#39;</span><span class="p">,</span> <span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="n">daefile</span><span class="p">,</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;meshlabserver&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">daefile</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;meshlabserver returned error: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;meshlabserver returned error: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
             <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;command meshlabserver not found. please install by:&quot;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;$ sudo apt-get install meshlab&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;command meshlabserver not found. please install by:&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;$ sudo apt-get install meshlab&quot;</span><span class="p">)</span>
             <span class="k">raise</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">daefile</span><span class="p">)</span></div></div>
 </pre></div>
