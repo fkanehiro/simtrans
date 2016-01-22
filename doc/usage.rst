@@ -8,8 +8,12 @@ Commandline options
 .. autoprogram:: simtrans.cli:parser
    :prog: simtrans
 
+.. autoprogram:: simtrans.cli:checkerparser
+   :prog: simtrans-checker
+
+
 Convert URDF model to VRML format
-==========================================
+=================================
 
 For example, PR2 robot model can be converted as follows.
 
@@ -27,7 +31,7 @@ To open the project using hrpsys-simulator.
 
 
 Convert VRML model to SDF format
-=========================================
+================================
 
 For example, PA10 robot model can be converted as follows.
 
@@ -40,6 +44,17 @@ To open the project using gazebo.
 .. code-block:: bash
 
    $ gazebo ~/.gazebo/models/pa10.world
+
+
+Validate all the models in the folder
+=====================================
+
+For example, we can check JVRC task models as follows.
+
+.. code-block:: bash
+
+   $ git clone https://github.com/jvrc/model.git jvrcmodels
+   $ simtrans-checker jvrcmodels/tasks/*/*.wrl
 
 
 Visualize joint structure using graphviz

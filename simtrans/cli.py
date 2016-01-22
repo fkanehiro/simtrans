@@ -31,8 +31,6 @@ from . import stl
 from . import graphviz
 from . import utils
 
-logging.info("simtrans (version %s)" % __version__)
-
 parser = ArgumentParser(description='Convert robot simulation model from one another.')
 parser.add_argument('-i', '--input', dest='fromfile', metavar='FILE', help='convert from FILE')
 parser.add_argument('-o', '--output', dest='tofile', metavar='FILE', help='convert to FILE')
@@ -44,8 +42,16 @@ parser.add_argument('-p', '--prefix', dest='prefix', metavar='PREFIX', default='
 parser.add_argument('-s', '--skip-validation', action='store_true', dest='skipvalidation', default=False, help='skip validation of model data')
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 
+checkerparser = ArgumentParser(description='Check robot simulation model.')
+checkerparser.add_argument('fromfiles', metavar='F', type=str, nargs='+', help='model files to validate')
+checkerparser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
+
 
 basedir = ''
+
+
+def nullhandler(f):
+    return f
 
 
 def jpegconverthandler(f):
@@ -68,6 +74,55 @@ def copyhandler(f):
     return os.path.relpath(fname, basedir)
 
 
+def read(fromfile, handler, options):
+    reader = None
+    meshinput = False
+    if hasattr(options, 'fromformat'):
+        if options.fromformat == "vrml":
+            reader = vrml.VRMLReader()
+        if options.fromformat == "urdf":
+            reader = urdf.URDFReader()
+        if options.fromformat == "sdf":
+            reader = sdf.SDFReader()
+        if options.fromformat == "collada":
+            reader = collada.ColladaReader()
+            meshinput = True
+        if options.fromformat == "stl":
+            reader = stl.STLReader()
+            meshinput = True
+    if reader is None:
+        ext = os.path.splitext(fromfile)[1]
+        if ext == '.wrl':
+            reader = vrml.VRMLReader()
+        elif ext == '.urdf':
+            reader = urdf.URDFReader()
+        elif ext == '.sdf':
+            reader = sdf.SDFReader()
+        elif ext == '.dae':
+            reader = collada.ColladaReader()
+            meshinput = True
+        elif ext == '.stl':
+            reader = stl.STLReader()
+            meshinput = True
+        else:
+            logging.error('unable to detect input format (may be not supported?)')
+            sys.exit(1)
+    
+    m = reader.read(fromfile, assethandler=handler, options=options)
+
+    if meshinput:
+        nm = model.BodyModel()
+        nl = model.LinkModel()
+        ns = model.ShapeModel()
+        ns.shapeType = model.ShapeModel.SP_MESH
+        ns.data = m
+        nl.visuals.append(ns)
+        nm.links.append(nl)
+        m = nm
+        
+    return m
+
+
 def main():
     global basedir
     try:
@@ -87,45 +142,27 @@ def main():
         print >> sys.stderr, parser.print_help()
         return 1
 
+    logging.info("simtrans (version %s)" % __version__)
+    
     options.tofile = os.path.abspath(utils.resolveFile(options.tofile))
     options.fromfile = os.path.abspath(utils.resolveFile(options.fromfile))
+    logging.info("converting from: %s" % options.fromfile)
+    logging.info("             to: %s" % options.tofile)
     
-    reader = None
-    meshinput = False
-    if options.fromformat == "vrml":
-        reader = vrml.VRMLReader()
-    if options.fromformat == "urdf":
-        reader = urdf.URDFReader()
-    if options.fromformat == "sdf":
-        reader = sdf.SDFReader()
-    if options.fromformat == "collada":
-        reader = collada.ColladaReader()
-        meshinput = True
-    if options.fromformat == "stl":
-        reader = stl.STLReader()
-        meshinput = True
-    if reader is None:
-        ext = os.path.splitext(options.fromfile)[1]
-        if ext == '.wrl':
-            reader = vrml.VRMLReader()
-        elif ext == '.urdf':
-            reader = urdf.URDFReader()
-        elif ext == '.sdf':
-            reader = sdf.SDFReader()
-        elif ext == '.dae':
-            reader = collada.ColladaReader()
-            meshinput = True
-        elif ext == '.stl':
-            reader = stl.STLReader()
-            meshinput = True
-        else:
-            logging.error('unable to detect input format (may be not supported?)')
-            return 1
-
     basedir = os.path.dirname(os.path.abspath(options.tofile))
     writer = None
     handler = copyhandler
+    meshinput = False
     meshoutput = False
+    if options.fromformat == "collada":
+        meshinput = True
+    if options.fromformat == "stl":
+        meshinput = True
+    ext = os.path.splitext(options.fromfile)[1]
+    if ext == '.dae':
+        meshinput = True
+    elif ext == '.stl':
+        meshinput = True
     if options.toformat == "vrml":
         if meshinput:
             writer = vrml.VRMLMeshWriter()
@@ -175,21 +212,8 @@ def main():
             logging.error('unable to detect output format (may be not supported?)')
             return 1
 
-    logging.info("converting from: %s" % options.fromfile)
-    logging.info("             to: %s" % options.tofile)
-
-    m = reader.read(options.fromfile, assethandler=handler, options=options)
-
-    if meshinput:
-        nm = model.BodyModel()
-        nl = model.LinkModel()
-        ns = model.ShapeModel()
-        ns.shapeType = model.ShapeModel.SP_MESH
-        ns.data = m
-        nl.visuals.append(ns)
-        nm.links.append(nl)
-        m = nm
-        
+    m = read(options.fromfile, handler, options)
+    
     if len(m.links) == 0:
         logging.error("cannot read links at all (probably the model refers to another model by <include> tag or <link> tag contains no <inertial> or <visual> or <collision> item and reduced by simulation optimization process of gz command used inside simtrans)")
         return 1
@@ -206,6 +230,37 @@ def main():
     writer.write(m, options.tofile, options=options)
 
     return 0
+
+def checker():
+    try:
+        options = checkerparser.parse_args()
+    except ArgumentError, e:
+        logging.error('OptionError: ', e)
+        print >> sys.stderr, parser.print_help()
+        return 1
+
+    if options.verbose:
+        logging.info('enable verbose output')
+        logging.level = logging.DEBUG
+        if 'coloredlogs' in globals():
+            coloredlogs.set_level(logging.DEBUG)
+
+    logging.info("simtrans-checker (version %s)" % __version__)
+    
+    ret = 0
+    for f in options.fromfiles:
+        fromfile = os.path.abspath(utils.resolveFile(f))
+        logging.info("loading: %s" % fromfile)
+        try:
+            m = read(fromfile, nullhandler, options)
+            logging.info('validating model data...')
+            if m.isvalid() == False:
+                logging.error('input model data is not valid')
+                ret = 1
+        except Exception as e:
+            logging.error('error occurred while validating the model: %s', str(e))
+            ret = 1
+    return ret
 
 if __name__ == '__main__':
     sys.exit(main())
