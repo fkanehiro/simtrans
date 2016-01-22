@@ -44,6 +44,7 @@ parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', defa
 
 checkerparser = ArgumentParser(description='Check robot simulation model.')
 checkerparser.add_argument('fromfiles', metavar='F', type=str, nargs='+', help='model files to validate')
+checkerparser.add_argument('-e', '--export', dest='export', metavar='FILE', help='export validation result to FILE in csv format')
 checkerparser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 
 
@@ -245,6 +246,11 @@ def checker():
         if 'coloredlogs' in globals():
             coloredlogs.set_level(logging.DEBUG)
 
+    csvwriter = None
+    if options.export is not None:
+        import csv
+        csvwriter = csv.writer(open(options.export, 'wb'))
+
     logging.info("simtrans-checker (version %s)" % __version__)
     
     ret = 0
@@ -256,9 +262,16 @@ def checker():
             logging.info('validating model data...')
             if m.isvalid() == False:
                 logging.error('input model data is not valid')
+                if csvwriter is not None:
+                    csvwriter.writerow([f, 'invalid'])
                 ret = 1
+            else:
+                if csvwriter is not None:
+                    csvwriter.writerow([f, 'valid'])
         except Exception as e:
             logging.error('error occurred while validating the model: %s', str(e))
+            if csvwriter is not None:
+                csvwriter.writerow([f, 'read error'])
             ret = 1
     return ret
 
