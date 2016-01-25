@@ -40,6 +40,7 @@ parser.add_argument('-b', '--use-both', action='store_true', dest='useboth', def
 parser.add_argument('-t', '--to', dest='toformat', metavar='FORMAT', help='convert to FORMAT (optional)')
 parser.add_argument('-p', '--prefix', dest='prefix', metavar='PREFIX', default='', help='prefix given to mesh path (e.g. package://packagename, optional)')
 parser.add_argument('-s', '--skip-validation', action='store_true', dest='skipvalidation', default=False, help='skip validation of model data')
+parser.add_argument('-e', '--estimatemass', dest='estimatemass', metavar='SPGR', help='estimate mass and inertia from bounding box of the shape given the sp.gr. (optional)', type=float)
 parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False, help='verbose output')
 
 checkerparser = ArgumentParser(description='Check robot simulation model.')
@@ -219,6 +220,13 @@ def main():
         logging.error("cannot read links at all (probably the model refers to another model by <include> tag or <link> tag contains no <inertial> or <visual> or <collision> item and reduced by simulation optimization process of gz command used inside simtrans)")
         return 1
 
+    if options.estimatemass is not None:
+        logging.info("estimating mass and inertia for each links")
+        for l in m.links:
+            bbox = l.getbbox()
+            (l.mass, l.centerofmass) = l.estimatemass(bbox, options.estimatemass)
+            l.inertia = l.estimateinertia(bbox)
+    
     if options.skipvalidation == False:
         logging.info('validating model data...')
         if m.isvalid() == False:

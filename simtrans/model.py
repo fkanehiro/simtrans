@@ -234,17 +234,10 @@ class LinkModel(TransformationModel):
         if numpy.allclose(self.inertia, self.inertia.transpose()) == False:
             logging.error('the inertia matrix is not diagonal')
             #valid = False
-        # calc bounding box from all the shapes
-        allbb = [
-            [-numpy.Inf, -numpy.Inf, -numpy.Inf],
-            [numpy.Inf, numpy.Inf, numpy.Inf]
-        ]
         for s in self.visuals + self.collisions:
             valid = valid and s.isvalid()
-            bb = s.getbbox()
-            #logging.debug('bounding box: %s %s', str(type(s.data)), str(bb))
-            allbb[0] = numpy.maximum(allbb[0], bb[0])
-            allbb[1] = numpy.minimum(allbb[1], bb[1])
+        # calc bounding box from all the shapes
+        allbb = self.getbbox()
         logging.debug('unified bounding box: %s', str(allbb))
         if numpy.any(self.centerofmass > allbb[0]) or numpy.any(self.centerofmass < allbb[1]):
             logging.error('the center of mass not locate inside bounding box of the shapes')
@@ -252,20 +245,52 @@ class LinkModel(TransformationModel):
             logging.debug('bounding box: %s', str(allbb))
             #valid = False
         # calc inertia matrix from bounding box and compare with self.inertia
-        bblen = [0, 0, 0]
-        for i in range(0, 3):
-            bblen[i] = allbb[0][i] - allbb[1][i]
-        bbinertia = numpy.diag([
-            self.mass * (bblen[1] * bblen[1] + bblen[2] * bblen[2]) / 12,
-            self.mass * (bblen[0] * bblen[0] + bblen[2] * bblen[2]) / 12,
-            self.mass * (bblen[0] * bblen[0] + bblen[1] * bblen[1]) / 12
-        ])
+        bbinertia = self.estimateinertia(allbb)
         if numpy.allclose(self.inertia, bbinertia) == False:
             logging.warn('the inertia matrix is far from the values estimated from bounding box of the shapes')
             logging.debug('inertia calculated from bounding box: %s', bbinertia)
             logging.debug('inertia of the link: %s', self.inertia)
         return valid
 
+    def getbbox(self):
+        # calc bounding box from all the shapes
+        allbb = [
+            [-numpy.Inf, -numpy.Inf, -numpy.Inf],
+            [numpy.Inf, numpy.Inf, numpy.Inf]
+        ]
+        for s in self.visuals + self.collisions:
+            bb = s.getbbox()
+            #logging.debug('bounding box: %s %s', str(type(s.data)), str(bb))
+            allbb[0] = numpy.maximum(allbb[0], bb[0])
+            allbb[1] = numpy.minimum(allbb[1], bb[1])
+        return allbb
+
+    def estimatemass(self, bbox=None, spgr=1):
+        # calc mass from bounding box
+        if bbox is None:
+            bbox = self.getbbox()
+        bblen = [0, 0, 0]
+        for i in range(0, 3):
+            bblen[i] = bbox[0][i] - bbox[1][i]
+        half = (bbox[0] - bbox[1]) / 2
+        center = bbox[1] + half
+        bbmass = bblen[0] * bblen[1] * bblen[2] * spgr
+        return (bbmass, center)
+    
+    def estimateinertia(self, bbox=None):
+        # calc inertia matrix from bounding box
+        if bbox is None:
+            bbox = self.getbbox()
+        bblen = [0, 0, 0]
+        for i in range(0, 3):
+            bblen[i] = bbox[0][i] - bbox[1][i]
+        bbinertia = numpy.diag([
+            self.mass * (bblen[1] * bblen[1] + bblen[2] * bblen[2]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[2] * bblen[2]) / 12,
+            self.mass * (bblen[0] * bblen[0] + bblen[1] * bblen[1]) / 12
+        ])
+        return bbinertia
+    
     def translate(self, mat):
         self.matrix = numpy.dot(self.getmatrix(), mat)
         self.trans = None
