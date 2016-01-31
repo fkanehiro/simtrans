@@ -115,7 +115,9 @@ def read(fromfile, handler, options):
     if meshinput:
         nm = model.BodyModel()
         nl = model.LinkModel()
+        nl.name = 'root'
         ns = model.ShapeModel()
+        ns.name = 'visual'
         ns.shapeType = model.ShapeModel.SP_MESH
         ns.data = m
         nl.visuals.append(ns)
@@ -153,6 +155,7 @@ def main():
     
     basedir = os.path.dirname(os.path.abspath(options.tofile))
     writer = None
+    meshwriter = None
     handler = copyhandler
     meshinput = False
     meshoutput = False
@@ -166,11 +169,10 @@ def main():
     elif ext == '.stl':
         meshinput = True
     if options.toformat == "vrml":
+        writer = vrml.VRMLWriter()
+        meshwriter = vrml.VRMLMeshWriter()
         if meshinput:
-            writer = vrml.VRMLMeshWriter()
             meshoutput = True
-        else:
-            writer = vrml.VRMLWriter()
         handler = jpegconverthandler
     if options.toformat == "urdf":
         writer = urdf.URDFWriter()
@@ -189,11 +191,10 @@ def main():
     if writer is None:
         ext = os.path.splitext(options.tofile)[1]
         if ext == '.wrl':
+            writer = vrml.VRMLWriter()
+            meshwriter = vrml.VRMLMeshWriter()
             if meshinput:
-                writer = vrml.VRMLMeshWriter()
                 meshoutput = True
-            else:
-                writer = vrml.VRMLWriter()
             handler = jpegconverthandler
         elif ext == '.urdf':
             writer = urdf.URDFWriter()
@@ -205,10 +206,10 @@ def main():
             writer = graphviz.GraphvizWriter()
             handler = None
         elif ext == '.dae':
-            writer = collada.ColladaWriter()
+            meshwriter = collada.ColladaWriter()
             meshoutput = True
         elif ext == '.stl':
-            writer = stl.STLWriter()
+            meshwriter = stl.STLWriter()
             meshoutput = True
         else:
             logging.error('unable to detect output format (may be not supported?)')
@@ -222,6 +223,7 @@ def main():
 
     if options.estimatemass is not None:
         logging.info("estimating mass and inertia for each links")
+        meshoutput = False
         for l in m.links:
             bbox = l.getbbox()
             (l.mass, l.centerofmass) = l.estimatemass(bbox, options.estimatemass)
@@ -233,10 +235,11 @@ def main():
             logging.error('input model data is not valid')
             return 1
     
-    if meshoutput:
+    if meshoutput and meshwriter is not None:
         m = m.links[0].visuals[0]
-
-    writer.write(m, options.tofile, options=options)
+        meshwriter.write(m, options.tofile, options=options)
+    else:
+        writer.write(m, options.tofile, options=options)
 
     return 0
 
