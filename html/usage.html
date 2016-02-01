@@ -150,7 +150,7 @@
 <h3>simtrans<a class="headerlink" href="#simtrans" title="Permalink to this headline">¶</a></h3>
 <p>Convert robot simulation model from one another.</p>
 <p>usage: simtrans [-h] [-i FILE] [-o FILE] [-f FORMAT] [-c] [-b] [-t FORMAT]
-                [-p PREFIX] [-s] [-v]</p>
+                [-p PREFIX] [-s] [-e SPGR] [-v]</p>
 <dl class="option">
 <dt id="cmdoption-simtrans-h">
 <span id="cmdoption-simtrans--help"></span><code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-h" title="Permalink to this definition">¶</a></dt>
@@ -203,6 +203,12 @@
 <dt id="cmdoption-simtrans-s">
 <span id="cmdoption-simtrans--skip-validation"></span><code class="descname">-s</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--skip-validation</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-simtrans-s" title="Permalink to this definition">¶</a></dt>
 <dd><p>skip validation of model data</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-simtrans-e">
+<span id="cmdoption-simtrans--estimatemass"></span><code class="descname">-e</code><code class="descclassname"> &lt;spgr&gt;</code><code class="descclassname">, </code><code class="descname">--estimatemass</code><code class="descclassname"> &lt;spgr&gt;</code><a class="headerlink" href="#cmdoption-simtrans-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>estimate mass and inertia from bounding box of the shape given the sp.gr. (optional)</p>
 </dd></dl>
 
 <dl class="option">
