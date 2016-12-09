@@ -23,6 +23,7 @@ PROTO Joint [
   exposedField     SFFloat      rotorResistor       0
   exposedField     SFFloat      torqueConst         1
   exposedField     SFFloat      encoderPulse        1
+  exposedField     MFFloat      climit              []
 ]
 {
   Transform {
@@ -207,6 +208,9 @@ DEF {{model.name}} Humanoid {
       {%- if l.joint.axis.velocitylimit %}
       uvlimit {{l.joint.axis.velocitylimit[0]}}
       lvlimit {{l.joint.axis.velocitylimit[1]}}
+      {%- endif %}
+      {%- if l.joint.axis.effortlimit %}
+      climit [{{l.joint.axis.effortlimit[0]}}]
       {%- endif %}
       children [
         {%- if l.link %}

@@ -319,6 +319,10 @@ class VRMLReader(object):
             jm.axis.velocitylimit = [child.uvlimit[0], child.lvlimit[0]]
         except IndexError:
             pass
+        try:
+            jm.axis.effortlimit = [child.climit[0]]
+        except IndexError:
+            pass
         jm.axis.axis = child.jointAxis
         if child.jointType == 'fixed':
             jm.jointType = model.JointModel.J_FIXED

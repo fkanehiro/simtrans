@@ -179,6 +179,9 @@
           {%- if j.axis.velocitylimit %}
           <velocity>{{j.axis.velocitylimit[1]}}</velocity>
           {%- endif %}
+          {%- if j.axis.effortlimit %}
+          <effort>{{j.axis.effortlimit[0]}}</velocity>
+          {%- endif %}
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
       </axis>
