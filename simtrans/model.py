@@ -375,6 +375,7 @@ class AxisData(object):
                             #: Joint limits (upper and lower limits in 2-dim array)
     velocitylimit = [float("inf"),-float("inf")]
                             #: Velocity limits (upper and lower limits in 2-dim array)
+    effortlimit = [float(100)]
 
     def isvalid(self):
         valid = True
