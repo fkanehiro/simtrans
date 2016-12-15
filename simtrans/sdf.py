@@ -212,7 +212,7 @@ class SDFReader(object):
                     if type(velocity) in [str, int, float]:
                         velocity = float(velocity)
                         am.velocitylimit = [velocity, -velocity]
-                    am.effortlimit = [float(limit.find('effort').text]
+                    am.effortlimit = [float(limit.find('effort').text)]
                 except AttributeError:
                     pass
         return am
