@@ -320,7 +320,7 @@ class VRMLReader(object):
         except IndexError:
             pass
         try:
-            jm.axis.effortlimit = [child.climit[0]*child.gearRatio*child.torqueConstant]
+            jm.axis.effortlimit = [child.climit[0]*child.gearRatio*child.torqueConst]
         except IndexError:
             pass
         jm.axis.axis = child.jointAxis
