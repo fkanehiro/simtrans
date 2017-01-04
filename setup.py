@@ -11,7 +11,13 @@ versioneer.versionfile_build = 'simtrans/_version.py'
 versioneer.tag_prefix = ''
 versioneer.parentdir_prefix = 'simtrans-'
 
-sdformat_include = subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True).strip().lstrip('-I')
+
+sdformat_include = map(lambda x:x.lstrip('-I'), subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True).strip().split(' '))
+sdformat_version = subprocess.check_output('pkg-config sdformat --modversion', shell=True).strip()
+if sdformat_version=="4.0.0": #ubuntu16
+    sdformat_compile_args = ['-std=c++11']
+else:
+    sdformat_compile_args = []
 
 setup(name='simtrans',
       version=versioneer.get_version(),
@@ -35,8 +41,9 @@ setup(name='simtrans',
       ext_modules=[
           Extension('simtranssdfhelper',
                     ['simtrans/sdfhelper.cpp'],
-                    include_dirs=[sdformat_include],
+                    include_dirs=sdformat_include,
                     libraries=['sdformat'],
+                    extra_compile_args=sdformat_compile_args
                  )
       ],
     entry_points={
