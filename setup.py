@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages, Extension
+from distutils.version import StrictVersion
 import versioneer
 import subprocess
 
@@ -14,7 +15,7 @@ versioneer.parentdir_prefix = 'simtrans-'
 
 sdformat_include = map(lambda x:x.lstrip('-I'), subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True).strip().split(' '))
 sdformat_version = subprocess.check_output('pkg-config sdformat --modversion', shell=True).strip()
-if sdformat_version=="4.0.0": #ubuntu16
+if StrictVersion(sdformat_version) >= StrictVersion("4.0.0"): #ubuntu16
     sdformat_compile_args = ['-std=c++11']
 else:
     sdformat_compile_args = []
