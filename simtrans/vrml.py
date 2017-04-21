@@ -335,6 +335,8 @@ class VRMLReader(object):
             jm.jointType = model.JointModel.J_PRISMATIC
         elif child.jointType == 'crawler':
             jm.jointType = model.JointModel.J_CRAWLER
+        elif child.jointType == 'pseudoContinuousTrack':
+            jm.jointType = model.JointModel.J_CRAWLER
         else:
             raise Exception('unsupported joint type: %s' % child.jointType)
         jm.trans = numpy.array(child.translation)
