@@ -230,7 +230,7 @@ class VRMLReader(object):
             self._sensors.append(sm)
         for s in m.shapeIndices:
             sm = model.ShapeModel()
-            sm.name = "shape-%i" % s.shapeIndex
+            sm.name = lm.name + "-shape-%i" % s.shapeIndex
             sm.matrix = numpy.matrix(s.transformMatrix+[0, 0, 0, 1]).reshape(4, 4)
             sdata = self._hrpshapes[s.shapeIndex]
             if sdata.primitiveType == OpenHRP.SP_MESH:
