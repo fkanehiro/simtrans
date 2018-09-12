@@ -26,6 +26,7 @@ from . import model
 from . import vrml
 from . import urdf
 from . import sdf
+from . import cnoidbody
 from . import collada
 from . import stl
 from . import graphviz
@@ -86,6 +87,8 @@ def read(fromfile, handler, options):
             reader = urdf.URDFReader()
         if options.fromformat == "sdf":
             reader = sdf.SDFReader()
+        if options.fromformat == "body":
+            reader = cnoidbody.CnoidBodyReader()
         if options.fromformat == "collada":
             reader = collada.ColladaReader()
             meshinput = True
@@ -100,6 +103,8 @@ def read(fromfile, handler, options):
             reader = urdf.URDFReader()
         elif ext == '.sdf':
             reader = sdf.SDFReader()
+        elif ext == '.body':
+            reader = cnoidbody.CnoidBodyReader()
         elif ext == '.dae':
             reader = collada.ColladaReader()
             meshinput = True
