@@ -13,8 +13,8 @@ versioneer.tag_prefix = ''
 versioneer.parentdir_prefix = 'simtrans-'
 
 
-sdformat_include = map(lambda x:x.lstrip('-I'), subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True).strip().split(' '))
-sdformat_version = subprocess.check_output('pkg-config sdformat --modversion', shell=True).strip()
+sdformat_include = [x.lstrip('-I') for x in subprocess.check_output('pkg-config sdformat --cflags-only-I', shell=True, universal_newlines=True).strip().split(' ')]
+sdformat_version = subprocess.check_output('pkg-config sdformat --modversion', shell=True, universal_newlines=True).strip()
 if StrictVersion(sdformat_version) >= StrictVersion("4.0.0"): #ubuntu16
     sdformat_compile_args = ['-std=c++11']
 else:
