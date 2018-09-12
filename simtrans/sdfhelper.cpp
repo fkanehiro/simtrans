@@ -42,8 +42,13 @@ static struct PyModuleDef module = {
 };
 #endif
 
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC
+PyInit_simtranssdfhelper(void)
+#else
 PyMODINIT_FUNC
 initsimtranssdfhelper(void)
+#endif
 {
     PyObject *m;
 #if PY_MAJOR_VERSION >= 3
