@@ -61,7 +61,7 @@ except ImportError:
     print "$ sudo add-apt-repository ppa:hrg/daily"
     print "$ sudo apt-get update"
     print "$ sudo apt-get install openhrp openrtm-aist-python"
-    raise
+    pass
 
 plist = []
 def terminator():
