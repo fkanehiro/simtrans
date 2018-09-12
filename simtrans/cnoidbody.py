@@ -148,7 +148,7 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             try:
-                v = m['maxJointVelocity']
+                v = float(m['maxJointVelocity'])
                 j.axis.velocitylimit = [v, -v]
             except KeyError:
                 pass
@@ -168,7 +168,6 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             t = m['jointType']
-            print(t)
             if t == 'fixed':
                 j.jointType = model.JointModel.J_FIXED
             elif t == 'rotate':
@@ -176,6 +175,8 @@ class CnoidBodyReader(object):
                     j.jointType = model.JointModel.J_CONTINUOUS
                 else:
                     j.jointType = model.JointModel.J_REVOLUTE
+            elif t == 'revolute':
+                j.jointType = model.JointModel.J_REVOLUTE
             elif t == 'slide':
                 j.jointType = model.JointModel.J_PRISMATIC
             elif t == 'crawler':
@@ -191,37 +192,58 @@ class CnoidBodyReader(object):
     def readLink(self, m):
         lm = model.LinkModel()
         lm.name = m['name']
-        lm.mass = m['mass']
+        try:
+            lm.mass = m['mass']
+        except KeyError:
+            lm.mass = 0.000001
         try:
             lm.centerofmass = numpy.array(m['centerOfMass'])
         except KeyError:
             pass
-        lm.inertia = numpy.array(m['inertia']).reshape(3, 3)
-        for e in m['elements']:
+        try:
+            lm.inertia = numpy.array(m['inertia']).reshape(3, 3)
+        except KeyError:
+            pass
+        es = m['elements']
+        if type(es) == dict:
+            # TODO: read translation
+            es = es['Transform']['elements']
+        for e in es:
             t = e['type']
             if t == 'Visual':
-                lm.visuals.extend(self.readShapes(e['elements']))
+                lm.visuals.extend(self.readShapes(e))
             elif t == 'Collision':
-                lm.collisions.extend(self.readShapes(e['elements']))
+                lm.collisions.extend(self.readShapes(e))
         return lm
 
-    def readShapes(self, ss):
+    def readShapes(self, e):
         ret = []
-        if type(ss) == dict:
-            ss['Shape']['type'] = 'Shape'
-            ret.append(self.readShape(ss['Shape']))
-        else:
-            for s in ss:
-                ret.append(self.readShape(s))
+        try:
+            s = e['shape']
+            ret.append(self.readShape(s))
+        except KeyError:
+            ss = e['elements']
+            if type(ss) == dict:
+                ss['Shape']['type'] = 'Shape'
+                ret.append(self.readShape(ss['Shape']))
+            else:
+                for s in ss:
+                    ret.append(self.readShape(s))
         return ret
 
     def readShape(self, e):
         sm = model.ShapeModel()
         try:
             if e['type'] == 'Transform':
-                sm.trans = numpy.array(e['translation'])
-                r = e['rotation']
-                sm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                try:
+                    sm.trans = numpy.array(e['translation'])
+                except KeyError:
+                    pass
+                try:
+                    r = e['rotation']
+                    sm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                except KeyError:
+                    pass
                 e = e['elements']['Shape']
         except KeyError:
             pass
