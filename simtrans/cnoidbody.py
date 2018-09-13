@@ -214,6 +214,8 @@ class CnoidBodyReader(object):
         if type(es) == dict:
             # TODO: read translation
             es = es['Transform']['elements']
+        lm.visuals = []
+        lm.collisions = []
         for e in es:
             t = e['type']
             if t == 'Visual':
