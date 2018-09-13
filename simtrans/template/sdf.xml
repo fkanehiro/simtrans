@@ -63,35 +63,40 @@
         </material>
         {%- endif %}
       </visual>
-      <collision name="{{v.name}}">
+      {%- endfor %}
+      {%- for c in l.collisions %}
+      {%- set trans = c.gettranslation() %}
+      {%- set rpy = c.getrpy() %}
+      {%- set scale = c.getscale() %}
+      <collision name="{{c.name}}">
         <pose>{{trans[0]}} {{trans[1]}} {{trans[2]}} {{rpy[0]}} {{rpy[1]}} {{rpy[2]}}</pose>
-        {%- if v.shapeType == ShapeModel.SP_MESH %}
+        {%- if c.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
-            <uri>model://{{model.name}}/{{v.name}}.stl</uri>
+            <uri>model://{{model.name}}/{{c.name}}.stl</uri>
             <scale>{{scale[0]}} {{scale[1]}} {{scale[2]}}</scale>
           </mesh>
         </geometry>
         {%- endif %}
-        {%- if v.shapeType == ShapeModel.SP_BOX %}
+        {%- if c.shapeType == ShapeModel.SP_BOX %}
         <geometry>
           <box>
-            <size>{{v.data.x * scale[0]}} {{v.data.y * scale[1]}} {{v.data.z * scale[2]}}</size>
+            <size>{{c.data.x * scale[0]}} {{c.data.y * scale[1]}} {{c.data.z * scale[2]}}</size>
           </box>
         </geometry>
         {%- endif %}
-        {%- if v.shapeType == ShapeModel.SP_CYLINDER %}
+        {%- if c.shapeType == ShapeModel.SP_CYLINDER %}
         <geometry>
           <cylinder>
-            <radius>{{v.data.radius}}</radius>
-            <length>{{v.data.height}}</length>
+            <radius>{{c.data.radius}}</radius>
+            <length>{{c.data.height}}</length>
           </cylinder>
         </geometry>
         {%- endif %}
-        {%- if v.shapeType == ShapeModel.SP_SPHERE %}
+        {%- if c.shapeType == ShapeModel.SP_SPHERE %}
         <geometry>
           <sphere>
-            <radius>{{v.data.radius}}</radius>
+            <radius>{{c.data.radius}}</radius>
           </sphere>
         </geometry>
         {%- endif %}
