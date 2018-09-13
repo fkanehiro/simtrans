@@ -14,8 +14,9 @@ notifications:
 env:
   global:
     - secure: "WiSX13xhIpfCPvY2GslvyHZ7A+sHtSRzm4xEmSgZSAxhGvui4oGGZPl9yJJj3w2qhlV02yb6QjjgDtrenXmUcKunsTbiNfVwWKCbeYRcT0bX+Y8HVVVpNA97SH/wQj+ocVRq54u3wfDS7aFuKCOzeOJwCTQGFW82/lFLriMY5AM="
-script: source .travis.sh
+dist: trusty
 sudo: required
+script: source .travis.sh
 after_success:
   - set +x
   - export GIT_COMMITTER_NAME=$GIT_NAME
