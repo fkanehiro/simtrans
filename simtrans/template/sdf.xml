@@ -180,7 +180,7 @@
           <velocity>{{j.axis.velocitylimit[1]}}</velocity>
           {%- endif %}
           {%- if j.axis.effortlimit %}
-          <effort>{{j.axis.effortlimit[0]}}</velocity>
+          <effort>{{j.axis.effortlimit[0]}}</effort>
           {%- endif %}
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
@@ -195,6 +195,9 @@
           {%- endif %}
           {%- if j.axis2.velocitylimit %}
           <velocity>{{j.axis2.velocitylimit[1]}}</velocity>
+          {%- endif %}
+          {%- if j.axis2.effortlimit %}
+          <effort>{{j.axis2.effortlimit[0]}}</effort>
           {%- endif %}
         </limit>
         <use_parent_model_frame>true</use_parent_model_frame>
