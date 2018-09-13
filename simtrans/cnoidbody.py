@@ -78,11 +78,21 @@ class CnoidBodyReader(object):
                     continue
             except KeyError:
                 pass
+
             lm = self.readLink(l)
             bm.links.append(lm)
-            jm = self.readJoint(l)
-            bm.joints.append(jm)
-            self._linknamemap[lm.name] = (lm, jm)
+            if lm.name == self._model['rootLink']:
+                if l['jointType'] == 'fixed':
+                    j = model.JointModel()
+                    j.jointType = model.JointModel.J_FIXED
+                    j.child = lm.name
+                    j.parent = 'world'
+                    j.name = j.parent + '-' + j.child
+                    bm.joints.append(j)
+            else:
+                jm = self.readJoint(l)
+                bm.joints.append(jm)
+                self._linknamemap[lm.name] = (lm, jm)
 
             # read poses in relative corrdinate (later convert to absolute)
             p = model.TransformationModel()
@@ -132,59 +142,55 @@ class CnoidBodyReader(object):
         j.child = m['name']
 
         # read joint info
-        if j.child == self._model['rootLink']:
-            if m['jointType'] == 'fixed':
-                j.jointType = model.JointModel.J_FIXED
-                j.parent = 'world'
+        j.child = name
+        j.parent = m['parent']
+        j.axis = model.AxisData()
+        try:
+            v = m['jointRange']
+            if type(v) == str and v == 'unlimited':
+                pass
             else:
-                j.parent = ''
-        else:
-            j.child = name
-            j.parent = m['parent']
-            j.axis = model.AxisData()
-            try:
-                v = m['jointRange']
                 j.axis.limit = [v[1], v[0]]
-            except KeyError:
-                pass
-            try:
-                v = float(m['maxJointVelocity'])
-                j.axis.velocitylimit = [v, -v]
-            except KeyError:
-                pass
-            try:
-                v = m['jointMotorForceRange']
-                j.axis.effortlimit = [v[1], v[0]]
-            except KeyError:
-                pass
-            try:
-                v = m['jointAxis']
-                if v == 'X':
-                    j.axis.axis = [1, 0, 0]
-                elif v == 'Y':
-                    j.axis.axis = [0, 1, 0]
-                elif v == 'Z':
-                    j.axis.axis = [0, 0, 1]
-            except KeyError:
-                pass
-            t = m['jointType']
-            if t == 'fixed':
-                j.jointType = model.JointModel.J_FIXED
-            elif t == 'rotate':
-                if j.axis.limit is None or (j.axis.limit[0] is None and j.axis.limit[1] is None):
-                    j.jointType = model.JointModel.J_CONTINUOUS
-                else:
-                    j.jointType = model.JointModel.J_REVOLUTE
-            elif t == 'revolute':
-                j.jointType = model.JointModel.J_REVOLUTE
-            elif t == 'slide':
-                j.jointType = model.JointModel.J_PRISMATIC
-            elif t == 'crawler':
-                j.jointType = model.JointModel.J_CRAWLER
-            elif t == 'pseudoContinuousTrack':
-                j.jointType = model.JointModel.J_CRAWLER
+        except KeyError:
+            pass
+        try:
+            v = float(m['maxJointVelocity'])
+            j.axis.velocitylimit = [v, -v]
+        except KeyError:
+            pass
+        try:
+            v = m['jointMotorForceRange']
+            j.axis.effortlimit = [v[1], v[0]]
+        except KeyError:
+            pass
+        try:
+            v = m['jointAxis']
+            if v == 'X':
+                j.axis.axis = [1, 0, 0]
+            elif v == 'Y':
+                j.axis.axis = [0, 1, 0]
+            elif v == 'Z':
+                j.axis.axis = [0, 0, 1]
+        except KeyError:
+            pass
+        t = m['jointType']
+        if t == 'fixed':
+            j.jointType = model.JointModel.J_FIXED
+        elif t == 'rotate':
+            if j.axis.limit is None or (j.axis.limit[0] is None and j.axis.limit[1] is None):
+                j.jointType = model.JointModel.J_CONTINUOUS
             else:
-                raise Exception('unsupported joint type: %s' % t)
+                j.jointType = model.JointModel.J_REVOLUTE
+        elif t == 'revolute':
+            j.jointType = model.JointModel.J_REVOLUTE
+        elif t == 'slide':
+            j.jointType = model.JointModel.J_PRISMATIC
+        elif t == 'crawler':
+            j.jointType = model.JointModel.J_CRAWLER
+        elif t == 'pseudoContinuousTrack':
+            j.jointType = model.JointModel.J_CRAWLER
+        else:
+            raise Exception('unsupported joint type: %s' % t)
 
         j.name = j.parent + '-' + j.child
         return j
@@ -197,11 +203,11 @@ class CnoidBodyReader(object):
         except KeyError:
             lm.mass = 0.000001
         try:
-            lm.centerofmass = numpy.array(m['centerOfMass'])
+            lm.centerofmass = numpy.array([float(v) for v in m['centerOfMass']])
         except KeyError:
             pass
         try:
-            lm.inertia = numpy.array(m['inertia']).reshape(3, 3)
+            lm.inertia = numpy.array([float(v) for v in m['inertia']]).reshape(3, 3)
         except KeyError:
             pass
         es = m['elements']
@@ -214,6 +220,10 @@ class CnoidBodyReader(object):
                 lm.visuals.extend(self.readShapes(e))
             elif t == 'Collision':
                 lm.collisions.extend(self.readShapes(e))
+        for i, v in enumerate(lm.visuals):
+            v.name = lm.name + '-visual-' + str(i)
+        for i, c in enumerate(lm.collisions):
+            c.name = lm.name + '-collision-' + str(i)
         return lm
 
     def readShapes(self, e):
