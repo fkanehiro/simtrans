@@ -32,10 +32,32 @@ static PyMethodDef methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef module = {
+    PyModuleDef_HEAD_INIT,
+    "simtranssdfhelper",
+    ext_doc,
+    -1,
+    methods
+};
+#endif
+
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC
+PyInit_simtranssdfhelper(void)
+#else
 PyMODINIT_FUNC
 initsimtranssdfhelper(void)
+#endif
 {
     PyObject *m;
-    m = Py_InitModule3("simtranssdfhelper", methods, ext_doc);
-    PyModule_AddStringConstant(m, "SDFVERSION", sdf::SDF::version.c_str());
+#if PY_MAJOR_VERSION >= 3
+    m = PyModule_Create(&module);
+#else
+    m = Py_InitModule("simtranssdfhelper", methods);
+#endif
+    PyModule_AddStringConstant(m, "SDFVERSION", sdf::SDF::Version().c_str());
+#if PY_MAJOR_VERSION >= 3
+    return m;
+#endif
 }

@@ -55,12 +55,12 @@ class STLWriter(object):
         cwriter = collada.ColladaWriter()
         cwriter.write(m, daefile)
         try:
-            output = subprocess.check_output(['meshlabserver', '-i', daefile, '-o', f], stderr=subprocess.STDOUT)
+            output = subprocess.check_output(['xvfb-run', '-a', '-s', '-screen 0 800x600x24', 'meshlabserver', '-i', daefile, '-o', f], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             logging.error("meshlabserver returned error: %s" % e.output)
             raise
         except OSError:
-            logging.error("command meshlabserver not found. please install by:")
-            logging.error("$ sudo apt-get install meshlab")
+            logging.error("command xvfb-run or meshlabserver not found. please install by:")
+            logging.error("$ sudo apt-get install xvfb meshlab")
             raise
         os.unlink(daefile)
