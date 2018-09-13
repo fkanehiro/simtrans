@@ -217,6 +217,7 @@ class ColladaWriter(object):
                                                  double_sided=True,
                                                  diffuse=m.data.material.diffuse,
                                                  specular=m.data.material.specular,
+                                                 shininess=m.data.material.shininess,
                                                  transparency=m.data.material.transparency)
         else:
             effect = collada.material.Effect("effect0", [], "phong",

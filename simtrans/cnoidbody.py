@@ -89,6 +89,7 @@ class CnoidBodyReader(object):
                     j.parent = 'world'
                     j.name = j.parent + '-' + j.child
                     bm.joints.append(j)
+                self._linknamemap[lm.name] = (lm, None)
             else:
                 jm = self.readJoint(l)
                 bm.joints.append(jm)
@@ -107,13 +108,26 @@ class CnoidBodyReader(object):
                 pass
             self._rel_poses[lm.name] = p
 
+        # set jointId (only used in VRML model)
+        for i, j in enumerate(bm.joints):
+            j.jointId = i
+
         # 2nd step: convert to absolute corrdinate
         rootname = self._model['rootLink']
         rootpose = self._rel_poses[rootname].getmatrix()
+        rootlink = self._linknamemap[rootname][0]
         for c in self._linknamemap.keys():
             (lm2, jm2) = self._linknamemap[c]
-            if jm2.parent == rootname:
+            if jm2 and jm2.parent == rootname:
                 self.relToAbs(rootpose, c)
+        for v in rootlink.visuals:
+            v.matrix = numpy.dot(rootpose, v.getmatrix())
+            v.trans = None
+            v.rot = None
+        for c in rootlink.collisions:
+            c.matrix = numpy.dot(rootpose, c.getmatrix())
+            c.trans = None
+            c.rot = None
 
         return bm
 
@@ -133,7 +147,7 @@ class CnoidBodyReader(object):
 
         for c in self._linknamemap.keys():
             (lm2, jm2) = self._linknamemap[c]
-            if jm2.parent == childname:
+            if jm2 and jm2.parent == childname:
                 self.relToAbs(abschild, c)
 
     def readJoint(self, m):
@@ -211,8 +225,18 @@ class CnoidBodyReader(object):
         except KeyError:
             pass
         es = m['elements']
+        tm = None
         if type(es) == dict:
-            # TODO: read translation
+            tm = model.TransformationModel()
+            try:
+                tm.trans = numpy.array(es['Transform']['translation'])
+            except KeyError:
+                pass
+            try:
+                r = es['Transform']['rotation']
+                tm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+            except KeyError:
+                pass
             es = es['Transform']['elements']
         lm.visuals = []
         lm.collisions = []
@@ -224,8 +248,16 @@ class CnoidBodyReader(object):
                 lm.collisions.extend(self.readShapes(e))
         for i, v in enumerate(lm.visuals):
             v.name = lm.name + '-visual-' + str(i)
+            if tm:
+                v.matrix = numpy.dot(tm.getmatrix(), v.getmatrix())
+                v.trans = None
+                v.rot = None
         for i, c in enumerate(lm.collisions):
             c.name = lm.name + '-collision-' + str(i)
+            if tm:
+                c.matrix = numpy.dot(tm.getmatrix(), v.getmatrix())
+                c.trans = None
+                c.rot = None
         return lm
 
     def readShapes(self, e):
@@ -289,4 +321,22 @@ class CnoidBodyReader(object):
             sm.data.x = s[0]
             sm.data.y = s[1]
             sm.data.z = s[2]
+        try:
+            mtd = e['appearance']['material']
+            mt = model.MaterialModel()
+            try:
+                mt.diffuse = mtd['diffuseColor'] + [1.0]
+            except KeyError:
+                pass
+            try:
+                mt.specular = mtd['specularColor'] + [1.0]
+            except KeyError:
+                pass
+            try:
+                mt.shininess = mtd['shininess']
+            except KeyError:
+                pass
+            sm.data.material = mt
+        except KeyError:
+            pass
         return sm
