@@ -180,11 +180,11 @@ class CnoidBodyReader(object):
         try:
             v = m['jointAxis']
             if v == 'X':
-                j.axis.axis = [1, 0, 0]
+                j.axis.axis = [0, 0, 1]
             elif v == 'Y':
                 j.axis.axis = [0, 1, 0]
             elif v == 'Z':
-                j.axis.axis = [0, 0, 1]
+                j.axis.axis = [1, 0, 0]
         except KeyError:
             pass
         t = m['jointType']
