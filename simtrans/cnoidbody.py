@@ -120,6 +120,7 @@ class CnoidBodyReader(object):
             (lm2, jm2) = self._linknamemap[c]
             if jm2 and jm2.parent == rootname:
                 self.relToAbs(rootpose, c)
+        # TODO: need to translate CoM and inertia here
         for v in rootlink.visuals:
             v.matrix = numpy.dot(rootpose, v.getmatrix())
             v.trans = None
@@ -255,7 +256,7 @@ class CnoidBodyReader(object):
         for i, c in enumerate(lm.collisions):
             c.name = lm.name + '-collision-' + str(i)
             if tm:
-                c.matrix = numpy.dot(tm.getmatrix(), v.getmatrix())
+                c.matrix = numpy.dot(tm.getmatrix(), c.getmatrix())
                 c.trans = None
                 c.rot = None
         return lm
