@@ -28,7 +28,11 @@
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
+            {%- if v.data.material and v.data.material.texture == None %}
+            <uri>model://{{model.name}}/{{v.name}}.stl</uri>
+            {%- else %}
             <uri>model://{{model.name}}/{{v.name}}.dae</uri>
+            {%- endif %}
             <scale>{{scale[0]}} {{scale[1]}} {{scale[2]}}</scale>
           </mesh>
         </geometry>
@@ -55,11 +59,13 @@
           </sphere>
         </geometry>
         {%- endif %}
-        {%- if v.shapeType != ShapeModel.SP_MESH and v.data.material %}
+        {%- if v.data.material and v.data.material.texture == None %}
         <material>
           <diffuse>{{v.data.material.diffuse[0]}} {{v.data.material.diffuse[1]}} {{v.data.material.diffuse[2]}} {{v.data.material.diffuse[3]}}</diffuse>
           <specular>{{v.data.material.specular[0]}} {{v.data.material.specular[1]}} {{v.data.material.specular[2]}} {{v.data.material.specular[3]}}</specular>
+          {%- if v.data.material.emission %}
           <emissive>{{v.data.material.emission[0]}} {{v.data.material.emission[1]}} {{v.data.material.emission[2]}} {{v.data.material.emission[3]}}</emissive>
+          {%- endif %}
         </material>
         {%- endif %}
       </visual>

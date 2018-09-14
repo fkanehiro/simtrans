@@ -217,13 +217,13 @@ class ColladaWriter(object):
                                                  double_sided=True,
                                                  diffuse=m.data.material.diffuse,
                                                  specular=m.data.material.specular,
-                                                 shininess=m.data.material.shininess,
-                                                 transparency=m.data.material.transparency)
+                                                 index_of_refraction=1.0)
         else:
             effect = collada.material.Effect("effect0", [], "phong",
                                              double_sided=True,
                                              diffuse=(0.8,0.8,0.8),
-                                             specular=(1,1,1))
+                                             specular=(1,1,1),
+                                             index_of_refraction=1.0)
         mat = collada.material.Material("material0", "mymaterial", effect)
         self._mesh.effects.append(effect)
         self._mesh.materials.append(mat)
