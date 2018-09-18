@@ -21,9 +21,12 @@ Read vrml model data given the file path
 
 Write simulation model in VRML format
 
+>>> import subprocess
+>>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+0
 >>> from . import urdf
 >>> r = urdf.URDFReader()
->>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+>>> m = r.read('/tmp/atlas.urdf')
 >>> w = VRMLWriter()
 >>> w.write(m, '/tmp/atlas.wrl')
 

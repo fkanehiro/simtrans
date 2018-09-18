@@ -10,9 +10,12 @@ Examples
 
 Write simulation model in graphviz dot format
 
+>>> import subprocess
+>>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+0
 >>> from . import urdf
 >>> r = urdf.URDFReader()
->>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+>>> m = r.read('/tmp/atlas.urdf')
 >>> w = GraphvizWriter()
 >>> w.write(m, '/tmp/atlas.dot')
 

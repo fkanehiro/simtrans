@@ -54,7 +54,7 @@ initsimtranssdfhelper(void)
 #if PY_MAJOR_VERSION >= 3
     m = PyModule_Create(&module);
 #else
-    m = Py_InitModule("simtranssdfhelper", methods);
+    m = Py_InitModule3("simtranssdfhelper", methods, ext_doc);
 #endif
 #if SDF_MAJOR_VERSION >= 3
     PyModule_AddStringConstant(m, "SDFVERSION", sdf::SDF::Version().c_str());
