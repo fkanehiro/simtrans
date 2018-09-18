@@ -24,7 +24,8 @@ if rospack find pr2_description; then
 fi
 
 if rospack find ur_description; then
-    $CMD -i `rospack find ur_description`/urdf/ur10_robot.urdf -o /tmp/ur10.wrl
+    rosrun xacro xacro.py `rospack find ur_description`/urdf/ur10_robot.urdf.xacro > /tmp/ur10_robot.urdf
+    $CMD -i /tmp/ur10_robot.urdf -o /tmp/ur10.wrl
 fi
 
 if rospack find baxter_description; then

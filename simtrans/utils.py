@@ -74,8 +74,10 @@ def findroot(mdata):
     ['pelvis']
 
     >>> from . import urdf
+    >>> subprocess.call('rosrun xacro xacro.py `rospack find ur_description`/urdf/ur5_robot.urdf.xacro > /tmp/ur5_robot.urdf', shell=True)
+    0
     >>> r = urdf.URDFReader()
-    >>> m = r.read('package://ur_description/urdf/ur5_robot.urdf')
+    >>> m = r.read('/tmp/ur5_robot.urdf')
     >>> findroot(m)
     ['world']
 
