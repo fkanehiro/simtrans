@@ -268,8 +268,9 @@ class ColladaWriter(object):
                 input_list.addInput(2, 'TEXCOORD', '#' + uvmapname, set="0")
             geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources, double_sided=True)
             # create triangles
-            triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
-            geom.primitives.append(triset)
+            if indices.size > 0:
+                triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
+                geom.primitives.append(triset)
             self._mesh.geometries.append(geom)
             node = collada.scene.GeometryNode(geom, [self._matnode])
             return node
