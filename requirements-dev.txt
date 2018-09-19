@@ -4,8 +4,4 @@ numpy-stl
 pycollada
 unittest2
 nose2
-sphinx-gettext-helper
-sphinx_rtd_theme
-sphinx-intl
-sphinxcontrib-autoprogram
 

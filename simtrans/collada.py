@@ -17,7 +17,8 @@ Examples
 Read collada model data given the file path
 
 >>> r = ColladaReader()
->>> m = r.read('package://atlas_description/meshes/head.dae')
+>>> from . import utils
+>>> m = r.read(utils.resolveFile('package://atlas_description/meshes/head.dae'))
 
 """
 
@@ -262,7 +263,7 @@ class ColladaWriter(object):
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
-            if m.uvmap is not None:
+            if m.uvmap is not None and m.uvmap_index.size > 0:
                 sources.append(collada.source.FloatSource(uvmapname, m.uvmap.reshape(1, m.uvmap.size), ('S', 'T')))
                 indices = numpy.vstack([indices, m.uvmap_index.reshape(1, m.uvmap_index.size)])
                 input_list.addInput(2, 'TEXCOORD', '#' + uvmapname, set="0")
