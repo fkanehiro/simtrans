@@ -20,8 +20,8 @@ sudo apt-get install -qq -y pkg-config python-dev python-pip graphviz meshlab xv
 
 # install python libraries
 sudo pip install --upgrade pip
-sudo pip install -r requirements.txt
-sudo pip install -r requirements-dev.txt
+sudo pip install -r requirements.txt --ignore-installed
+sudo pip install -r requirements-dev.txt --ignore-installed
 
 # now installs simtrans
 sudo python setup.py install
