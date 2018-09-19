@@ -36,6 +36,10 @@ import uuid
 import lxml
 from StringIO import StringIO
 
+# create this class to just to use generateNormals function
+class DummyTriangleSet(collada.triangleset.TriangleSet):
+    def __init__(self):
+        pass
 
 class ColladaReader(object):
     '''
@@ -263,15 +267,22 @@ class ColladaWriter(object):
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
-            if m.uvmap is not None and m.uvmap_index.size > 0:
+            else:
+                d = DummyTriangleSet()
+                d._vertex = m.vertex
+                d._vertex_index = m.vertex_index
+                d.generateNormals()
+                sources.append(collada.source.FloatSource(normalname, d._normal.reshape(1, d._normal.size), ('X', 'Y', 'Z')))
+                indices = numpy.vstack([indices, d._normal_index.reshape(1, d._normal_index.size)])
+                input_list.addInput(1, 'NORMAL', '#' + normalname)
+            if m.uvmap is not None:
                 sources.append(collada.source.FloatSource(uvmapname, m.uvmap.reshape(1, m.uvmap.size), ('S', 'T')))
                 indices = numpy.vstack([indices, m.uvmap_index.reshape(1, m.uvmap_index.size)])
                 input_list.addInput(2, 'TEXCOORD', '#' + uvmapname, set="0")
             geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources, double_sided=True)
             # create triangles
-            if indices.size > 0:
-                triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
-                geom.primitives.append(triset)
+            triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
+            geom.primitives.append(triset)
             self._mesh.geometries.append(geom)
             node = collada.scene.GeometryNode(geom, [self._matnode])
             return node

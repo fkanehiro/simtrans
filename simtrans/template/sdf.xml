@@ -28,11 +28,7 @@
         {%- if v.shapeType == ShapeModel.SP_MESH %}
         <geometry>
           <mesh>
-            {%- if v.data.material and v.data.material.texture == None %}
-            <uri>model://{{model.name}}/{{v.name}}.stl</uri>
-            {%- else %}
             <uri>model://{{model.name}}/{{v.name}}.dae</uri>
-            {%- endif %}
             <scale>{{scale[0]}} {{scale[1]}} {{scale[2]}}</scale>
           </mesh>
         </geometry>
