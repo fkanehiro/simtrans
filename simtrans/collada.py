@@ -17,7 +17,8 @@ Examples
 Read collada model data given the file path
 
 >>> r = ColladaReader()
->>> m = r.read('package://atlas_description/meshes/head.dae')
+>>> from . import utils
+>>> m = r.read(utils.resolveFile('package://atlas_description/meshes/head.dae'))
 
 """
 
@@ -217,12 +218,13 @@ class ColladaWriter(object):
                                                  double_sided=True,
                                                  diffuse=m.data.material.diffuse,
                                                  specular=m.data.material.specular,
-                                                 transparency=m.data.material.transparency)
+                                                 index_of_refraction=1.0)
         else:
             effect = collada.material.Effect("effect0", [], "phong",
                                              double_sided=True,
                                              diffuse=(0.8,0.8,0.8),
-                                             specular=(1,1,1))
+                                             specular=(1,1,1),
+                                             index_of_refraction=1.0)
         mat = collada.material.Material("material0", "mymaterial", effect)
         self._mesh.effects.append(effect)
         self._mesh.materials.append(mat)
@@ -261,14 +263,15 @@ class ColladaWriter(object):
                 sources.append(collada.source.FloatSource(normalname, m.normal.reshape(1, m.normal.size), ('X', 'Y', 'Z')))
                 indices = numpy.vstack([indices, m.normal_index.reshape(1, m.normal_index.size)])
                 input_list.addInput(1, 'NORMAL', '#' + normalname)
-            if m.uvmap is not None:
+            if m.uvmap is not None and m.uvmap_index.size > 0:
                 sources.append(collada.source.FloatSource(uvmapname, m.uvmap.reshape(1, m.uvmap.size), ('S', 'T')))
                 indices = numpy.vstack([indices, m.uvmap_index.reshape(1, m.uvmap_index.size)])
                 input_list.addInput(2, 'TEXCOORD', '#' + uvmapname, set="0")
             geom = collada.geometry.Geometry(self._mesh, 'geometry0', name, sources, double_sided=True)
             # create triangles
-            triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
-            geom.primitives.append(triset)
+            if indices.size > 0:
+                triset = geom.createTriangleSet(indices.T.reshape(1, indices.size), input_list, 'materialref')
+                geom.primitives.append(triset)
             self._mesh.geometries.append(geom)
             node = collada.scene.GeometryNode(geom, [self._matnode])
             return node

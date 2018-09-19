@@ -16,8 +16,11 @@ Examples
 
 Read URDF model data given the model file
 
+>>> import subprocess
+>>> subprocess.call('rosrun xacro xacro.py `rospack find atlas_description`/robots/atlas_v3.urdf.xacro > /tmp/atlas.urdf', shell=True)
+0
 >>> r = URDFReader()
->>> m = r.read('package://atlas_description/urdf/atlas_v3.urdf')
+>>> m = r.read('/tmp/atlas.urdf')
 
 Write simulation model in URDF format
 
