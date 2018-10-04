@@ -247,6 +247,37 @@ class CnoidBodyReader(object):
                 lm.visuals.extend(self.readShapes(e))
             elif t == 'Collision':
                 lm.collisions.extend(self.readShapes(e))
+            elif t == 'RigidBody':
+                print('RigidBody')
+            elif t == 'Transform':
+                tm2 = model.TransformationModel()
+                try:
+                    tm2.trans = numpy.array(e['translation'])
+                except KeyError:
+                    pass
+                try:
+                    r = e['rotation']
+                    tm2.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                except KeyError:
+                    pass
+                for ce in  e['elements']:
+                    ct = ce['type']
+                    if ct == 'Visual':
+                        vs = self.readShapes(ce)
+                        for v in vs:
+                            v.matrix = numpy.dot(tm2.getmatrix(), v.getmatrix())
+                            v.trans = None
+                            v.rot = None
+                        lm.visuals.extend(vs)
+                    elif ct == 'Collision':
+                        cs = self.readShapes(ce)
+                        for c in cs:
+                            c.matrix = numpy.dot(tm2.getmatrix(), c.getmatrix())
+                            c.trans = None
+                            c.rot = None
+                        lm.collisions.extend(cs)
+            else:
+                raise Exception('unsupported element type: %s' % t)
         for i, v in enumerate(lm.visuals):
             v.name = lm.name + '-visual-' + str(i)
             if tm:
@@ -267,13 +298,16 @@ class CnoidBodyReader(object):
             s = e['shape']
             ret.append(self.readShape(s))
         except KeyError:
-            ss = e['elements']
-            if type(ss) == dict:
-                ss['Shape']['type'] = 'Shape'
-                ret.append(self.readShape(ss['Shape']))
-            else:
-                for s in ss:
-                    ret.append(self.readShape(s))
+            try:
+                ss = e['elements']
+                if type(ss) == dict:
+                    ss['Shape']['type'] = 'Shape'
+                    ret.append(self.readShape(ss['Shape']))
+                else:
+                    for s in ss:
+                        ret.append(self.readShape(s))
+            except KeyError:
+                pass
         return ret
 
     def readShape(self, e):
