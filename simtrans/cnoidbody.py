@@ -214,7 +214,7 @@ class CnoidBodyReader(object):
         except KeyError:
             pass
 
-        j.name = j.parent + '-' + j.child
+        j.name = j.child
         return j
 
     def readLink(self, m, context):
@@ -352,3 +352,17 @@ class CnoidBodyReader(object):
                 context['link'].visuals.append(sm)
             else:
                 context['link'].collisions.append(sm)
+        elif t == 'RangeSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.sensorType = model.SensorModel.SS_RAY
+            sm.data = model.RayData()
+            sm.data.min_angle = - e['scanAngle'] / 2
+            sm.data.max_angle = e['scanAngle'] / 2
+            sm.data.min_range = e['minDistance']
+            sm.data.max_range = e['maxDistance']
+            context['body'].sensors.append(sm)
