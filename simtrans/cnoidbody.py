@@ -171,13 +171,26 @@ class CnoidBodyReader(object):
         # read joint info
         j.child = name
         j.parent = m['parent']
+        t = m['jointType']
+        if t == 'fixed':
+            j.jointType = model.JointModel.J_FIXED
+        elif t == 'revolute':
+            j.jointType = model.JointModel.J_REVOLUTE
+        elif t == 'slide':
+            j.jointType = model.JointModel.J_PRISMATIC
+        elif t == 'crawler':
+            j.jointType = model.JointModel.J_CRAWLER
+        elif t == 'pseudoContinuousTrack':
+            j.jointType = model.JointModel.J_CRAWLER
+        else:
+            raise Exception('unsupported joint type: %s' % t)
         j.axis = model.AxisData()
         try:
             v = m['jointRange']
             if type(v) == str and v == 'unlimited':
-                pass
+                j.jointType = model.JointModel.J_CONTINUOUS
             else:
-                j.axis.limit = [v[1], v[0]]
+                j.axis.limit = [self._to_radian(v[1]), self._to_radian(v[0])]
         except KeyError:
             pass
         try:
@@ -193,31 +206,13 @@ class CnoidBodyReader(object):
         try:
             v = m['jointAxis']
             if v == 'X':
-                j.axis.axis = [0, 0, 1]
+                j.axis.axis = [1, 0, 0]
             elif v == 'Y':
                 j.axis.axis = [0, 1, 0]
             elif v == 'Z':
-                j.axis.axis = [1, 0, 0]
+                j.axis.axis = [0, 0, 1]
         except KeyError:
             pass
-        t = m['jointType']
-        if t == 'fixed':
-            j.jointType = model.JointModel.J_FIXED
-        elif t == 'rotate':
-            if j.axis.limit is None or (j.axis.limit[0] is None and j.axis.limit[1] is None):
-                j.jointType = model.JointModel.J_CONTINUOUS
-            else:
-                j.jointType = model.JointModel.J_REVOLUTE
-        elif t == 'revolute':
-            j.jointType = model.JointModel.J_REVOLUTE
-        elif t == 'slide':
-            j.jointType = model.JointModel.J_PRISMATIC
-        elif t == 'crawler':
-            j.jointType = model.JointModel.J_CRAWLER
-        elif t == 'pseudoContinuousTrack':
-            j.jointType = model.JointModel.J_CRAWLER
-        else:
-            raise Exception('unsupported joint type: %s' % t)
 
         j.name = j.parent + '-' + j.child
         return j
@@ -327,6 +322,7 @@ class CnoidBodyReader(object):
                 sm.data = model.CylinderData()
                 sm.data.radius = e['geometry']['radius']
                 sm.data.height = e['geometry']['height']
+                sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi/2, [1, 0, 0])))
             elif t == 'Box':
                 sm.shapeType = model.ShapeModel.SP_BOX
                 sm.data = model.BoxData()
