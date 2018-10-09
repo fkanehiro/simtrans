@@ -359,10 +359,30 @@ class CnoidBodyReader(object):
             sm.matrix = context['trans']
             sm.trans = None
             sm.rot = None
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(-math.pi/2, [1, 0, 0])))
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi/2, [0, 0, 1])))
             sm.sensorType = model.SensorModel.SS_RAY
             sm.data = model.RayData()
             sm.data.min_angle = - e['scanAngle'] / 2
             sm.data.max_angle = e['scanAngle'] / 2
             sm.data.min_range = e['minDistance']
             sm.data.max_range = e['maxDistance']
+            context['body'].sensors.append(sm)
+        elif t == 'ForceSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.sensorType = model.SensorModel.SS_FORCE
+            context['body'].sensors.append(sm)
+        elif t == 'AccelerationSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.sensorType = model.SensorModel.SS_IMU
             context['body'].sensors.append(sm)
