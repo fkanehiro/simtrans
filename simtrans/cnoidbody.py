@@ -59,6 +59,17 @@ class CnoidBodyReader(object):
             return r
         return es
 
+    def read_rotation(self, r):
+        if type(r[0]) == list:
+            rot = tf.quaternion_about_axis(self._to_radian(r[0][3]), r[0][0:3])
+            for rr in r[1:]:
+                rot2 = tf.quaternion_about_axis(self._to_radian(rr[3]), rr[0:3])
+                rot = tf.quaternion_multiply(rot, rot2)
+        else:
+            rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+        return rot
+
+
     def read(self, f, assethandler=None, options=None):
         '''
         Read Choreonoid body model data given the file path
@@ -114,8 +125,7 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             try:
-                r = l['rotation']
-                p.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                p.rot = self.read_rotation(l['rotation'])
             except KeyError:
                 pass
             self._rel_poses[lm.name] = p
@@ -176,7 +186,7 @@ class CnoidBodyReader(object):
             j.jointType = model.JointModel.J_FIXED
         elif t == 'revolute':
             j.jointType = model.JointModel.J_REVOLUTE
-        elif t == 'slide':
+        elif t == 'prismatic':
             j.jointType = model.JointModel.J_PRISMATIC
         elif t == 'crawler':
             j.jointType = model.JointModel.J_CRAWLER
@@ -211,6 +221,8 @@ class CnoidBodyReader(object):
                 j.axis.axis = [0, 1, 0]
             elif v == 'Z':
                 j.axis.axis = [0, 0, 1]
+            else:
+                j.axis.axis = v
         except KeyError:
             pass
 
@@ -235,8 +247,11 @@ class CnoidBodyReader(object):
         lm.visuals = []
         lm.collisions = []
         context['link'] = lm
-        for e in self.dict_to_list(m['elements']):
-            self.readItem(e, context)
+        try:
+            for e in self.dict_to_list(m['elements']):
+                self.readItem(e, context)
+        except KeyError:
+            pass
         for i, v in enumerate(lm.visuals):
             v.name = lm.name + '-visual-' + str(i)
         for i, c in enumerate(lm.collisions):
@@ -254,8 +269,7 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             try:
-                r = e['rotation']
-                tm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                tm.rot = self.read_rotation(e['rotation'])
             except KeyError:
                 pass
             trans = context['trans']
@@ -274,7 +288,12 @@ class CnoidBodyReader(object):
                 self.readItem(ce, context)
         elif t == 'Collision':
             context['shapeType'] = 'collision'
-            for ce in self.dict_to_list(e['elements']):
+            try:
+                for ce in self.dict_to_list(e['elements']):
+                    self.readItem(ce, context)
+            except KeyError:
+                ce = e['shape']
+                ce['type'] = 'Shape'
                 self.readItem(ce, context)
         #elif t == 'RigidBody':
         #    lm = context['link']
@@ -296,8 +315,7 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             try:
-                r = e['rotation']
-                tm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                tm.rot = self.read_rotation(e['rotation'])
             except KeyError:
                 pass
             sm.matrix = numpy.dot(context['trans'], tm.getmatrix())
@@ -352,6 +370,29 @@ class CnoidBodyReader(object):
                 context['link'].visuals.append(sm)
             else:
                 context['link'].collisions.append(sm)
+        elif t == 'Camera':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi, [1, 0, 0])))
+            sm.sensorType = model.SensorModel.SS_CAMERA
+            sm.data = model.CameraData()
+            sm.data.near = e['nearClipDistance']
+            sm.data.far = e['farClipDistance']
+            sm.data.fov = e['fieldOfView']
+            if e['format'] == 'COLOR':
+                sm.data.cameraType = model.CameraData.CS_COLOR
+            elif e['format'] == 'COLOR_DEPTH':
+                sm.data.cameraType = model.CameraData.CS_RGBD
+            else:
+                raise Exception('unsupported camera type: %i' % s.specValues[3])
+            sm.data.width = e['width']
+            sm.data.height = e['height']
+            sm.rate = e['frameRate']
+            context['body'].sensors.append(sm)
         elif t == 'RangeSensor':
             sm = model.SensorModel()
             sm.name = e['name']
