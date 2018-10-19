@@ -594,6 +594,7 @@ class SensorModel(TransformationModel):
     SS_CAMERA = "camera"  #: Camera (color, mono, depth)
     SS_RAY = "ray"        #: Laser range finder
     SS_IMU = "imu"        #: IMU sensor
+    SS_FORCE = "force"    #: Force sensor
 
     name = None           #: Name
     sensorType = None     #: Type of sensor

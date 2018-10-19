@@ -50,6 +50,26 @@ class CnoidBodyReader(object):
         self._to_radian = lambda x: x
         self._rel_poses = {}
 
+    def dict_to_list(self, es):
+        if type(es) == dict:
+            r = []
+            for (k, v) in es.items():
+                v['type'] = k
+                r.append(v)
+            return r
+        return es
+
+    def read_rotation(self, r):
+        if type(r[0]) == list:
+            rot = tf.quaternion_about_axis(self._to_radian(r[0][3]), r[0][0:3])
+            for rr in r[1:]:
+                rot2 = tf.quaternion_about_axis(self._to_radian(rr[3]), rr[0:3])
+                rot = tf.quaternion_multiply(rot, rot2)
+        else:
+            rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+        return rot
+
+
     def read(self, f, assethandler=None, options=None):
         '''
         Read Choreonoid body model data given the file path
@@ -68,18 +88,21 @@ class CnoidBodyReader(object):
         if self._model['angleUnit'] == 'degree':
             self._to_radian = math.radians
 
+        context = {}
         bm = model.BodyModel()
         bm.name = self._model['name']
+        context['body'] = bm
+        context['trans'] = model.TransformationModel().getmatrix()
 
         # 1st step: read links in relative frame
-        for l in self._model['links']:
+        for l in self.dict_to_list(self._model['links']):
             try:
                 if l['type'] == 'Skip':
                     continue
             except KeyError:
                 pass
 
-            lm = self.readLink(l)
+            lm = self.readLink(l, context)
             bm.links.append(lm)
             if lm.name == self._model['rootLink']:
                 if l['jointType'] == 'fixed':
@@ -102,8 +125,7 @@ class CnoidBodyReader(object):
             except KeyError:
                 pass
             try:
-                r = l['rotation']
-                p.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                p.rot = self.read_rotation(l['rotation'])
             except KeyError:
                 pass
             self._rel_poses[lm.name] = p
@@ -159,13 +181,26 @@ class CnoidBodyReader(object):
         # read joint info
         j.child = name
         j.parent = m['parent']
+        t = m['jointType']
+        if t == 'fixed':
+            j.jointType = model.JointModel.J_FIXED
+        elif t == 'revolute':
+            j.jointType = model.JointModel.J_REVOLUTE
+        elif t == 'prismatic':
+            j.jointType = model.JointModel.J_PRISMATIC
+        elif t == 'crawler':
+            j.jointType = model.JointModel.J_CRAWLER
+        elif t == 'pseudoContinuousTrack':
+            j.jointType = model.JointModel.J_CRAWLER
+        else:
+            raise Exception('unsupported joint type: %s' % t)
         j.axis = model.AxisData()
         try:
             v = m['jointRange']
             if type(v) == str and v == 'unlimited':
-                pass
+                j.jointType = model.JointModel.J_CONTINUOUS
             else:
-                j.axis.limit = [v[1], v[0]]
+                j.axis.limit = [self._to_radian(v[1]), self._to_radian(v[0])]
         except KeyError:
             pass
         try:
@@ -181,36 +216,20 @@ class CnoidBodyReader(object):
         try:
             v = m['jointAxis']
             if v == 'X':
-                j.axis.axis = [0, 0, 1]
+                j.axis.axis = [1, 0, 0]
             elif v == 'Y':
                 j.axis.axis = [0, 1, 0]
             elif v == 'Z':
-                j.axis.axis = [1, 0, 0]
+                j.axis.axis = [0, 0, 1]
+            else:
+                j.axis.axis = v
         except KeyError:
             pass
-        t = m['jointType']
-        if t == 'fixed':
-            j.jointType = model.JointModel.J_FIXED
-        elif t == 'rotate':
-            if j.axis.limit is None or (j.axis.limit[0] is None and j.axis.limit[1] is None):
-                j.jointType = model.JointModel.J_CONTINUOUS
-            else:
-                j.jointType = model.JointModel.J_REVOLUTE
-        elif t == 'revolute':
-            j.jointType = model.JointModel.J_REVOLUTE
-        elif t == 'slide':
-            j.jointType = model.JointModel.J_PRISMATIC
-        elif t == 'crawler':
-            j.jointType = model.JointModel.J_CRAWLER
-        elif t == 'pseudoContinuousTrack':
-            j.jointType = model.JointModel.J_CRAWLER
-        else:
-            raise Exception('unsupported joint type: %s' % t)
 
-        j.name = j.parent + '-' + j.child
+        j.name = j.child
         return j
 
-    def readLink(self, m):
+    def readLink(self, m, context):
         lm = model.LinkModel()
         lm.name = m['name']
         try:
@@ -225,119 +244,186 @@ class CnoidBodyReader(object):
             lm.inertia = numpy.array([float(v) for v in m['inertia']]).reshape(3, 3)
         except KeyError:
             pass
-        es = m['elements']
-        tm = None
-        if type(es) == dict:
-            tm = model.TransformationModel()
-            try:
-                tm.trans = numpy.array(es['Transform']['translation'])
-            except KeyError:
-                pass
-            try:
-                r = es['Transform']['rotation']
-                tm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
-            except KeyError:
-                pass
-            es = es['Transform']['elements']
         lm.visuals = []
         lm.collisions = []
-        for e in es:
-            t = e['type']
-            if t == 'Visual':
-                lm.visuals.extend(self.readShapes(e))
-            elif t == 'Collision':
-                lm.collisions.extend(self.readShapes(e))
+        context['link'] = lm
+        try:
+            for e in self.dict_to_list(m['elements']):
+                self.readItem(e, context)
+        except KeyError:
+            pass
         for i, v in enumerate(lm.visuals):
             v.name = lm.name + '-visual-' + str(i)
-            if tm:
-                v.matrix = numpy.dot(tm.getmatrix(), v.getmatrix())
-                v.trans = None
-                v.rot = None
         for i, c in enumerate(lm.collisions):
             c.name = lm.name + '-collision-' + str(i)
-            if tm:
-                c.matrix = numpy.dot(tm.getmatrix(), c.getmatrix())
-                c.trans = None
-                c.rot = None
         return lm
 
-    def readShapes(self, e):
-        ret = []
-        try:
-            s = e['shape']
-            ret.append(self.readShape(s))
-        except KeyError:
-            ss = e['elements']
-            if type(ss) == dict:
-                ss['Shape']['type'] = 'Shape'
-                ret.append(self.readShape(ss['Shape']))
-            else:
-                for s in ss:
-                    ret.append(self.readShape(s))
-        return ret
-
-    def readShape(self, e):
-        sm = model.ShapeModel()
-        try:
-            if e['type'] == 'Transform':
+    def readItem(self, e, context):
+        t = e['type']
+        if t == 'Skip':
+            return
+        elif t == 'Transform' or t == 'RigidBody':
+            tm = model.TransformationModel()
+            try:
+                tm.trans = numpy.array(e['translation'])
+            except KeyError:
+                pass
+            try:
+                tm.rot = self.read_rotation(e['rotation'])
+            except KeyError:
+                pass
+            trans = context['trans']
+            for ce in self.dict_to_list(e['elements']):
+                context['trans'] = numpy.dot(trans, tm.getmatrix())
+                self.readItem(ce, context)
+            context['trans'] = trans
+        elif t == 'Visual':
+            context['shapeType'] = 'visual'
+            try:
+                for ce in self.dict_to_list(e['elements']):
+                    self.readItem(ce, context)
+            except KeyError:
+                ce = e['shape']
+                ce['type'] = 'Shape'
+                self.readItem(ce, context)
+        elif t == 'Collision':
+            context['shapeType'] = 'collision'
+            try:
+                for ce in self.dict_to_list(e['elements']):
+                    self.readItem(ce, context)
+            except KeyError:
+                ce = e['shape']
+                ce['type'] = 'Shape'
+                self.readItem(ce, context)
+        #elif t == 'RigidBody':
+        #    lm = context['link']
+        #    clm = self.readLink(e, context)
+        #    context['body'].links.append(clm)
+        #    cjm = model.JointModel()
+        #    cjm.parent = lm.name
+        #    cjm.child = clm.name
+        #    cjm.name = cjm.parent + '-' + cjm.child
+        #    cjm.jointType = model.JointModel.J_FIXED
+        #    context['body'].joints.append(cjm)
+        #    self._linknamemap[clm.name] = (clm, cjm)
+        #    context['link'] = lm
+        elif t == 'Shape':
+            sm = model.ShapeModel()
+            tm = model.TransformationModel()
+            try:
+                tm.trans = numpy.array(e['translation'])
+            except KeyError:
+                pass
+            try:
+                tm.rot = self.read_rotation(e['rotation'])
+            except KeyError:
+                pass
+            sm.matrix = numpy.dot(context['trans'], tm.getmatrix())
+            sm.trans = None
+            sm.rot = None
+            t = e['geometry']['type']
+            if t == 'Resource':
+                sm.shapeType = model.ShapeModel.SP_MESH
+                filename = utils.resolveFile(e['geometry']['uri'])
+                fileext = os.path.splitext(filename)[1].lower()
+                if fileext == '.dae':
+                    reader = collada.ColladaReader()
+                else:
+                    reader = stl.STLReader()
+                    sm.data = reader.read(filename, assethandler=self._assethandler)
+            elif t == 'Sphere':
+                sm.shapeType = model.ShapeModel.SP_SPHERE
+                sm.data = model.SphereData()
+                sm.data.radius = e['geometry']['radius']
+            elif t == 'Cylinder':
+                sm.shapeType = model.ShapeModel.SP_CYLINDER
+                sm.data = model.CylinderData()
+                sm.data.radius = e['geometry']['radius']
+                sm.data.height = e['geometry']['height']
+                sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi/2, [1, 0, 0])))
+            elif t == 'Box':
+                sm.shapeType = model.ShapeModel.SP_BOX
+                sm.data = model.BoxData()
+                s = e['geometry']['size']
+                sm.data.x = s[0]
+                sm.data.y = s[1]
+                sm.data.z = s[2]
+            try:
+                mtd = e['appearance']['material']
+                mt = model.MaterialModel()
                 try:
-                    sm.trans = numpy.array(e['translation'])
+                    mt.diffuse = mtd['diffuseColor'] + [1.0]
                 except KeyError:
                     pass
                 try:
-                    r = e['rotation']
-                    sm.rot = tf.quaternion_about_axis(self._to_radian(r[3]), r[0:3])
+                    mt.specular = mtd['specularColor'] + [1.0]
                 except KeyError:
                     pass
-                e = e['elements']['Shape']
-        except KeyError:
-            pass
-        try:
-            sm.trans = numpy.array(e['translation'])
-        except KeyError:
-            pass
-        t = e['geometry']['type']
-        if t == 'Resource':
-            sm.shapeType = model.ShapeModel.SP_MESH
-            filename = utils.resolveFile(e['geometry']['uri'])
-            fileext = os.path.splitext(filename)[1].lower()
-            if fileext == '.dae':
-                reader = collada.ColladaReader()
+                try:
+                    mt.shininess = mtd['shininess']
+                except KeyError:
+                    pass
+                sm.data.material = mt
+            except KeyError:
+                pass
+            if context['shapeType'] == 'visual':
+                context['link'].visuals.append(sm)
             else:
-                reader = stl.STLReader()
-            sm.data = reader.read(filename, assethandler=self._assethandler)
-        elif t == 'Sphere':
-            sm.shapeType = model.ShapeModel.SP_SPHERE
-            sm.data = model.SphereData()
-            sm.data.radius = e['geometry']['radius']
-        elif t == 'Cylinder':
-            sm.shapeType = model.ShapeModel.SP_CYLINDER
-            sm.data = model.CylinderData()
-            sm.data.radius = e['geometry']['radius']
-            sm.data.height = e['geometry']['height']
-        elif t == 'Box':
-            sm.shapeType = model.ShapeModel.SP_BOX
-            sm.data = model.BoxData()
-            s = e['geometry']['size']
-            sm.data.x = s[0]
-            sm.data.y = s[1]
-            sm.data.z = s[2]
-        try:
-            mtd = e['appearance']['material']
-            mt = model.MaterialModel()
-            try:
-                mt.diffuse = mtd['diffuseColor'] + [1.0]
-            except KeyError:
-                pass
-            try:
-                mt.specular = mtd['specularColor'] + [1.0]
-            except KeyError:
-                pass
-            try:
-                mt.shininess = mtd['shininess']
-            except KeyError:
-                pass
-            sm.data.material = mt
-        except KeyError:
-            pass
-        return sm
+                context['link'].collisions.append(sm)
+        elif t == 'Camera':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi, [1, 0, 0])))
+            sm.sensorType = model.SensorModel.SS_CAMERA
+            sm.data = model.CameraData()
+            sm.data.near = e['nearClipDistance']
+            sm.data.far = e['farClipDistance']
+            sm.data.fov = e['fieldOfView']
+            if e['format'] == 'COLOR':
+                sm.data.cameraType = model.CameraData.CS_COLOR
+            elif e['format'] == 'COLOR_DEPTH':
+                sm.data.cameraType = model.CameraData.CS_RGBD
+            else:
+                raise Exception('unsupported camera type: %i' % s.specValues[3])
+            sm.data.width = e['width']
+            sm.data.height = e['height']
+            sm.rate = e['frameRate']
+            context['body'].sensors.append(sm)
+        elif t == 'RangeSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(-math.pi/2, [1, 0, 0])))
+            sm.matrix = numpy.dot(sm.matrix, tf.quaternion_matrix(tf.quaternion_about_axis(math.pi/2, [0, 0, 1])))
+            sm.sensorType = model.SensorModel.SS_RAY
+            sm.data = model.RayData()
+            sm.data.min_angle = - e['scanAngle'] / 2
+            sm.data.max_angle = e['scanAngle'] / 2
+            sm.data.min_range = e['minDistance']
+            sm.data.max_range = e['maxDistance']
+            context['body'].sensors.append(sm)
+        elif t == 'ForceSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.sensorType = model.SensorModel.SS_FORCE
+            context['body'].sensors.append(sm)
+        elif t == 'AccelerationSensor':
+            sm = model.SensorModel()
+            sm.name = e['name']
+            sm.parent = context['link'].name
+            sm.matrix = context['trans']
+            sm.trans = None
+            sm.rot = None
+            sm.sensorType = model.SensorModel.SS_IMU
+            context['body'].sensors.append(sm)
