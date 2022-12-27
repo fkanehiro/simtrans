@@ -366,7 +366,7 @@ class CnoidBodyReader(object):
                 sm.data.material = mt
             except KeyError:
                 pass
-            if context['shapeType'] == 'visual':
+            if ('shapeType' not in context) or (context['shapeType'] == 'visual'):
                 context['link'].visuals.append(sm)
             else:
                 context['link'].collisions.append(sm)
