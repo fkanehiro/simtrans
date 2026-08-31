@@ -8,6 +8,11 @@ import sys
 import subprocess
 import shutil
 import logging
+
+# Set the maximum GIOP message size for omniORB to a large value so that
+# reading models with large meshes does not fail with
+# MARSHAL_MessageSizeExceedLimitOnClient.
+os.environ['ORBgiopMaxMsgSize'] = '2097152000'
 try:
     import coloredlogs
     coloredlogs.install(show_hostname=False, show_name=False)
